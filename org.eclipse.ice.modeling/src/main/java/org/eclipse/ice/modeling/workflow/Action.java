@@ -8,27 +8,23 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - John Hetrick
  *******************************************************************************/
-package org.eclipse.ice.modeling;
+package org.eclipse.ice.modeling.workflow;
 
 import org.eclipse.ice.modeling.workflowEngine.*;
 
-/**
- * This is an interface class for the Workflow System.  It is the primary inteface
- * to be used by any actor interacting with the system.
- * 
- * @author John Hetrick
- *
- */
-public interface IWorkflow {
+public class Action {
 
-	/**
-	 * The handleMsg method is used by any external entity that wants the
-	 * Workflow System to handle, meaning process, some message.  As this is an interface
-	 * class the class realizing this interface must provide an implementation.
-	 * 
-	 * @param msg
-	 * @return - CommandStatus indicating the result of the function.
+	public Action() {
+		System.out.println("Action() constructor");
+	}
+
+	/*
+	 * I think this should be virtual function so it has to be implemented by
+	 * the concrete class.
 	 */
-	void handleMsg(Message msg);
+	public Message execute() {
+		System.out.println("Action.execute()");
+		return null;
+	}
 
 }

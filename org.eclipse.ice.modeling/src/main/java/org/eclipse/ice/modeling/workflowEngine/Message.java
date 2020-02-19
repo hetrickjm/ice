@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2019- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - John Hetrick
+ *******************************************************************************/
 package org.eclipse.ice.modeling.workflowEngine;
 
 public class Message {
@@ -11,6 +21,10 @@ public class Message {
 	 */
 	private String expId;
 	private String cmnd;
+	/**
+	 * Reference to a data set
+	 */
+	private DataSet attribute;
 	/**
 	 * Reference to a data set
 	 */

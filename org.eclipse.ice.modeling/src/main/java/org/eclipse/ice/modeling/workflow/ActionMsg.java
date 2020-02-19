@@ -8,27 +8,39 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - John Hetrick
  *******************************************************************************/
-package org.eclipse.ice.modeling;
+package org.eclipse.ice.modeling.workflow;
 
 import org.eclipse.ice.modeling.workflowEngine.*;
 
 /**
- * This is an interface class for the Workflow System.  It is the primary inteface
- * to be used by any actor interacting with the system.
- * 
- * @author John Hetrick
- *
+ * The ActionMsg class is a type of Action
  */
-public interface IWorkflow {
+public class ActionMsg extends Action {
+
+	private Message msg;
+
+	public ActionMsg() {
+		System.out.println("ActionMsg() constructor");
+		
+		this.setMsg(new Message());
+		this.msg.setCmnd("Default ActionMsg");
+	}
+
+	public Message getMsg() {
+		return this.msg;
+	}
 
 	/**
-	 * The handleMsg method is used by any external entity that wants the
-	 * Workflow System to handle, meaning process, some message.  As this is an interface
-	 * class the class realizing this interface must provide an implementation.
 	 * 
 	 * @param msg
-	 * @return - CommandStatus indicating the result of the function.
 	 */
-	void handleMsg(Message msg);
+	public void setMsg(Message msg) {
+		this.msg = msg;
+	}
 
-}
+	public Message execute() {
+		System.out.println("ActionMsg.execute()");
+		return msg;
+	}
+
+}   // end class ActionMsg

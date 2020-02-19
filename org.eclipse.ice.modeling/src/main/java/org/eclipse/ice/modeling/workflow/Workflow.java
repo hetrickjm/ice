@@ -1,4 +1,16 @@
-package org.eclipse.ice.modeling.workflowEngine;
+/*******************************************************************************
+ * Copyright (c) 2019- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - John Hetrick
+ *******************************************************************************/
+package org.eclipse.ice.modeling.workflow;
+
+import org.eclipse.ice.modeling.workflowEngine.*;
 
 /**
  * Workflow is the entity that is responsible for managing the processing of a data set.
@@ -65,6 +77,7 @@ public class Workflow {
 	}
 
 	/**
+	 * 
 	 * @return the procedure
 	 */
 	public Procedure getProcedure() {
@@ -72,6 +85,7 @@ public class Workflow {
 	}
 
 	/**
+	 * 
 	 * @param procedure the procedure to set
 	 */
 	public void setProcedure(Procedure procedure) {
@@ -79,6 +93,7 @@ public class Workflow {
 	}
 
 	/**
+	 * 
 	 * @return the currentStep
 	 */
 	public Step getCurrentStep() {
@@ -86,6 +101,7 @@ public class Workflow {
 	}
 
 	/**
+	 * 
 	 * @param currentStep the currentStep to set
 	 */
 	public void setCurrentStep(Step currentStep) {

@@ -1,15 +1,40 @@
+/*******************************************************************************
+ * Copyright (c) 2019- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - John Hetrick
+ *******************************************************************************/
 package org.eclipse.ice.modeling.workflowEngine;
 
 import org.eclipse.ice.modeling.actors.*;
 import org.eclipse.ice.modeling.*;
+import org.eclipse.ice.modeling.workflow.*;
 
+/**
+ * The WorkflowEngine is the class that handles the incoming messages, invoking the correct workflow
+ * and managing whatever the workflow needs to do next.  Generally send a message to some external
+ * actor like a reducer
+ * 
+ * @author John Hetrick
+ */
 public class WorkflowEngine implements IWorkflow {
 
+	/**
+	 * The reducer attribute holds a reference to a post processing reducer system that will handle the reduction of the data sets
+	 */
 	private ReducerStub reducer;
+	private Workflow attribute;
+	/**
+	 * The workflow attribute is the workflow that the workflow engine is working on.  Ideally this will be a set of references to workflows
+	 */
 	private Workflow workflow;
 
 	/**
-	 * 
+	 * Basic WorkflowEngine constructor
 	 */
 	public WorkflowEngine() {
 		System.out.println("WorkflowEngine() constructor");
@@ -17,8 +42,9 @@ public class WorkflowEngine implements IWorkflow {
 	}   // end WorkflowEngine() constructor
 
 	/**
-	 * @param reducer
-	 * @param workflow
+	 * WorkflowEngine constructor that takes a reference to a reducer and a workflow
+	 * @param reducer Reference to a reducer system
+	 * @param workflow A workflow the workflow engine will work with
 	 */
 	public WorkflowEngine(ReducerStub reducer, Workflow workflow) {
 		System.out.println("WorkflowEngine(ReducerStub reducer, Workflow workflow) constructor");
@@ -62,7 +88,7 @@ public class WorkflowEngine implements IWorkflow {
 	 */
 	public void setReducer(ReducerStub reducer) {
 		this.reducer = reducer;
-	}
+	}   // end WorkflowEngine.setReducer(ReducerStub reducer)
 
 	/**
 	 * 
@@ -72,7 +98,6 @@ public class WorkflowEngine implements IWorkflow {
 		System.out.println("WorkflowEngine.determineWorkflow(MetaData metaData)");
 		return this.workflow;
 		
-	}   // end WorkflowEngine.setReducer(ReducerStub reducer)
-
+	}
 
 }   // end class WorkflowEngine

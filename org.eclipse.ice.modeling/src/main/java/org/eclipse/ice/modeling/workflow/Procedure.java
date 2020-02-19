@@ -1,4 +1,16 @@
-package org.eclipse.ice.modeling.workflowEngine;
+/*******************************************************************************
+ * Copyright (c) 2019- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - John Hetrick
+ *******************************************************************************/
+package org.eclipse.ice.modeling.workflow;
+
+import org.eclipse.ice.modeling.workflowEngine.*;
 
 /**
  * The Procedure hold the set of steps that constitute the workflow.  
@@ -64,7 +76,6 @@ public class Procedure {
 	 * This is not a smart function.  The caller could go right to the step success criteria
 	 * themselves.  It woudl be better if this were simply an index or something.
 	 * NEEDS WORK
-	 * 
 	 * @param currentStep
 	 */
 	public SuccessCriteria getStepSuccess(Step currentStep) {

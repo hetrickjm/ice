@@ -1,11 +1,23 @@
+/*******************************************************************************
+ * Copyright (c) 2019- UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - John Hetrick
+ *******************************************************************************/
 package org.eclipse.ice.modeling.workflowEngine;
 
-public class ExpWF extends Workflow {
+import org.eclipse.ice.modeling.workflow.*;
+
+public class Experiment extends Workflow {
 
 	private String   expID;
 	private Workflow childWFs;
 
-	public ExpWF() {
+	public Experiment() {
 		super();
 		System.out.println("ExpWF() constructor");
 		
@@ -66,4 +78,4 @@ public class ExpWF extends Workflow {
 		return msgOut;
 	}   // end ExpWF.nextMsg()
 
-}
+}   // end class Experiment
