@@ -10,72 +10,53 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.workflowEngine;
 
-public class Message {
+import org.eclipse.ice.modeling.experiment.*;
 
+/**
+ * The Message class represents any message that has been received from an actor or needs to be sent to an actor.  It is not clear at this point if there needs to be specializations of Message or not, but I suspect there will.
+ * 
+ * @author John Hetrick
+ */
+public class Message {
 	/**
-	 * DEPRECATE - This is part of the DataSet MetaData
+	 * The msgType attribute represents a command or request that specifies what the message is about.  Note: This will likely change as protocols are identified and real messages are specified.  For now it serves for testing concepts
 	 */
-	private int    srcInstrument;
-	/**
-	 * DEPRECATE - This is part of the DataSet MetaData
-	 */
-	private String expId;
-	private String cmnd;
-	/**
-	 * Reference to a data set
-	 */
-	private DataSet attribute;
+	private String msgType;
+	
 	/**
 	 * Reference to a data set
 	 */
 	private DataSet dataSetRef;
 
+	/**
+	 * This is the constructor for the Message class
+	 */
 	public Message() {
 		System.out.println("Message() constructor");
 		
 		// Init attributes
-		this.setExpId("ExpID-12");
-		this.setSrcInstrument(3);
-		this.setCmnd("blank");
-	}   // end Message() constructor
-
-	public int getSrcInstrument() {
-		return srcInstrument;
-	}   // end Message.getSrcInstrument()
-
+		this.setMsgType("blank");
+	}
+	
 	/**
 	 * 
-	 * @param id
+	 * This is a getter method for the msgType attribute that specifies the type of message
 	 */
-	public void setSrcInstrument(int srcInstrument) {
-		this.srcInstrument = srcInstrument;
-	}   // end Message.setSrcInstrument(int srcInstrument)
-
-	public String getExpId() {
-		return expId;
-	}   // end Message.getExpId()
-
-	/**
-	 * 
-	 * @param id
-	 */
-	public void setExpId(String expId) {
-		this.expId = expId;
-	}   // end Message.setExpId(STring expId)
-
-	public String getCmnd() {
-		return cmnd;
+	public String getMsgType() {
+		return msgType;
 	}   // end Message.getCmnd()
 
 	/**
-	 * 
-	 * @param id
+	 * This is a setter method for msgType attribute that specifies the type of message
+	 * @param cmnd
 	 */
-	public void setCmnd(String cmnd) {
-		this.cmnd = cmnd;
+	public void setMsgType(String cmnd) {
+		this.msgType = cmnd;
 	}   // end Message.setCmnd() String cmnd )
 
 	/**
+	 * This is a getter method to return the dataSetRef attribute which is the Data Set
+	 * associated with the message
 	 * @return the dataSetRef
 	 */
 	public DataSet getDataSetRef() {
@@ -83,10 +64,37 @@ public class Message {
 	}   // end Message.getDataSetRef()
 
 	/**
-	 * @param dataSetRef the dataSetRef to set
+	 * This is a setter message to set the dataSetRef attribute which is the data set
+	 * for the message
+	 * @param dataSetRef  - the dataSetRef to set
 	 */
 	public void setDataSetRef(DataSet dataSetRef) {
 		this.dataSetRef = dataSetRef;
 	}   // end Message.setDataSetRef(DataSet dataSetRef)
+
+	/**
+	 * This toString is simply to marshal key information about the class to a string
+	 * @return void
+	 */
+	public String toString() {
+		String msgString;
+		msgString = "cmnd = " + this.msgType +
+				    "\n DataSet = " + this.dataSetRef.getDataSetID() +
+				    "\n Instrument = " + this.dataSetRef.getMetaData().getInstrumentID() +
+				    "\n Experiment = " + this.dataSetRef.getMetaData().getExperimentID() +
+				    "\n Run Set = " + this.dataSetRef.getMetaData().getGroupID() +
+				    "\n Run = " + this.dataSetRef.getMetaData().getSequenceNumber();
+		
+		return msgString;
+	}
+
+	/**
+	 * This is a setter message to set the dataSetRef attribute which is the data set
+	 * for the message
+	 * @param dataSetRef - the dataSetRef to set
+	 */
+	public void setDataSetRef(DataSet dataSetRef) {
+
+	}
 
 }   // end class Message

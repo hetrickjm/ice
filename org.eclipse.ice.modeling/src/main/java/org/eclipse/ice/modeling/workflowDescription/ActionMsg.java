@@ -8,12 +8,14 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - John Hetrick
  *******************************************************************************/
-package org.eclipse.ice.modeling.workflow;
+package org.eclipse.ice.modeling.workflowDescription;
 
 import org.eclipse.ice.modeling.workflowEngine.*;
 
 /**
- * The ActionMsg class is a type of Action
+ * The ActionMsg class is a type of Action.  This specialization of Action is specifically to send a message.  For the AR Workflow System this would be the messages that are sent to the reducers to process a Data Set.  It should be possible to instantiate ActionMsgs during run time as the behavior for sending a message should not change, just the message to be sent.
+ * 
+ * @author John Hetrick
  */
 public class ActionMsg extends Action {
 
