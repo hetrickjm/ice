@@ -45,6 +45,10 @@ public class MetaData {
 	 * This attribute is the data type of the data set.  It is likely to be value between 0 - 5.  The meaning of the values are unique to each instrument
 	 */
 	private int dataType;
+	/**
+	 * The sequenceTotal is the total number of expected sequences in the group
+	 */
+	private int sequenceTotal;
 	
 	/**
 	 * This is the constructor for the MetaData class
@@ -166,6 +170,22 @@ public class MetaData {
 	 */
 	public void setDataType(int type) {
 		this.dataType = type;
+	}
+
+	/**
+	 * This is a getter to return the sequenceTotal attribute
+	 * @return total number of expected sequences (runs)
+	 */
+	public int getSequenceTotal() {
+		return this.sequenceTotal;
+	}
+
+	/**
+	 * This is a setter to sey the sequenceTotal attribute
+	 * @param total - the number of expected sequences (runs)
+	 */
+	public void setSequenceTotal(int total) {
+		this.sequenceTotal = total;
 	}
 
 }   // end MetaData class

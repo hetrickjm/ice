@@ -33,7 +33,7 @@ public class ReducerStub {
 		System.out.println("ReducerStub.processMessage()");
 		
 		// Process the incoming message - Reduction Action
-		System.out.println("   msg: " + msg.getExpId() + ", Instrument: " + msg.getSrcInstrument() + ", cmnd: " + msg.getCmnd());
+		System.out.println("   msg: " + msg.toString());
 		
 		// Send a response to the msgSrc based on processing 
 		

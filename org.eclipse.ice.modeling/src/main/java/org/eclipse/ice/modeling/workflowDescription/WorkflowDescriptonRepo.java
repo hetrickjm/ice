@@ -82,39 +82,6 @@ public class WorkflowDescriptonRepo {
 	}
 
 	/**
-	 * THIS METHOD IS FOR EXPLORING THE WORKFLOW CONCEPTS AND MAY BE CHANGED OR DEPRECATED
-	 * 
-	 * This is a getter method to return the workflowDescSet attribute
-	 * 
-	 * NOTE: This is for testing only and should not be used.  This class is the repo
-	 * @param metaData  - the meta data that holds the key to identifying a specific WorkflowDescription
-	 */
-	public WorkflowDescription getWorkflowDescription(MetaData metaData) {
-		// TODO - implement WorkflowDescriptonRepo.getWorkflowDescription
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * This is a setter method to add a WorkflowDescription to the workflowDescriptionSet attribute
-	 * @param description  - description to add to the workflowDescriptionSet attribute
-	 */
-	public void addWorkflowDescription(WorkflowDescription description) {
-		// TODO - implement WorkflowDescriptonRepo.addWorkflowDescription
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * This method searches for a WorkflowDescription in the mapSet based on the MetaData key.  This method determines the key then searches for a pair.
-	 * 
-	 * @return WorkflowDescription
-	 * @param metaData  - the MetaData from which to derive the meta data key
-	 */
-	public WorkflowDescription findWorkflowDescription(MetaData metaData) {
-		// TODO - implement WorkflowDescriptonRepo.findWorkflowDescription
-		throw new UnsupportedOperationException();
-	}
-
-	/**
 	 * This is a getter method to return the expRepo (experiment repository) attribute
 	 * 
 	 * @return ExperimentRepo

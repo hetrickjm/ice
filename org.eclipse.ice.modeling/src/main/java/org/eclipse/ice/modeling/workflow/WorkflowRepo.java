@@ -57,64 +57,6 @@ public class WorkflowRepo {
 	}
 
 	/**
-	 * DEPRECATE
-	 * 
-	 * Method to find a matching workflow.
-	 * 
-	 * NOTE: this may be redundant with getWorkflowSet()
-	 */
-	public Workflow findWorkflow() {
-		// TODO - implement WorkflowRepo.findWorkflow
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * The findWorkflow method finds a Workflow that governs the processing of a Data Set.
-	 * If the Workflow does not exist, one has to be created
-	 * 
-	 * NOTE: This may be better handled by a class that represents a repository of workflows
-	 * but that has not yet come into existence.
-	 * @param dataSet - the Data Set that holds the meta data used to help identify a workflow
-	 * @param wd - the WorkflowDescriptor use to help identify the workflow
-	 */
-	public Workflow findWorkflow(DataSet dataSet, WorkflowDescription wd) {
-		System.out.println("WorkflowEngine.findWorkflow(DataSet dataSet, WorkflowDescription wd)");
-		
-		Sequence   seq    = null;
-		Group      group  = null;
-		Experiment exp    = null;
-		Workflow workflow = null;
-		
-		// Get the experiment ID from the Data Set
-		String expID = dataSet.getMetaData().getExperimentID();
-		
-		// Get the experiment from the repo
-		exp = expRepo.getExperiment(expID);
-		
-		// THIS SHOULD CALL A FACTORY TO CREATE A NEW EXPERIMENT &
-		// ASSOCIATED WORKFLOWS
-		// Create an experiment along with the associated group and sequence
-		if (exp == null) {
-			System.out.println("Need to create a new Experiment");
-			
-			seq   = new Sequence(dataSet.getMetaData().getSequenceNumber());   // This is the first Sequence (run) in a Group
-			group = new Group(dataSet.getMetaData().getGroupID(), seq);
-			exp   = new Experiment(dataSet.getMetaData().getExperimentID(), group);
-		}
-		
-		// Get the group workflow from the Experiment
-		group = exp.findGroup(dataSet.getMetaData().getGroupID());
-		workflow = group.findWorkflow();
-		
-		if (workflow == null) {
-			workflow = this.createWorkflow(dataSet, wd, group, seq);
-		}
-		
-		// Return the Group workflow
-		return workflow;
-	}
-
-	/**
 	 * This is a getter method to return the expRepo (experiment repository) attribute
 	 * 
 	 * @return ExperimentRepo
@@ -134,9 +76,62 @@ public class WorkflowRepo {
 	}
 
 	/**
-	 * This method creates a new workfow for a group.  A new group workflow also means a new RunWF.  This is because if a group Workflow does not exist then the RunWF will not exist either.
+	 * The findWorkflow method finds a Workflow that governs the processing of a Data Set.
+	 * If the Workflow does not exist, one has to be created
 	 * 
-	 * This method takes a Group key taken from the Metadata and finds the appropriate WorkflowDescription to add to the newly created Workflow.
+	 * NOTE: This may be better handled by a class that represents a repository of workflows
+	 * but that has not yet come into existence.
+	 * 
+	 * @param dataSet - the Data Set that holds the meta data used to help identify a workflow
+	 * @param wd - the WorkflowDescriptor use to help identify the workflow
+	 * 
+	 * @return Workflow
+	 */
+	public Workflow findWorkflow(DataSet dataSet, WorkflowDescription wd) {
+		System.out.println("WorkflowEngine.findWorkflow(DataSet dataSet, WorkflowDescription wd)");
+		
+		Sequence   seq      = null;
+		Group      group    = null;
+		Experiment exp      = null;
+		Workflow   workflow = null;
+		
+		// Get the experiment ID from the Data Set
+		String expID = dataSet.getMetaData().getExperimentID();
+		
+		// Get the experiment from the repo
+		exp = expRepo.getExperiment(expID);
+		
+		// FUTURE: THIS SHOULD CALL A FACTORY TO CREATE A NEW EXPERIMENT &
+		// ASSOCIATED WORKFLOWS
+		// Create an experiment along with the associated group and sequence
+		if (exp == null) {
+			System.out.println("Need to create a new Experiment");
+			
+			seq   = new Sequence(dataSet);   // This is the first Sequence (run) in a Group
+			group = new Group(dataSet, seq);
+			exp   = new Experiment(dataSet.getMetaData().getExperimentID(), group);
+		}
+		
+		// Get the group workflow by getting the group from the Experiment.
+		group = exp.findGroup(dataSet.getMetaData().getGroupID());
+		workflow = group.findWorkflow();
+		
+		// If a workflow cannot be found create the required workflows
+		if (workflow == null) {
+			workflow = this.createWorkflow(dataSet, wd, group, seq);
+		}
+		
+		// Return the Group workflow
+		return workflow;
+	}
+
+	/**
+	 * This method creates a new workfow for a group.  A new group workflow also means 
+	 * a new RunWF.  This is because if a group Workflow does not exist then the RunWF 
+	 * will not exist either.
+	 * 
+	 * This method takes a Group key taken from the Metadata and finds the appropriate 
+	 * WorkflowDescription to add to the newly created Workflow.
 	 * 
 	 * NOTE: There should be a factory to create Workflows
 	 * @param dataSet - the DataSet used to help create workflows
@@ -149,13 +144,19 @@ public class WorkflowRepo {
 	private Workflow createWorkflow(DataSet dataSet, WorkflowDescription description, Group group, Sequence seq) {
 		System.out.println("WorkflowRepo.createWorkflow()");
 		
+		// if a group workflow was not found the both a sequence (run) workflow and 
+		// the group workflow must be created.
 		RunWF   seqWF   = new RunWF(dataSet, description);
 		GroupWF groupWF = new GroupWF(dataSet, description);
-		// Create a Sequence Workflow and associate it with the sequence
+		
+		// Add the Sequence (run) Workflow to the sequence
 		seq.addWorkflow(seqWF);
 		
-		// Create a Group Workflow and return this
+		// Add the sequence workflow as a child to the group workflow
 		groupWF.addChildWF(seqWF);
+		
+		
+		// Add the group Workflow to the group
 		group.addWorkflow(groupWF);
 		
 		return group.findWorkflow();   // CAUTION: this method returns the first workflow

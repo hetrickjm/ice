@@ -88,13 +88,4 @@ public class Message {
 		return msgString;
 	}
 
-	/**
-	 * This is a setter message to set the dataSetRef attribute which is the data set
-	 * for the message
-	 * @param dataSetRef - the dataSetRef to set
-	 */
-	public void setDataSetRef(DataSet dataSetRef) {
-
-	}
-
 }   // end class Message

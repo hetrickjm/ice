@@ -13,6 +13,7 @@ package org.eclipse.ice.modeling.actors;
 
 import org.eclipse.ice.modeling.IWorkflow;
 import org.eclipse.ice.modeling.workflowEngine.*;
+import org.eclipse.ice.modeling.experiment.*;
 
 /**
  * The TransSrvcStub is a class to act as the Translation Service that would send messages to the AR Workflow system.  It is a stub for testing.
@@ -50,9 +51,11 @@ public class TransSrvcStub {
 		
 		// Create a Message and send it to the Workflow
 		Message msg = new Message();
-		msg.setCommand("Default msg from Transition Service");
+		DataSet set = new DataSet();
+		msg.setDataSetRef(set);
+		msg.setMsgType("Default msg from Transition Service");
 		
-		System.out.println("   cmnd: " + msg.getCommand());
+		System.out.println("   cmnd: " + msg.toString());
 
 		workflow.handleMsg(msg);
 		
@@ -67,10 +70,10 @@ public class TransSrvcStub {
 		
 		// Create a Message and send it to the Workflow
 		Message msg = new Message();
-		msg.setCommand(cmnd);
+		msg.setMsgType(cmnd);;
 		
 		// Create the Meta Data for the Data Set that is to be part of the msg
-		MetaData meta = new MetaData("Inst-1", "Exp-1", "RunSet-1", "Run-1");
+		MetaData meta = new MetaData("INST-1", "EXP-1", "GRP-0", 0);
 		
 		// Create the Data Set and with the Meta Data
 		DataSet dataSet = new DataSet(meta, "DS-42");

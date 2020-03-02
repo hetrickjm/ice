@@ -111,27 +111,4 @@ public class Task {
 		
 	}
 
-	/**
-	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
-	 * MAY BE CHANGED OR DEPRECATED
-	 * 
-	 * This is a setter method to add an Action to the set of actions for the Task
-	 * @param act - the action to add to the list of actions
-	 */
-	public void setAction(Action act) {
-		// TODO - implement Task.setAction
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
-	 * MAY BE CHANGED OR DEPRECATED
-	 * 
-	 * This method is a setter to set the success attribute (successCriteria)
-	 * @param success - the successCriteria to set the success attribute
-	 */
-	public void setSuccess(SuccessCriteria success) {
-		this.success = success;
-	}   // end Task.doAction
-
 }   // end class Task

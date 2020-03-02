@@ -56,9 +56,21 @@ public class WorkflowDescription {
 	/**
 	 * THIS IS FOR EXPLORATORY PURPOSES AND MAY BE DEPRECATED
 	 * 
+	 * The lastTaskIndex attribute is the index of the last Task in the set.  A negative
+	 * value there are not tasks in the list
+	 * 
+	 * Possibly this needs to be removed since the WorkflowDescription class 
+	 * should not hold workflow processing state.
+	 */
+	private int lastTaskIndex = -1;
+	
+	/**
+	 * THIS IS FOR EXPLORATORY PURPOSES AND MAY BE DEPRECATED
+	 * 
 	 * The numTask attribute is the number of Tasks in the WorkflowDescription
 	 */
 	private int numTasks;
+	
 	/**
 	 * This attribute is the unique identifier for the workflow description
 	 */
@@ -74,16 +86,40 @@ public class WorkflowDescription {
 		// This should really be a List where steps can be added dynamically
 		numTasks = 3;
 		taskList = new Task[numTasks];
+		
+		/**
+		 * 
 		System.out.println( "##### BEGIN:  CREATE SETPS FOR PROCEDURE " );
 		for (int i=0; i < numTasks; i++) {
 			taskList[i] = new Task();
 			//System.out.println("   step " +i + " " + taskList[i].getSuccess().getSuccessMsg());
 		}
 		System.out.println( "##### END:  CREATE SETPS FOR PROCEDURE " );
+		 */
 		
 		// Seet the step index to 0 the first element.
 		curIndex = 0;
-		completionCriteria = new CompletionCriteria("Procedure Completion Criteria");
+		completionCriteria = new CompletionCriteria("REDUCE&STITCH");   // Default Behavior
+	}
+
+	/**
+	 * This is another constructor for the WorkflowDescription class.  It takes
+	 * in the number of Tasks to be defined.
+	 * 
+	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
+	 * MAY BE CHANGED OR DEPRECATED
+	 */
+	public WorkflowDescription(int maxTasks) {
+		System.out.println("Procedure() constructor");
+		
+		// Create a default set of steps
+		// This should really be a List where steps can be added dynamically
+		this.numTasks = maxTasks;
+		taskList = new Task[numTasks];
+		
+		// Seet the step index to 0 the first element.
+		curIndex = 0;
+		completionCriteria = new CompletionCriteria("REDUCE&STITCH");   // Default Behavior
 	}
 
 	/**
@@ -113,12 +149,20 @@ public class WorkflowDescription {
 
 	/**
 	 * This is a setter method to add Tasks to the WorkflowDescription.
+	 * 
 	 * @param task - the task to be added to the taskList attribute
 	 */
 	public void addTask(Task task) {
 		System.out.println("Procedure.addStep(Step step)");
 		
 		// take in a single step and append it to the list of current steps
+		if (this.lastTaskIndex < (this.numTasks - 1)) {
+			this.taskList[lastTaskIndex] = task;
+			lastTaskIndex++;
+		}
+		
+		// else do nothing.  Not the currect solution. Need to throw exception
+		
 	}
 
 	/**
@@ -165,15 +209,5 @@ public class WorkflowDescription {
 	public void setWorkflowDescriptionID(String id) {
 		this.workflowDescriptionID = id;
 	}
-
-	/**
-	 * This is a setter method to set the completionCriteria attribute of the WorkflowDescription
-	 * @param criteria - the completion criteria for the WorkflowDescription
-	 */
-	public void setCompleteCriteria(CompletionCriteria criteria) {
-		// TODO - implement WorkflowDescription.setCompleteCriteria
-		throw new UnsupportedOperationException();
-	}
-
 
 }   // end class Procedure

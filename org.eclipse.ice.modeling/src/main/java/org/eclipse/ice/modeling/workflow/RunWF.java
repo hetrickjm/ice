@@ -16,29 +16,53 @@ import org.eclipse.ice.modeling.workflowDescription.*;
 
 public class RunWF extends Workflow {
 
-	private String runID;
+	/**
+	 * The runWFID, or group workflow ID, is a unique value to identify the workflow
+	 * 
+	 * NOTE: Should probably DEPRECATE this and only use the parent class wfID attribute
+	 */
+	private String runWFID;
 
+	/**
+	 * This is the constructor for the RunWF class
+	 */
 	public RunWF() {
 		super();
 		System.out.println("RunWF() constructor");
 		
-		this.setRunID("Run-ID");
-		
+		this.setRunWFID("Run-ID");
 		this.setCurrentStep(null);
 		
 	}   // end RunWF() constructor
 
-	public String getRunID() {
-		return this.runID;
+	/**
+	 * This is another constructor for the RunWF class.  It takes a DataSet and a 
+	 * WorkflowDescription to bind together in the Workflow
+	 * 
+	 * @param set  - the DataSet to bind with the WorkflowDescription in the Workflow
+	 * @param description  - the DataSet to bind with the WorkflowDescription in the Workflow
+	 */
+	public RunWF(DataSet set, WorkflowDescription description) {
+		super(set, description);
+		System.out.println("RunWF(DataSet set, WorkflowDescription description) constructor");
+		
+		// create the workflow ID from the GroupID in the MetaData
+		String id = String.valueOf(set.getMetaData().getSequenceNumber()) + "WF";
+		this.setRunWFID(id);
+		this.setCurrentStep(null);
+	}   // end RunWF.nextMsg
+
+	public String getRunWFID() {
+		return this.runWFID;
 	}   // end RunWF.getRunID()
 
 	/**
 	 * 
 	 * @param id
 	 */
-	public void setRunID(String id) {
-		this.runID = id;
-		this.setWfID(runID);
+	public void setRunWFID(String id) {
+		this.runWFID = id + "WF";
+		this.setWfID(runWFID);
 	}   // end RunWF.setRunID(String id)
 
 	/**
@@ -71,15 +95,5 @@ public class RunWF extends Workflow {
 		return msgOut;
 		
 	}
-
-	/**
-	 * This is another constructor for the RunWF class.  It takes a DataSet and a Workflow description to bind together in the Workflow
-	 * @param set  - the DataSet to bind with the WorkflowDescription in the Workflow
-	 * @param description  - the DataSet to bind with the WorkflowDescription in the Workflow
-	 */
-	public RunWF(DataSet set, WorkflowDescription description) {
-		// TODO - implement RunWF.RunWF
-		throw new UnsupportedOperationException();
-	}   // end RunWF.nextMsg
 
 }   // end class RunWF

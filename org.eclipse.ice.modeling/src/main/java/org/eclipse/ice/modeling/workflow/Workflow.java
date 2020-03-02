@@ -96,29 +96,6 @@ public class Workflow {
 	}
 
 	/**
-	 * This method is invoked by the workflow engine to have the workflow process an
-	 * incoming message or action
-	 * 
-	 * This is the method from should be is overridden.
-	 * 
-	 * @param msgIn - msgIn is the incoming message to be recognized and then to take
-	 * action on
-	 * 
-	 * @return Message
-	 */
-	public Message handleMsg(Message msgIn) {
-		System.out.println("Workflow.nextMsg()");
-		System.out.println("   msgIn: " + msgIn.toString());
-		
-		Message msgOut = new Message();
-		msgOut.setMsgType("Message out from WF");
-		
-		System.out.println("   msgOut: " + msgOut.toString());
-		
-		return msgOut;
-	}   
-	
-	/**
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
@@ -162,8 +139,8 @@ public class Workflow {
 	 * 
 	 * @return void
 	 */
-	public void setDataSet(DataSet data) {
-		this.dataSet = dataSet;
+	public void setDataSet(DataSet set) {
+		this.dataSet = set;
 	}
 
 	/**
@@ -214,6 +191,29 @@ public class Workflow {
 	 */
 	public void setCurrentStep(Task step) {
 		this.currentStep = step;
+	}
+
+	/**
+	 * This method is invoked by the workflow engine to have the workflow process an
+	 * incoming message or action
+	 * 
+	 * This is the method from should be is overridden.
+	 * 
+	 * @param msgIn - msgIn is the incoming message to be recognized and then to take
+	 * action on
+	 * 
+	 * @return Message
+	 */
+	public Message handleMsg(Message msgIn) {
+		System.out.println("Workflow.nextMsg()");
+		System.out.println("   msgIn: " + msgIn.toString());
+		
+		Message msgOut = new Message();
+		msgOut.setMsgType("Message out from WF");
+		
+		System.out.println("   msgOut: " + msgOut.toString());
+		
+		return msgOut;
 	}
 
 }   // end Workflow class 

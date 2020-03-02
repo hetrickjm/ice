@@ -13,6 +13,7 @@ package org.eclipse.ice.modeling;
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.actors.*;
 import org.eclipse.ice.modeling.workflow.*;
+import org.eclipse.ice.modeling.workflowDescription.*;
 
 /**
  * This is the primary class that represent the Workflow System.  It's primary function
@@ -25,16 +26,24 @@ import org.eclipse.ice.modeling.workflow.*;
 public class WorkflowSystem implements IWorkflow {
 	
 	/**
-	 * An initial workflow to test the concept of the workflow engine.
-	 * FUTURE: There should be a factory to creat workflows on demand when required.
+	 * The workflowRepo is the repository of workflows.  This is expected to be
+	 * empty on system startup and get populated as Data Sets for reducing come
+	 * into the system.
 	 */
-	private Workflow wrkflow;
+	private WorkflowRepo workflowRepo;
+	
+	/**
+	 * The workflowDescriptionRepo is the repository of WorkflowDescriptions. This
+	 * is expected to be initialized from some source where predefined WorkflowDescriptions
+	 * are captured.
+	 */
+	private WorkflowDescriptonRepo workflowDescriptionRepo; 
 	
 	/**
 	 * The workflow engine is the internal system component that manages the 
 	 * processing of the correct workflow(s) based on incoming messages
 	 */
-	private WorkflowEngine wfEng;
+	private WorkflowEngine workflowEngine;
 	
 	/**
 	 * The Transition Service attribute holds a referent to the Transition service.
@@ -48,7 +57,7 @@ public class WorkflowSystem implements IWorkflow {
 	 * this system will send data set reduction workflow message to.  Currently 
 	 * this is proof of concept code.  For the real system there could be many reducers
 	 */
-	private ReducerStub reducer; 
+	private ReducerStub reducer;
 	
 	/**
 	 *  This is a constructor for the Workflow System.  It take no parameters so the 
@@ -79,8 +88,10 @@ public class WorkflowSystem implements IWorkflow {
 		this.setTransSrvc(trans);
 		this.setReducer(reducers);
 		
-		// Initialize the system
+		// Initialize the system.  While trivial at the moment a real system
+		// may take a good bit to get up and running
 		initSystem();
+		
 	}   // end WorkflowSystem(TransSrvcStub trans, ReducerStub reducers) Constructor
 	
 	/**
@@ -91,19 +102,14 @@ public class WorkflowSystem implements IWorkflow {
 	public void initSystem () {
 		
 		System.out.println("WorkflowSystem.initSystem()");
+
+		// Instantiate the WorkflowDescriptionRepo.  Is is anticipated that this will
+		// be created from a file or some other external mechanism.
 		
-		// Create an Experiment workflow and a Run workflow.  Make the run a child
-		// of the Experiment workflow
-		// Note: The Composite patter is used for workflow.  Both WxpWF and RunWF 
-		// inherit from Workflow so they share the same interface.
-		RunSetWF runSet = new RunSetWF();
-		RunWF    run    = new RunWF();
+		// Instantiate the WorkflowRepo.  Initially this would be empty and only
+		// populated as DataSets come in for reducing.
 		
-		runSet.setChildWFs(run);
-		
-		// Init the major objects
-		wrkflow = runSet;
-		wfEng   = new WorkflowEngine( reducer, wrkflow);
+		workflowEngine   = new WorkflowEngine( this.reducer, this.workflowRepo, this.workflowDescriptionRepo);
 
 	}   // end WorkflowSystem.initSystem()
 	
@@ -146,6 +152,59 @@ public class WorkflowSystem implements IWorkflow {
 	}   // end WorkflowSystem.setReducer(ReducerStub reducer)
 
 	/**
+	 * Getter for the workflow engine attribute.  This method returns a class 
+	 * with the IWorkflow interface that the Translation Service uses
+	 * 
+	 * @return WorkflowEngine
+	 * @return void
+	 */
+	public IWorkflow getWorkflowEngine() {
+		System.out.println("WorkflowSystem.getWfEng()");
+		
+		return workflowEngine;
+	}   // end WorkflowSystem.getWfEng()
+
+	/**
+	 * This method initializes, and/or creates a WorkflowRepo
+	 * 
+	 * @return the workflowRepo
+	 */
+	public WorkflowRepo initWorkflowRepo() {
+		return new WorkflowRepo();
+	}
+
+	/**
+	 * This is a setter method to set the workflowRepo attribute
+	 * 
+	 * @param workflowRepo the workflowRepo to set
+	 */
+	public void setWorkflowRepo(WorkflowRepo repo) {
+		this.workflowRepo = repo;
+	}
+
+	/**
+	 * This method initializes, and/or creates a WorkflowDescriptionRepo
+	 * 
+	 * @return the workflowDescriptionRepo
+	 */
+	public WorkflowDescriptonRepo initWorkflowDescriptionRepo() {
+		this.workflowDescriptionRepo = new WorkflowDescriptonRepo();
+		
+		// Add some WorkflowDescriptions
+		
+		return workflowDescriptionRepo;
+	}
+
+	/**
+	 * This is a setter method to set the workflowRepo attribute
+	 * 
+	 * @param workflowDescriptionRepo - the workflowDescriptionRepo to set
+	 */
+	public void setWorkflowDescriptionRepo(WorkflowDescriptonRepo repo) {
+		this.workflowDescriptionRepo = repo;
+	}
+
+	/**
 	 * This method is to satisfy the interface but in a real system it should 
 	 * not resolve to this class.
 	 * 
@@ -156,17 +215,5 @@ public class WorkflowSystem implements IWorkflow {
 		System.out.println("WorkflowSystem.handleMsg(Message msg)");
 		
 	}   // end WorkflowSystem.handleMsg(Message msg)
-
-	/**
-	 * Getter for the workflow engine attribute.  This method returns a class 
-	 * with the IWorkflow interface that the Translation Service uses
-	 * 
-	 * @return WorkflowEngine
-	 * @return void
-	 */
-	public IWorkflow getWfEng() {
-		System.out.println("WorkflowSystem.getWfEng()");
-		return wfEng;
-	}   // end WorkflowSystem.getWfEng()
 	
 }   // end class WorkflowSystem

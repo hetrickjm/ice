@@ -25,7 +25,7 @@ public class ActionMsg extends Action {
 		System.out.println("ActionMsg() constructor");
 		
 		this.setMsg(new Message());
-		this.msg.setCmnd("Default ActionMsg");
+		this.msg.setMsgType("Default ActionMsg");
 	}
 
 	public Message getMsg() {
