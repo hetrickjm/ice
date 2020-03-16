@@ -19,8 +19,15 @@ import org.eclipse.ice.modeling.workflowEngine.*;
  */
 public class ActionMsg extends Action {
 
+	/**
+	 * The msg attribute contains the message that is to be set out as
+	 * the invocation of this Action.
+	 */
 	private Message msg;
 
+	/**
+	 * This is the constructor for the ActionMsg class
+	 */
 	public ActionMsg() {
 		System.out.println("ActionMsg() constructor");
 		
@@ -28,21 +35,39 @@ public class ActionMsg extends Action {
 		this.msg.setMsgType("Default ActionMsg");
 	}
 
+	/**
+	 * This is another constructor for the ActionMsg class that takes the message 
+	 * that will be sent out when the class is invoked.
+	 * 
+	 * @param sendMsg - the Message to use in setting the sendMsg attribute
+	 */
+	public ActionMsg(Message sendMsg) {
+		System.out.println("ActionMsg(Message sendMsg) constructor");
+		
+		this.setMsg(sendMsg);
+	}
+
+	/**
+	 * This is a getter method to return the msg attribute
+	 */
 	public Message getMsg() {
 		return this.msg;
 	}
 
 	/**
-	 * 
-	 * @param msg
+	 * This is a setter method to set the msg attribute
+	 * @param msg - Message to use to set the msg attribute
 	 */
 	public void setMsg(Message msg) {
 		this.msg = msg;
 	}
 
-	public Message execute() {
+	/**
+	 * The execute method overrides the execute method from the parent class.  This method is invoked to activate or execute the action specified in this class/object
+	 */
+	public Object execute() {
 		System.out.println("ActionMsg.execute()");
-		return msg;
+		return this.msg;
 	}
 
 }   // end class ActionMsg

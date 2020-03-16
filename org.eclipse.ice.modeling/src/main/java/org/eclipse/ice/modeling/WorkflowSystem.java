@@ -105,9 +105,11 @@ public class WorkflowSystem implements IWorkflow {
 
 		// Instantiate the WorkflowDescriptionRepo.  Is is anticipated that this will
 		// be created from a file or some other external mechanism.
+		this.initWorkflowDescriptionRepo();
 		
 		// Instantiate the WorkflowRepo.  Initially this would be empty and only
 		// populated as DataSets come in for reducing.
+		this.initWorkflowRepo();
 		
 		workflowEngine   = new WorkflowEngine( this.reducer, this.workflowRepo, this.workflowDescriptionRepo);
 
@@ -170,6 +172,7 @@ public class WorkflowSystem implements IWorkflow {
 	 * @return the workflowRepo
 	 */
 	public WorkflowRepo initWorkflowRepo() {
+		System.out.println("WorkflowSystem.initWorkflowRepo()");
 		return new WorkflowRepo();
 	}
 
@@ -188,6 +191,7 @@ public class WorkflowSystem implements IWorkflow {
 	 * @return the workflowDescriptionRepo
 	 */
 	public WorkflowDescriptonRepo initWorkflowDescriptionRepo() {
+		System.out.println("WorkflowSystem.initWorkflowDescriptionRepo()");
 		this.workflowDescriptionRepo = new WorkflowDescriptonRepo();
 		
 		// Add some WorkflowDescriptions
@@ -213,6 +217,8 @@ public class WorkflowSystem implements IWorkflow {
 	 */
 	public void handleMsg(Message msg) {
 		System.out.println("WorkflowSystem.handleMsg(Message msg)");
+		
+		workflowEngine.handleMsg(msg);
 		
 	}   // end WorkflowSystem.handleMsg(Message msg)
 	

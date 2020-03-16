@@ -40,7 +40,7 @@ public class Action {
 	 * I think this should be virtual or abstract function so it has to be implemented by
 	 * the concrete class.
 	 */
-	public Message execute() {
+	public Object execute() {
 		System.out.println("Action.execute()");
 		return null;
 	}

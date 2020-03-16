@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.workflowDescription;
 
+import java.util.*;
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.workflow.*;
 
@@ -32,7 +33,7 @@ public class WorkflowDescription {
 	/**
 	 * The taskList attribute is the set of Tasks that make up the WorkflowDescription
 	 */
-	private Task[] taskList;
+	private List <Task> taskList;
 	
 	/**
 	 * CURRENTLY THIS IS FOR EXPLORATORY PURPOSES AND MAY BE CHANGED
@@ -42,108 +43,72 @@ public class WorkflowDescription {
 	 * 
 	 * NOTE: This should really be a List where steps can be added dynamically
 	 */
-	private CompletionCriteria completionCriteria;
-	
-	/**
-	 * THIS IS FOR EXPLORATORY PURPOSES AND MAY BE DEPRECATED
-	 * 
-	 * The curIndex attribute is the index of the current Task being executed
-	 * 
-	 * Possibly this needs to be removed since the WorkflowDescription class should not hold workflow processing state.
-	 */
-	private int curIndex;
-	
-	/**
-	 * THIS IS FOR EXPLORATORY PURPOSES AND MAY BE DEPRECATED
-	 * 
-	 * The lastTaskIndex attribute is the index of the last Task in the set.  A negative
-	 * value there are not tasks in the list
-	 * 
-	 * Possibly this needs to be removed since the WorkflowDescription class 
-	 * should not hold workflow processing state.
-	 */
-	private int lastTaskIndex = -1;
-	
-	/**
-	 * THIS IS FOR EXPLORATORY PURPOSES AND MAY BE DEPRECATED
-	 * 
-	 * The numTask attribute is the number of Tasks in the WorkflowDescription
-	 */
-	private int numTasks;
+	private CompletionCriteria completionCriteria = null;
 	
 	/**
 	 * This attribute is the unique identifier for the workflow description
 	 */
 	private String workflowDescriptionID;
+	
+	/**
+	 * This attribute is an enumeration that specifies the type or workflow description this is.  It is
+	 * either for a Group or a Sequence (run)
+	 */
+	private WorkflowDescriptionType workflowDescriptionType;
 
 	/**
 	 * This is the constructor for the WorkflowDescription class.
 	 */
 	public WorkflowDescription() {
-		System.out.println("Procedure() constructor");
+		System.out.println("WorkflowDescription() constructor");
 		
-		// Create a default set of steps
-		// This should really be a List where steps can be added dynamically
-		numTasks = 3;
-		taskList = new Task[numTasks];
-		
-		/**
-		 * 
-		System.out.println( "##### BEGIN:  CREATE SETPS FOR PROCEDURE " );
-		for (int i=0; i < numTasks; i++) {
-			taskList[i] = new Task();
-			//System.out.println("   step " +i + " " + taskList[i].getSuccess().getSuccessMsg());
-		}
-		System.out.println( "##### END:  CREATE SETPS FOR PROCEDURE " );
-		 */
-		
-		// Seet the step index to 0 the first element.
-		curIndex = 0;
-		completionCriteria = new CompletionCriteria("REDUCE&STITCH");   // Default Behavior
+		// Init the workflow description type and ID
+		this.workflowDescriptionID = "--";
+		this.workflowDescriptionType = WorkflowDescriptionType.NONE;
+	
+		this.taskList = new ArrayList <Task>();
 	}
 
 	/**
-	 * This is another constructor for the WorkflowDescription class.  It takes
-	 * in the number of Tasks to be defined.
+	 * This is another constructor for the WorkflowDescription class.  It a value for the
+	 * workflowDescriptionID and workflowDescriptionType
 	 * 
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
+	 * @param id - a String to use as the workflow description ID and set the
+	 * workflowDescriptionID attribute
+	 * @param type - type of workflow description to initialize the workflowDescriptionType attribute
 	 */
-	public WorkflowDescription(int maxTasks) {
-		System.out.println("Procedure() constructor");
+	public WorkflowDescription(String id, WorkflowDescriptionType type) {
+		System.out.println("WorkflowDescription(String id, WorkflowDescriptionType type) constructor");
 		
-		// Create a default set of steps
-		// This should really be a List where steps can be added dynamically
-		this.numTasks = maxTasks;
-		taskList = new Task[numTasks];
-		
-		// Seet the step index to 0 the first element.
-		curIndex = 0;
-		completionCriteria = new CompletionCriteria("REDUCE&STITCH");   // Default Behavior
+		// Init the workflow description type and ID
+		this.workflowDescriptionID = id;
+		this.workflowDescriptionType = type;
+		this.taskList = new ArrayList <Task>();
 	}
 
 	/**
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
-	 * Notionally this method returns the next Task in the WorkflowDescription.
-	 * Need to figure out where the evaluation of the current Task is and is it
-	 * complete before going to the next Task.  Currently this simply returns the next Task
+	 * Notionally this method returns the a Task in the WorkflowDescription
+	 * that is specified by the index parameter.  Need to figure out where
+	 * the evaluation of the current Task is and is it complete before going
+	 * to the next Task.  Currently this simply returns the next Task
 	 * regardless of the state of the current Task.
-	 * @param currentTask - curTask is the Task that is currently in progress or the last Task to have been completed
+	 * @param index - the index for the Task to be retrieved
 	 */
-	public Task nextTask(Task currentTask) {
+	public Task getTask(int index) {
 		System.out.println("Procedure.nextStep()");
 		
-		// Find the current step in the list of steps and
-		// then return the next step
-		if (currentTask == null) {
-			curIndex = 0;
-			return taskList[curIndex];
+		// If the index is greater than the number of tasks,
+		// the index is out of bounds so return null.
+		if (index > (this.taskList.size() -1)) {
+			return null;
 		}
 		else {
-			curIndex++;
-			return taskList[curIndex];
+			return this.taskList.get(index);
 		}
 	}
 
@@ -153,31 +118,34 @@ public class WorkflowDescription {
 	 * @param task - the task to be added to the taskList attribute
 	 */
 	public void addTask(Task task) {
-		System.out.println("Procedure.addStep(Step step)");
+		System.out.println("WorkflowDescription.addStep(Task task)");
 		
-		// take in a single step and append it to the list of current steps
-		if (this.lastTaskIndex < (this.numTasks - 1)) {
-			this.taskList[lastTaskIndex] = task;
-			lastTaskIndex++;
+		// As long as the in coming task is valid add it to the taskList
+		if (task != null) {
+			System.out.println("\tTask != null");
+			this.taskList.add(task);
 		}
 		
 		// else do nothing.  Not the currect solution. Need to throw exception
+		System.out.println("\tTask added successfully");
 		
 	}
 
 	/**
-	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
+	 * DEPRECATE: CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
-	 * This method returns the success criteria of the current Task.  This method is likely
+	 * This method returns the completion criteria of the current Task.  This method is likely
 	 * to be deprecated as the entity calling this method should already have a reference
 	 * to the Task.
-	 * @param currentTask - a reference to the current Task of the WorkflowDescription that is being executed
+	 * 
+	 * @param currentTask - a reference to the current Task of the WorkflowDescription 
+	 * that is being executed
 	 */
-	public SuccessCriteria getStepSuccess(Task currentTask) {
+	public CompletionCriteria getTaskCompletionCriteria(Task currentTask) {
 		System.out.println("Procedure.getStepSuccess(Step currentStep)");
 		
-		return currentTask.getSuccess();   
+		return currentTask.getCompletionCriteria();   
 	}
 
 	/**
@@ -208,6 +176,30 @@ public class WorkflowDescription {
 	 */
 	public void setWorkflowDescriptionID(String id) {
 		this.workflowDescriptionID = id;
+	}
+
+	/**
+	 * This is a getter method that returns the workflowDescriptionType attribute
+	 * @return - type of WorkflowDescription this is for
+	 */
+	public WorkflowDescriptionType getWorkflowDescriptionType() {
+		return this.workflowDescriptionType;
+	}
+
+	/**
+	 * This is a setter method that sets the workflowDescriptionType attribute
+	 * @param type - WorkflowDescriptionType to use in setting the workflowDescriptionType
+	 * attribute
+	 */
+	public void setWorkflowDescriptionType(WorkflowDescriptionType type) {
+		this.workflowDescriptionType = type;
+	}
+
+	/**
+	 * This is a getter method to return the number of tasks in the taskList attribute
+	 */
+	public int getNumberOfTasks() {
+		return taskList.size();
 	}
 
 }   // end class Procedure

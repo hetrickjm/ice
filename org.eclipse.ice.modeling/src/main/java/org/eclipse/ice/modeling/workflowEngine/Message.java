@@ -13,20 +13,25 @@ package org.eclipse.ice.modeling.workflowEngine;
 import org.eclipse.ice.modeling.experiment.*;
 
 /**
- * The Message class represents any message that has been received from an actor or needs to be sent to an actor.  It is not clear at this point if there needs to be specializations of Message or not, but I suspect there will.
+ * The Message class represents any message that has been received from an actor 
+ * or needs to be sent to an actor.  It is not clear at this point if there needs 
+ * to be specializations of Message or not, but I suspect there will.
  * 
  * @author John Hetrick
  */
 public class Message {
 	/**
-	 * The msgType attribute represents a command or request that specifies what the message is about.  Note: This will likely change as protocols are identified and real messages are specified.  For now it serves for testing concepts
+	 * The msgType attribute represents a command or request that specifies what 
+	 * the message is about.  Note: This will likely change as protocols are 
+	 * identified and real messages are specified.  For now it serves for testing 
+	 * concepts
 	 */
 	private String msgType;
 	
 	/**
 	 * Reference to a data set
 	 */
-	private DataSet dataSetRef;
+	private DataSet dataSetRef = null;
 
 	/**
 	 * This is the constructor for the Message class
@@ -38,6 +43,18 @@ public class Message {
 		this.setMsgType("blank");
 	}
 	
+	/**
+	 * This is another constructor for the Message class.  It takes a message type as a parameter.
+	 * 
+	 * @param type - msg type to set the the msgType attribute
+	 */
+	public Message(String msg) {
+		System.out.println("Message(String msg) constructor");
+		
+		// Init the attributes
+		this.setMsgType(msg);
+	}
+
 	/**
 	 * 
 	 * This is a getter method for the msgType attribute that specifies the type of message
