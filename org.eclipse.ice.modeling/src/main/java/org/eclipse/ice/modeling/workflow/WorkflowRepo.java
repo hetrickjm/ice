@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.workflow;
 
+import java.util.Hashtable;
+import java.util.Map;
+
 import org.eclipse.ice.modeling.experiment.*;
 import org.eclipse.ice.modeling.workflowDescription.*;
 
@@ -25,35 +28,49 @@ import org.eclipse.ice.modeling.workflowDescription.*;
 public class WorkflowRepo {
 
 	/**
-	 * This attribute holds the set of workflow instances
+	 * This attribute holds the set of workflow instances.  
+	 * (java.util.Map<String, AR-Workflow_Model.org.eclipse.ice.modeling.workflow.Workflow>)
 	 */
-	private Workflow[] workflowSet;
+	private Map <String, Workflow> workflowSet;
+
 	/**
 	 * The expRepo attribute is the repository that holds all the Experiments.
 	 */
 	private ExperimentRepo expRepo;
 
 	/**
+	 * The workflowDescriptionRepo attribute is the repository that holds all the
+	 * WorkflowDescriptions
+	 */
+	private WorkflowDescriptonRepo workflowDescriptionRepo;
+
+	/**
 	 * This is the constructor for the WorkflowRepo class
 	 */
 	public WorkflowRepo() {
-		// TODO - implement WorkflowRepo.WorkflowRepo
-		throw new UnsupportedOperationException();
+		System.out.println("WorkflowRepo() constructor");
+		
+		// Initialize the workflow repository attribute
+		this.workflowSet = new Hashtable<String, Workflow>();
 	}
 
 	/**
 	 * This is a getter method to return a workflow from the workflow set.
 	 */
-	public Workflow getWorkflowSet() {
-		return this.workflowSet[0];
+	public Workflow getWorkflowSet(String key) {
+		System.out.println("WorkflowRepo.getWorkflowSet(String key)");
+		
+		return this.workflowSet.get(key);
 	}
 
 	/**
 	 * This is a setter method to add a workflow to the workflow set.
 	 * @param workflow  - the workflow to add to the workflowSet attribute
 	 */
-	public void setWorkflowSet(Workflow workflow) {
-		this.workflowSet[0] = workflow;
+	public void addWorkflowSet(String key, Workflow workflow) {
+		System.out.println("WorkflowRepo.setWorkflowSet(String key, Workflow workflow)");
+		
+		this.workflowSet.put(key, workflow);
 	}
 
 	/**
@@ -62,6 +79,8 @@ public class WorkflowRepo {
 	 * @return ExperimentRepo
 	 */
 	public ExperimentRepo getExpRepo() {
+		System.out.println("WorkflowRepo.getExpRepo()");
+		
 		return this.expRepo;
 	}
 
@@ -72,15 +91,36 @@ public class WorkflowRepo {
 	 * @return void
 	 */
 	public void setExpRepo(ExperimentRepo expRepo) {
+		System.out.println("WorkflowRepo.setExpRepo(ExperimentRepo expRepo)");
 		this.expRepo = expRepo;
+	}
+
+	/**
+	 * This is a getter method to return the workflowDescription attribute
+	 * 
+	 * @return the workflowDescriptionRepo
+	 */
+	public WorkflowDescriptonRepo getWorkflowDescriptionRepo() {
+		return workflowDescriptionRepo;
+	}
+
+	/**
+	 * This is a setter method to set the workflowDescription attribute.
+	 * 
+	 * @param workflowDescriptionRepo the workflowDescriptionRepo to set
+	 */
+	public void setWorkflowDescriptionRepo(WorkflowDescriptonRepo repo) {
+		this.workflowDescriptionRepo = repo;
 	}
 
 	/**
 	 * The findWorkflow method finds a Workflow that governs the processing of a Data Set.
 	 * If the Workflow does not exist, one has to be created
 	 * 
-	 * NOTE: This may be better handled by a class that represents a repository of workflows
-	 * but that has not yet come into existence.
+	 * NOTE: Current thinking (logic) is to find the Experiment associated with the dataSet.
+	 * Then get the workflow from the Group of the workflow and invoke it.  If an Experiment
+	 * does not exist one gets created.  If no workflow exists it gets created and associated
+	 * with the Experiment Group and Sequences if necessary
 	 * 
 	 * @param dataSet - the Data Set that holds the meta data used to help identify a workflow
 	 * @param wd - the WorkflowDescriptor use to help identify the workflow
@@ -90,36 +130,36 @@ public class WorkflowRepo {
 	public Workflow findWorkflow(DataSet dataSet, WorkflowDescription wd) {
 		System.out.println("WorkflowEngine.findWorkflow(DataSet dataSet, WorkflowDescription wd)");
 		
+		// Initi local vars
 		Sequence   seq      = null;
 		Group      group    = null;
 		Experiment exp      = null;
 		Workflow   workflow = null;
 		
-		// Get the experiment ID from the Data Set
-		String expID = dataSet.getMetaData().getExperimentID();
+		// Create the Experiment key (instrumentID + experimentID from the Data Set
+		String key = dataSet.getMetaData().getExperimentID() + 
+				"/" + dataSet.getMetaData().getExperimentID();
 		
 		// Get the experiment from the repo
-		exp = expRepo.getExperiment(expID);
-		
-		// FUTURE: THIS SHOULD CALL A FACTORY TO CREATE A NEW EXPERIMENT &
-		// ASSOCIATED WORKFLOWS
-		// Create an experiment along with the associated group and sequence
+		exp = this.expRepo.findExperiment(key);
 		if (exp == null) {
-			System.out.println("Need to create a new Experiment");
-			
-			seq   = new Sequence(dataSet);   // This is the first Sequence (run) in a Group
-			group = new Group(dataSet, seq);
-			exp   = new Experiment(dataSet.getMetaData().getExperimentID(), group);
+			exp = this.expRepo.createExperiment(dataSet);
 		}
 		
 		// Get the group workflow by getting the group from the Experiment.
+		// NOTE: Should check if group is null, but for exploration this is fine 
 		group = exp.findGroup(dataSet.getMetaData().getGroupID());
 		workflow = group.findWorkflow();
 		
-		// If a workflow cannot be found create the required workflows
+		// If a workflow cannot be found create the required workflows:
+		//    - GroupWF
+		//    - RunWF (is set as a childWorkflow for the group
 		if (workflow == null) {
-			workflow = this.createWorkflow(dataSet, wd, group, seq);
+			workflow = this.createWorkflow(dataSet, wd, group);
 		}
+		
+		// Check there is a child workflow that matches the sequence.  If
+		// not then create one
 		
 		// Return the Group workflow
 		return workflow;
@@ -137,29 +177,69 @@ public class WorkflowRepo {
 	 * @param dataSet - the DataSet used to help create workflows
 	 * @param description - the WorkflowDescription to help create workflows
 	 * @param group - group to create a workflow for
-	 * @param seq - sequence to create a workflow for
 	 * 
 	 * @return Workflow
 	 */
-	private Workflow createWorkflow(DataSet dataSet, WorkflowDescription description, Group group, Sequence seq) {
+	private Workflow createWorkflow(DataSet dataSet, WorkflowDescription description, Group group) {
 		System.out.println("WorkflowRepo.createWorkflow()");
 		
-		// if a group workflow was not found the both a sequence (run) workflow and 
+		MetaData meta = dataSet.getMetaData();
+		
+		// CURRENLTY: assuming the passed in WorkflowDescription is for the sequence
+		// Get the Group WorkflowDescription
+		String key = meta.getInstrumentID() +
+				"/" + meta.getExperimentID() +
+				"/" + meta.getGroupID();
+		WorkflowDescription wfdg = this.workflowDescriptionRepo.findWorkflowDescription(key);
+		// Need to handle the case if a WorkflowDescription for the group is not found
+		
+		/**
+		 * Determine the number of workflows currently in the group.
+		 * Then create an ID for the group Workflow based on:
+		 *     - instrumentID
+		 *     - experimentID
+		 *     - groupID
+		 *     - workflow number ("WFG-#)
+		 */
+		int wfCount = group.workflowCount();
+		key = meta.getInstrumentID() +
+				"/" + meta.getExperimentID() +
+				"/" + meta.getGroupID() +
+				"/WFG-" + wfCount;
+		GroupWF groupWF = new GroupWF(key, dataSet, wfdg);
+		
+		// Since a group workflow was not found the both a sequence (run) workflow and 
 		// the group workflow must be created.
-		RunWF   seqWF   = new RunWF(dataSet, description);
-		GroupWF groupWF = new GroupWF(dataSet, description);
+		SeqWF seqWF = new SeqWF(key, dataSet, description);
 		
 		// Add the Sequence (run) Workflow to the sequence
+		Sequence seq = group.findSequence(meta.getSequenceNumber());
 		seq.addWorkflow(seqWF);
 		
 		// Add the sequence workflow as a child to the group workflow
 		groupWF.addChildWF(seqWF);
 		
-		
 		// Add the group Workflow to the group
 		group.addWorkflow(groupWF);
 		
-		return group.findWorkflow();   // CAUTION: this method returns the first workflow
+		// Add the workflows to the repo for easier retrieval
+		// NOTE: Need to decide if only group workflows or all workflow should go
+		// in the repo.  Only the group workflows should be engaged so the group
+		// can then manage the sequences which are child workflows
+		key = meta.getInstrumentID() + 
+				"/" + meta.getExperimentID() + 
+				"/" + meta.getGroupID() +
+				"/DT-" + meta.getDataType();
+		this.workflowSet.put(key, groupWF);
+		
+		key = meta.getInstrumentID() + 
+				"/" + meta.getExperimentID() + 
+				"/" + meta.getGroupID() + 
+				"/DT-" + meta.getDataType() + 
+				"/SEQ-" + meta.getSequenceNumber();
+		this.workflowSet.put(key, seqWF);
+		
+		return groupWF;
 	}
 
 }   // end class WorkflowRepo

@@ -38,9 +38,9 @@ public class Workflow {
 	 * THIS ATTRIBUTE IS PART OF THE WORLFLOW  EX{LORATION AND MAY BE
 	 * CHANGED OR DEPRECATED
 	 * 
-	 * The wfID attribute holds the ID of the workflow
+	 * The workflowID attribute holds the ID of the workflow
 	 */
-	private String wfID;
+	private String workflowID;
 	
 	/**
 	 * THIS ATTRIBUTE IS PART OF THE WORLFLOW  EX{LORATION AND MAY BE
@@ -54,9 +54,9 @@ public class Workflow {
 	 * THIS ATTRIBUTE IS PART OF THE WORLFLOW  EX{LORATION AND MAY BE
 	 * CHANGED OR DEPRECATED
 	 * 
-	 * The procedure attribute holds the WorkflowDescription associated with the workflow
+	 * The workflowDescription attribute holds the WorkflowDescription associated with the workflow
 	 */
-	private WorkflowDescription procedure;
+	private WorkflowDescription workflowDescription;
 	
 	/**
 	 * THIS ATTRIBUTE IS PART OF THE WORLFLOW  EX{LORATION AND MAY BE
@@ -74,25 +74,22 @@ public class Workflow {
 		
 		// initialize the attributes
 		wfState = "";
-		wfID    = "Workflow-ID";
+		workflowID = "Workflow-ID";
 	}   // end Workflow() constructor
 
 	/**
-	 * This is another constructor for the Workflow class.  It takes the DataSet and 
+	 * This is another constructor for the Workflow class.  It takes the DataSet and
 	 * WorkflowDescription that need to be bound together for the Workflow
-	 * 
-	 * @param set  - the DataSet to bind with the WorkflowDescription in the Workflow
-	 * @param description  - the WorkflowDescription to bind with the DataSet in the Workflow
-	 * 
+	 * @param id - the id of the workflow
+	 * @param set - the DataSet to bind with the WorkflowDescription in the Workflow
+	 * @param description - the WorkflowDescription to bind with the DataSet in the Workflow
 	 */
-	public Workflow(DataSet set, WorkflowDescription description) {
+	public Workflow(String id, DataSet set, WorkflowDescription description) {
 		System.out.println("Workflow(DataSet set, WorkflowDescription description) constructor");
 		
-		// Need a way to create a unique ID for the Workflow
-		// Ask Joe or Jay
-		this.wfID      = "Workflow-ID";
-		this.dataSet   = set;
-		this.procedure = description;
+		this.workflowID = id;
+		this.dataSet    = set;
+		this.workflowDescription  = description;
 	}
 
 	/**
@@ -101,10 +98,10 @@ public class Workflow {
 	 * 
 	 * This is a getter method to returning the getWfID attribute
 	 * 
-	 * @return String
+	 * @return String - the workflowID attribute
 	 */
-	public String getWfID() {
-		return this.wfID;
+	public String getWorkflowID() {
+		return this.workflowID;
 	}
 
 	/**
@@ -114,8 +111,8 @@ public class Workflow {
 	 * This is a setter method to set the getWfID attribute
 	 * @param id  - id to use in setting the setWfID attribute
 	 */
-	public void setWfID(String id) {
-		this.wfID = id;
+	public void setWorkflowID(String id) {
+		this.workflowID = id;
 	}
 
 	/**
@@ -147,25 +144,25 @@ public class Workflow {
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
-	 * This is a getter method to returning the procedure attribute
+	 * This is a getter method to returning the workflowDescription attribute
 	 * 
 	 * @return WorkflowDescription
 	 */
-	public WorkflowDescription getProcedure() {
-		return procedure;
+	public WorkflowDescription getWorkflowDescription() {
+		return workflowDescription;
 	}
 
 	/**
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
-	 * This is a setter method to set the procedure attribute
+	 * This is a setter method to set the workflowDescription attribute
 	 * @param proc - proc is the used to set the procedure attribute
 	 * 
 	 * @return void
 	 */
-	public void setProcedure(WorkflowDescription proc) {
-		this.procedure = proc;
+	public void setWorkflowDescription(WorkflowDescription proc) {
+		this.workflowDescription = proc;
 	}
 
 	/**

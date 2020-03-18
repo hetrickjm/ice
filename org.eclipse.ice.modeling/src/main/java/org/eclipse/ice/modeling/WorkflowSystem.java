@@ -116,6 +116,32 @@ public class WorkflowSystem implements IWorkflow {
 	}   // end WorkflowSystem.initSystem()
 	
 	/**
+	 * This method initializes, and/or creates a WorkflowDescriptionRepo
+	 * 
+	 * @return the workflowDescriptionRepo
+	 */
+	public WorkflowDescriptonRepo initWorkflowDescriptionRepo() {
+		System.out.println("WorkflowSystem.initWorkflowDescriptionRepo()");
+		this.workflowDescriptionRepo = new WorkflowDescriptonRepo();
+		
+		return workflowDescriptionRepo;
+	}
+
+	/**
+	 * This method initializes, and/or creates a WorkflowRepo
+	 * 
+	 * @return the workflowRepo
+	 */
+	public WorkflowRepo initWorkflowRepo() {
+		System.out.println("WorkflowSystem.initWorkflowRepo()");
+		
+		this.workflowRepo = new WorkflowRepo();
+		this.workflowRepo.setWorkflowDescriptionRepo(this.workflowDescriptionRepo);
+		
+		return this.workflowRepo;
+	}
+
+	/**
 	 * Getter for the Translation Service attribute
 	 * 
 	 * @return TransSrvcStub
@@ -167,13 +193,12 @@ public class WorkflowSystem implements IWorkflow {
 	}   // end WorkflowSystem.getWfEng()
 
 	/**
-	 * This method initializes, and/or creates a WorkflowRepo
+	 * This is a setter method to set the workflowRepo attribute
 	 * 
-	 * @return the workflowRepo
+	 * @param workflowDescriptionRepo - the workflowDescriptionRepo to set
 	 */
-	public WorkflowRepo initWorkflowRepo() {
-		System.out.println("WorkflowSystem.initWorkflowRepo()");
-		return new WorkflowRepo();
+	public void setWorkflowDescriptionRepo(WorkflowDescriptonRepo repo) {
+		this.workflowDescriptionRepo = repo;
 	}
 
 	/**
@@ -183,29 +208,6 @@ public class WorkflowSystem implements IWorkflow {
 	 */
 	public void setWorkflowRepo(WorkflowRepo repo) {
 		this.workflowRepo = repo;
-	}
-
-	/**
-	 * This method initializes, and/or creates a WorkflowDescriptionRepo
-	 * 
-	 * @return the workflowDescriptionRepo
-	 */
-	public WorkflowDescriptonRepo initWorkflowDescriptionRepo() {
-		System.out.println("WorkflowSystem.initWorkflowDescriptionRepo()");
-		this.workflowDescriptionRepo = new WorkflowDescriptonRepo();
-		
-		// Add some WorkflowDescriptions
-		
-		return workflowDescriptionRepo;
-	}
-
-	/**
-	 * This is a setter method to set the workflowRepo attribute
-	 * 
-	 * @param workflowDescriptionRepo - the workflowDescriptionRepo to set
-	 */
-	public void setWorkflowDescriptionRepo(WorkflowDescriptonRepo repo) {
-		this.workflowDescriptionRepo = repo;
 	}
 
 	/**

@@ -15,13 +15,16 @@ import org.eclipse.ice.modeling.experiment.*;
 import java.util.*;
 
 /**
- * THIS CLASS IS FOR THE EXPLORATION OF THE WORKFLOW CONCEPTS AND MAY BE CHANGED OR DEPRECATED IN THE FUTURE
+ * THIS CLASS IS FOR THE EXPLORATION OF THE WORKFLOW CONCEPTS AND MAY BE CHANGED 
+ * OR DEPRECATED IN THE FUTURE
  * 
- * The WorkflowDescriptionRepo class is the repository for all the WorkflowDescriptions the AR Workflow system is
- * aware of.  This class holds the set of WorkflowDescriptions that are avaialble for use with a Workflow.  It also
- * contains the mapping of what WorkflowDescriptions are associated with a specific DataSet.
+ * The WorkflowDescriptionRepo class is the repository for all the WorkflowDescriptions 
+ * the AR Workflow system is aware of.  This class holds the set of WorkflowDescriptions 
+ * that are avaialble for use with a Workflow.  It also contains the mapping of what 
+ * WorkflowDescriptions are associated with a specific DataSet.
  * 
- * NOTE: In the future this may be a facade to persistent storage for the contained WorkflowDescriptions
+ * NOTE: In the future this may be a facade to persistent storage for the contained 
+ * WorkflowDescriptions
  * 
  * @author John Hetrick
  */
@@ -253,7 +256,7 @@ public class WorkflowDescriptonRepo {
 	}
 
 	/**
-	 * This method searches for a WorkflowDescription in the mapSet based on the MetaData key.  
+	 * This method searches for a WorkflowDescription in the repo based on the MetaData key.  
 	 * This method determines the key then searches for a pair.
 	 * 
 	 * @return WorkflowDescription
@@ -264,11 +267,31 @@ public class WorkflowDescriptonRepo {
 		
 		String key;   // This is to create the key to use to find the proper WorkflowDescription
 		
-		// Create the key from the MetaData
-		key = metaData.getInstrumentID();
-		key += "/" + metaData.getExperimentID();
-		key += "/" + metaData.getGroupID();
-		key += "/DT-" + metaData.getDataType();
+		// Create the key from the MetaData.  The key is for the sequence.
+		// However, the key applies to all sequence workflows in a particular group.  Hence
+		// the sequence number is not part of the key
+		key = metaData.getInstrumentID() +
+			"/" + metaData.getExperimentID() +
+			"/" + metaData.getGroupID() +
+			"/DT-" + metaData.getDataType();
+		System.out.println("\tkey: " + key);
+		
+		WorkflowDescription wd = this.workflowDescriptionSet.get(key);
+		
+		return wd;
+	}
+
+	/**
+	 * This method searches for a WorkflowDescription in repo  
+	 * This method determines the key then searches for a pair.
+	 * 
+	 * @param key  - the to find the WorkflowDescription
+	 * 
+	 * @return WorkflowDescription
+	 */
+	public WorkflowDescription findWorkflowDescription(String key) {
+		System.out.println("WorkflowDescriptionRepo.getWorkflowDescription(MetaData metaData)");
+		
 		System.out.println("\tkey: " + key);
 		
 		WorkflowDescription wd = this.workflowDescriptionSet.get(key);

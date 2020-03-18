@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.experiment;
 
+import java.util.*;
+
 import org.eclipse.ice.modeling.workflow.*;
 
 /**
@@ -44,11 +46,11 @@ public class Sequence {
 	 * against the sequence.  There may be more than one if/when the 
 	 * data set is reduced multiple times.
 	 * 
-	 * NOTE: This should be a list that can grow dynamically
 	 */
-	private Workflow[] workflowSet = new Workflow[2];
+	private List <Workflow> workflowSet;
 
 	/**
+	 * DEPRECATE:
 	 * The workflowIndex is set to the array index of the latest workflow.  -1
 	 * means the array is empty and there are no workflows
 	 * 
@@ -62,6 +64,9 @@ public class Sequence {
 	 */
 	public Sequence() {
 		System.out.println("Sequence() constructor");
+		this.workflowSet = new ArrayList <Workflow>();
+		
+		this.sequenceNum = -1;   // -1 is not a valid sequence number so init to invalud value
 	}
 
 	/**
@@ -73,11 +78,11 @@ public class Sequence {
 	public Sequence(DataSet set) {
 		System.out.println("Sequence(DataSet set) constructor");
 		
-		this.dataSet = set;
+		this.dataSet     = set;
 		this.sequenceNum = set.getMetaData().getSequenceNumber();
 		
-		this.workflowSet[0] = null;
-		this.workflowSet[1] = null;
+		this.workflowSet = new ArrayList <Workflow>();
+		
 	}
 
 	/**
@@ -128,9 +133,9 @@ public class Sequence {
 	/**
 	 * This is a getter method to return the workflowSet attribute
 	 * 
-	 * @return Workflow[] - workflowSet attribute
+	 * @return List <Workflow> - workflowSet attribute
 	 */
-	public Workflow[] getWorkflowSet() {
+	public List <Workflow> getWorkflowSet() {
 		System.out.println("Sequence.getWorkflowSet()");
 		return this.workflowSet;
 	}
@@ -144,44 +149,52 @@ public class Sequence {
 	 */
 	public void addWorkflow(Workflow workflow) {
 		System.out.println("Sequence.addWorkflow(Workflow workflow)");
-		
-		// If the index is any negative number it means there are no sequences
-		if (this.workflowIndex < 0) {
-			this.workflowSet[0] = workflow;
-		}
-		else if (this.workflowIndex < 1) {
-			this.workflowSet[this.workflowIndex] = workflow;
-			this.workflowIndex++;
-		}
-		// else do nothing.  Need to think about how to throw an error
-		// however this is a temporary implementation for the Prototype
+		this.workflowSet.add(workflow);
 	}
 
 	/**
-	 * This method is to find and return the latest Workflow associated with the Sequence
+	 * This method is to find and return the latest Workflow in the set.  Presumably
+	 * this is the latest workflow to be created and executed
+	 * 
+	 * @return Workflow
+	 */
+	public Workflow findWorkflow() {
+		System.out.println("Sequence.findWorkflow()");
+		return this.workflowSet.get(this.workflowSet.size() - 1);
+	}
+
+	/**
+	 * This method is to find and return the Workflow associated with the id
 	 * 
 	 * @param id - the id used to find the desired workflow
 	 * 
 	 * @return Workflow
 	 */
 	public Workflow findWorkflow(String id) {
-		System.out.println("Sequence.findWorkflow()");
+		System.out.println("Sequence.findWorkflow(String id)");
 		
-		// THIS WILL CHANGE when workflows are created using a dynamic list
+		Workflow wf  = null;
+		boolean done = false;
 		
-		boolean found = false;
-		int i = 0;
-		
-		for (i = 0; id != this.workflowSet[i].getWfID() && i <= this.workflowIndex; i++) {
-			if (id == this.workflowSet[i].getWfID()) {
-					found = true;
+		for (int i = 0; (i < this.workflowSet.size())  && !done; i++) {
+			if (id == this.workflowSet.get(i).getWfID()) {
+				wf = this.workflowSet.get(i);
+				done = true;
 			}
 		}
 		
-		if (found)
-			return this.workflowSet[i];
-		else
-			return null;
+		return wf;
+	}
+
+	/**
+	 * This method returns the number of workflows associated with group
+	 * 
+	 * @return - the number of workflows in the group
+	 */
+	public int workflowCount() {
+		System.out.println("Group.findWorkflow(String id)");
+		
+		return this.workflowSet.size();
 	}
 
 }   // end class Sequence

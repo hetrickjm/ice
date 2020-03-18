@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.eclipse.ice.modeling.experiment.*;
+import org.eclipse.ice.modeling.workflow.Workflow;
 
 /**
  * @author 6mq
@@ -63,12 +64,11 @@ public class WorkflowDescriptonRepoTest {
 	 */
 	@Test
 	public void testWorkflowDescriptonRepo() {
-		System.out.println("TEST START: ");
+		System.out.println("\n BEGIN TEST: WorkflowDescriptionRepo.testWorkflowDescriptonRepo");
 		
 		this.wdr = new WorkflowDescriptonRepo();
 		
-		System.out.println("TEST FINISHED: " + wdr + "\n");
-		//fail("Not yet implemented"); // TODO
+		System.out.println("END TEST: WorkflowDescriptionRepo.testWorkflowDescriptonRepo");
 	}
 
 	/**
@@ -76,11 +76,11 @@ public class WorkflowDescriptonRepoTest {
 	 */
 	@Test
 	public void testGetWorkflowDescription() {
-		System.out.println("TEST START: getWorkflowDescription");
+		System.out.println("\n BEGIN TEST: WorkflowDescriptionRepo.testGetWorkflowDescription");
 		
 		WorkflowDescription wd = wdr.getWorkflowDescription(this.dataSet.getMetaData());
 		
-		System.out.println("TEST FINISHED: " + wd + "\n");
+		System.out.println("END TEST: WorkflowDescriptionRepo.testGetWorkflowDescription");
 	}
 
 	/**
@@ -88,7 +88,11 @@ public class WorkflowDescriptonRepoTest {
 	 */
 	@Test
 	public void testAddWorkflowDescription() {
+		System.out.println("\n BEGIN TEST: WorkflowDescriptionRepo.testFindWorkflowDescription");
+		
 		fail("Not yet implemented"); // TODO
+		
+		System.out.println("END TEST: WorkflowDescriptionRepo.testFindWorkflowString");
 	}
 
 	/**
@@ -96,11 +100,27 @@ public class WorkflowDescriptonRepoTest {
 	 */
 	@Test
 	public void testFindWorkflowDescription() {
-		System.out.println("TEST START: FindWorkflowDescription");
+		System.out.println("\n BEGIN TEST: WorkflowDescriptionRepo.testFindWorkflowDescription");
 		
-		WorkflowDescription wd = wdr.getWorkflowDescription(this.dataSet.getMetaData());
+		WorkflowDescription wd = wdr.findWorkflowDescription(this.dataSet.getMetaData());
 		
-		System.out.println("TEST FINISHED: " + wd + "\n");
+		System.out.println("END TEST: WorkflowDescriptionRepo.testFindWorkflowDescription");
+	}
+
+	/**
+	 * Test method for {@link org.eclipse.ice.modeling.workflowDescription.WorkflowDescriptonRepo#findWorkflowDescription(java.lang.String)}.
+	 */
+	@Test
+	public void testFindWorkflowDescriptionString() {
+		System.out.println("\n BEGIN TEST: WorkflowDescriptionRepo.testFindWorkflowDescriptionString");
+		
+		MetaData meta = dataSet.getMetaData();
+		String key = meta.getInstrumentID() +
+				"/" + meta.getExperimentID() +
+				"/" + meta.getGroupID();
+		WorkflowDescription wd = wdr.findWorkflowDescription(key);
+		
+		System.out.println("END TEST: WorkflowDescriptionRepo.testFindWorkflowString");
 	}
 
 }

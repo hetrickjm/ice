@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.experiment;
 
+import java.util.*;
+
 import org.eclipse.ice.modeling.workflow.*;
 import org.eclipse.ice.modeling.workflowEngine.*;
 
@@ -26,21 +28,47 @@ public class Experiment {
 	private String   expID;
 	
 	/**
-	 * The groupSet attribute holds a set of Groups that represent a set of experiment groups (or run sets).  Each group contains a set of sequences (runs)
+	 * The groupSet attribute holds a set of Groups that represent a set of experiment 
+	 * groups (or run sets).  Each group contains a set of sequences (runs)
 	 */
-	private Group[] groupSet;
+	private List <Group> groupSet;
+	
+	/**
+	 * This attribute is the ID of the instrument the on which the experiment was conducted
+	 */
+	private String instrumentID;
 
 	/**
 	 * This is the constructor for the Experiment class
 	 */
 	public Experiment() {
-		super();
 		System.out.println("Experiment() constructor");
 		
-		this.setExpID("ExpID-42");
+		this.groupSet = new ArrayList <Group>();
+		
+		this.setExpID("EXP-0");
 		
 	}
 	
+	/**
+	 * This is another constructor for the Experiment class.  It takes an experiment ID 
+	 * and a Group.
+	 * 
+	 * @param id  - id used to set the expID attribute
+	 * @param inst - id of the instrument
+	 * 
+	 * @param group  - a the initial group of the experiment
+	 */
+	public Experiment(String id, String inst, Group group) {
+		System.out.println("Experiment() constructor");
+		
+		// Init the attribute to hold a set of groups
+		this.groupSet = new ArrayList <Group>();
+		this.setExpID(id);
+		this.setInstrumentID(inst);
+		this.addGroup(group);
+	}
+
 	/**
 	 * This is a getter method to return the expID attribute
 	 * 
@@ -64,8 +92,9 @@ public class Experiment {
 	/**
 	 * This is a getter method to return the groupSet attribute
 	 */
-	public Group[] getGroups() {
+	public List <Group> getGroups() {
 		System.out.println("Experiment.getGroups()");
+		
 		return this.groupSet;
 	}
 
@@ -75,17 +104,19 @@ public class Experiment {
 	 */
 	public void addGroup(Group group) {
 		System.out.println("Experiment.addGroup()");
-		this.groupSet[0] = group;
+		this.groupSet.add(group);
 	}
 
 	/**
-	 * This is another constructor for the Experiment class.  It takes an experiment ID and a Group.
-	 * @param id  - id used to set the expID attribute
-	 * @param group  - a the initial group of the experiment
+	 * This is a getter method to return the groupSet attribute
 	 */
-	public Experiment(String id, Group group) {
-		// TODO - implement Experiment.Experiment
-		throw new UnsupportedOperationException();
+	public Group getGroup(int index) {
+		System.out.println("Experiment.getGroup(int index)");
+		
+		if (index <= this.groupSet.size())
+			return this.groupSet.get(index);
+		else
+			return null;
 	}
 
 	/**
@@ -96,8 +127,31 @@ public class Experiment {
 	 * @param id  - the id of the group to be found and returned
 	 */
 	public Group findGroup(String id) {
-		// TODO - implement Experiment.findGroup
-		throw new UnsupportedOperationException();
+		System.out.println("Experiment.findGroup(String id)");
+		
+		// Loop through the set of groups looking for matching ID
+		for (int i = 0; i < this.groupSet.size(); i++) {
+			if ( id == this.groupSet.get(i).getSequenceID())
+				return this.groupSet.get(i);
+		}
+		
+		return null;
+	}
+
+	/**
+	 * This is a getter method to return the instrumentID attribute
+	 * @return -ID of the instrument the experiment was run on
+	 */
+	public String getInstrumentID() {
+		return this.instrumentID;
+	}
+
+	/**
+	 * This is a setter method to set the instrumentID attribute
+	 * @param id - the id of the instrument that conducted the experiment
+	 */
+	public void setInstrumentID(String id) {
+		this.instrumentID = id;
 	}
 
 }   // end class Experiment

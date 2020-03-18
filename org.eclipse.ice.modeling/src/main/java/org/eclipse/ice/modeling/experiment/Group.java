@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.experiment;
 
+import java.util.*;
 import org.eclipse.ice.modeling.workflow.*;
 
 /**
@@ -42,12 +43,18 @@ public class Group {
 	private DataSet dataSet;
 	
 	/**
+	 * The sequenceID attribute is the ID for the sequence set (or 
+	 * group ID or run set ID).  This is the same as the sequenceID 
+	 * on the first data set for a particular run set.
+	 */
+	private int sequenceTotal;
+	/**
 	 * The seqSet attribute holds the set of Sequences (runs) contained 
 	 * in the group.
 	 * 
 	 * NOTE: This should be a list that can grow dynamically
 	 */
-	private Sequence[] seqSet;
+	private List <Sequence> seqSet;
 
 	/**
 	 * The seqSetIndex is set to the array index of the latest Sequence.  -1
@@ -65,7 +72,7 @@ public class Group {
 	 * 
 	 * NOTE: This should be a list that can grow dynamically
 	 */
-	private Workflow[] workflowSet = new Workflow[2];
+	private List <Workflow> workflowSet;
 
 	/**
 	 * The workflowIndex is set to the array index of the latest workflow.  -1
@@ -81,9 +88,11 @@ public class Group {
 	 */
 	public Group() {
 		System.out.println("Group() constructor");
+		
+		// Init Attributes
 		this.sequenceID  = "";
-		this.workflowSet[0] = null;
-		this.workflowSet[1] = null;
+		this.seqSet      = new ArrayList <Sequence>();   // init set of Sequences
+		this.workflowSet = new ArrayList <Workflow>();   // init set of Workflows
 	}
 
 	/**
@@ -94,21 +103,24 @@ public class Group {
 	 * @param seq - the Sequence to associate with the group
 	 */
 	public Group(DataSet set, Sequence seq) {
-		System.out.println("Group() constructor");
+		System.out.println("Group(DataSet set, Sequence seq) constructor");
 		
+		// Init Attributes
+		this.sequenceID  = "";
+		this.seqSet      = new ArrayList <Sequence>();   // init set for Sequences
+		this.workflowSet = new ArrayList <Workflow>();   // init set for Workflows
+
 		this.dataSet = set;   // ?should I create a new DataSet first?
 		
-		// Get the sequenceID from the DataSet.MetaData
+		// Init the sequenceID from the DataSet.MetaData
 		this.sequenceID = set.getMetaData().getGroupID();
 		
-		// Get the number of sequences (runs) that are expected
-		this.seqSet = new Sequence[set.getMetaData().getSequenceTotal()];
-		this.seqSet[0] = seq;
-		this.seqSetIndex = 0;
+		// Init the number of sequences (runs) that are expected
+		this.sequenceTotal = dataSet.getMetaData().getSequenceTotal();
 		
-		// Initialize the workflowSet
-		this.workflowSet[0] = null;
-		this.workflowSet[1] = null;
+		// Add the initial sequence to the seqSet
+		this.seqSet.add(seq);
+		
 	}
 
 	/**
@@ -138,7 +150,7 @@ public class Group {
 	 * 
 	 * @return Workflow[] - workflowSet attribute
 	 */
-	public Workflow[] getWorkflowSet() {
+	public List <Workflow> getWorkflowSet() {
 		System.out.println("Group.getWorkflowSet()");
 		return this.workflowSet;
 	}
@@ -150,17 +162,7 @@ public class Group {
 	 */
 	public void addWorkflow(Workflow workflow) {
 		System.out.println("Group.addWorkflow(Workflow workflow)");
-		
-		// If the index is any negative number it means there are no sequences
-		if (this.workflowIndex < 0) {
-			this.workflowSet[0] = workflow;
-		}
-		else if (this.workflowIndex < 1) {
-			this.workflowSet[this.workflowIndex] = workflow;
-			this.workflowIndex++;
-		}
-		// else do nothing.  Need to think about how to throw an error
-		// however this is a temporary implementation for the Prototype
+		this.workflowSet.add(workflow);
 	}
 
 	/**
@@ -181,6 +183,10 @@ public class Group {
 	 */
 	public void setDataSet(DataSet set) {
 		this.dataSet = set;
+		
+		MetaData meta      = set.getMetaData();
+		this.sequenceID    = meta.getGroupID();         // Init the sequenceID from the DataSet.MetaData
+		this.sequenceTotal = meta.getSequenceTotal();   // Init the number of sequences (runs) that are expected
 	}
 
 	/**
@@ -188,7 +194,7 @@ public class Group {
 	 * 
 	 * @return Sequence - the seqSet attribute
 	 */
-	public Sequence[] getSeqSet() {
+	public List <Sequence> getSeqSet() {
 		return this.seqSet;
 	}
 
@@ -201,17 +207,7 @@ public class Group {
 	 */
 	public void addSeq(Sequence seq) {
 		System.out.println("Group.addWorkflow(Workflow workflow)");
-		
-		// If the index is any negative number it means there are no sequences
-		if (this.seqSetIndex < 0) {
-			this.seqSet[0] = seq;
-		}
-		else if (this.seqSetIndex < 1) {
-			this.seqSet[this.seqSetIndex] = seq;
-			this.seqSetIndex++;
-		}
-		// else do nothing.  Need to think about how to throw an error
-		// however this is a temporary implementation for the Prototype
+		this.seqSet.add(seq);
 	}
 
 	/**
@@ -219,24 +215,28 @@ public class Group {
 	 * passed in.  Return null if the Sequence is not found
 	 * 
 	 * @param seqNum  - the number (id) of the sequence to be returned from the group
+	 * @return 
 	 * 
 	 * @return Sequence
 	 */
 	public Sequence findSequence(int seqNum) {
-		boolean found = false;
-		int i = 0;
-		
-		for (i = 0; seqNum != seqSet[i].getSequenceNum() && i <= dataSet.getMetaData().getSequenceNumber(); i++) {
-			if (seqNum == this.seqSet[i].getSequenceNum()) {
-					found = true;
+		System.out.println("Group.findSequence(int seqNum)");
+
+		// Look for a sequence who's sequence number matches the passed in value
+		// NOTE: this should be equivalent to the index, but for now search the list to be safe.
+		if (seqNum < this.seqSet.size()) {
+			if (seqNum == this.seqSet.get(seqNum).getSequenceNum())
+				return this.seqSet.get(seqNum);
+			
+			// Search for the right sequence since the seqNum is not equivalent to the index
+			for (int i = 0; i < this.seqSet.size(); i++) {
+				if (seqNum == this.seqSet.get(i).getSequenceNum())
+					return this.seqSet.get(i);
 			}
 		}
 		
-		if (found)
-			return this.seqSet[i];
-		else
-			return null;
-
+		// The seqNum is out of bounds
+		return null;
 	}
 
 	/**
@@ -245,7 +245,14 @@ public class Group {
 	 * @return Workflow
 	 */
 	public Workflow findWorkflow() {
-		return this.workflowSet[this.workflowIndex];
+		System.out.println("Group.findWorkflow()");
+		
+		// Check that there are any workflows.  If not return null.
+		if (this.workflowSet.size() < 1)
+			return null;
+		else
+			return this.workflowSet.get(this.workflowSet.size() - 1);
+		
 	}
 
 	/**
@@ -258,21 +265,28 @@ public class Group {
 	public Workflow findWorkflow(String id) {
 		System.out.println("Group.findWorkflow(String id)");
 		
-		// THIS WILL CHANGE when workflows are created using a dynamic list
+		Workflow wf  = null;
+		boolean done = false;
 		
-		boolean found = false;
-		int i = 0;
-		
-		for (i = 0; id != this.workflowSet[i].getWfID() && i <= this.workflowIndex; i++) {
-			if (id == this.workflowSet[i].getWfID()) {
-					found = true;
+		for (int i = 0; (i < this.workflowSet.size())  && !done; i++) {
+			if (id == this.workflowSet.get(i).getWfID()) {
+				wf = this.workflowSet.get(i);
+				done = true;
 			}
 		}
 		
-		if (found)
-			return this.workflowSet[i];
-		else
-			return null;
+		return wf;
+	}
+
+	/**
+	 * This method returns the number of workflows associated with group
+	 * 
+	 * @return - the number of workflows in the group
+	 */
+	public int workflowCount() {
+		System.out.println("Group.findWorkflow(String id)");
+		
+		return this.workflowSet.size();
 	}
 
 }   // end Group class

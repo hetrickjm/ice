@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.workflow;
 
+import java.util.*;
+
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.experiment.*;
 import org.eclipse.ice.modeling.workflowDescription.*;
@@ -29,16 +31,16 @@ public class GroupWF extends Workflow {
 	 * 
 	 * NOTE: Should probably DEPRECATE this and only use the parent class wfID attribute
 	 */
-	private String groupWFID;
+	private String groupWorkflowID;
 	
 	/**
-	 * The childWFSet attribute holds the set of child workflows that the 
+	 * The childWFSet attribute holds the set of child workflows that the
 	 * GroupWF can contain.  These child workflows are anticipated to be RunWF.
 	 * 
 	 * NOTE: Currently this attribute us being initialized to 2.  In the future
 	 * this should be a dynamic list who's nodes are created on when needed.
 	 */
-	private Workflow[] childWFSet = new Workflow[2];
+	private List <Workflow> childWorkflowSet;
 
 	/**
 	 * The childWFIndex is set to the array index of the latest child workflow.  -1
@@ -47,14 +49,14 @@ public class GroupWF extends Workflow {
 	 * NOTE: This will likely be DEPRECATED when implementing a dynamic child
 	 * workflow list.
 	 */
-	private int childWFIndex = -1;
+	private int childWorkflowIndex = -1;
 	
 	/**
 	 * This is the constructor for the GroupWF class.
 	 */
 	public GroupWF() {
 		super();
-		System.out.println("RunSetWF() constructor");
+		System.out.println("GroupWF() constructor");
 		
 		this.setGroupWFID("GRP-ID");
 		super.setCurrentStep(null);
@@ -64,18 +66,14 @@ public class GroupWF extends Workflow {
 	/**
 	 * This is another constructor for the GroupWF class. It takes a DataSet and WorkflowDescription
 	 * parameters to bind together in the Workflow.
-	 * @param set  - the DataSe to bind with the WorkflowDescription in the Workflow
-	 * @param description  - the WorkflowDescription to bind with the DataSet in the Workflow
+	 * @param id - the ID of the workflow
+	 * @param set - the DataSe to bind with the WorkflowDescription in the Workflow
+	 * @param description - the WorkflowDescription to bind with the DataSet in the Workflow
 	 */
-	public GroupWF(DataSet set, WorkflowDescription description) {
-		super(set, description);
-		System.out.println("RunSetWF(DataSet set, WorkflowDescription description) constructor");
-		
-		// create the workflow ID from the GroupID in the MetaData
-		String id = set.getMetaData().getGroupID() + "WF";
-		this.setGroupWFID(id);
-		super.setCurrentStep(null);
-	
+	public GroupWF(String id, DataSet set, WorkflowDescription description) {
+		super(id, set, description);
+		System.out.println("GroupWF(STring id, DataSet set, WorkflowDescription description) constructor");
+
 	}   // end RunSetWF.handleMsg(Message msgIn)
 
 	/**
@@ -83,7 +81,8 @@ public class GroupWF extends Workflow {
 	 * @return String - the groupID
 	 */
 	public String getGroupWFID() {
-		return this.groupWFID;
+		System.out.println("GroupWF.getGroupWFID()");
+		return this.groupWorkflowID;
 	}   // end RunSetWF.getgroupID()
 
 	/**
@@ -91,17 +90,18 @@ public class GroupWF extends Workflow {
 	 * @param id  - id to use in setting the  attribute
 	 */
 	public void setGroupWFID(String id) {
-		this.groupWFID = id + "WF";
-		super.setWfID(groupWFID);
+		System.out.println("GroupWF.getGroupWFID()");
+		this.groupWorkflowID = id + "WF";
+		super.setWorkflowID(groupWorkflowID);
 	}   // end RunSetWF.setgroupID(String id)
 
 	/**
-	 * This is a getter method to return the childWfs attribute.
-	 * 
+	 * This is a getter method to return the childWorkflowss attribute.
 	 * @return Workflow
 	 */
-	public Workflow[] getChildWFSet() {
-		return this.childWFSet;
+	public List <Workflow> getChildWFSet() {
+		System.out.println("GroupWF.getChildWFSet()");
+		return this.childWorkflowSet;
 	}   // end RunSetWF.getChildWFs()
 
 	/**
@@ -112,17 +112,8 @@ public class GroupWF extends Workflow {
 	 * @return void
 	 */
 	public void addChildWF(Workflow workflow) {
-		
-		// If the index is any negative number it means there are not child workflows
-		if (childWFIndex < 0) {
-			this.childWFSet[0] = workflow;
-		}
-		else if (childWFIndex < 1) {
-			this.childWFSet[this.childWFIndex] = workflow;
-			this.childWFIndex++;
-		}
-		// else do nothing.  Need to think about how to throw an error
-		// however this is a temporary implementation for the Prototype
+		System.out.println("GroupWF.addChildWF(Workflow workflow)");
+		this.childWorkflowSet.add(workflow);
 		
 	}   // end RunSetWF.setChildWFs(Workflow childWFs)
 
@@ -138,7 +129,7 @@ public class GroupWF extends Workflow {
 	 * @return Message - represents the action
 	 */
 	public Message handleMsg(Message msgIn) {
-		System.out.println("RunSetWF.handleMsg()");
+		System.out.println("GroupWF.handleMsg(Message msgIn)");
 		System.out.println("   msgIn: " + msgIn.toString());
 		
 		// Next create the out message from the child (the run) not from the experiment
@@ -147,7 +138,7 @@ public class GroupWF extends Workflow {
 		// there are multiple runs and they need to be processed in a specific order.
 		// This is really for batch processing but will/should handle all cases
 		
-		Message msgOut = this.childWFSet[0].handleMsg(msgIn);
+		Message msgOut = this.childWorkflowSet[0].handleMsg(msgIn);
 		System.out.println("   msgOut: " + msgOut.toString());
 		
 		return msgOut;
