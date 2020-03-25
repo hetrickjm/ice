@@ -8,7 +8,7 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - John Hetrick
  *******************************************************************************/
-package org.eclipse.ice.modeling.workflowDescription;
+package org.eclipse.ice.modeling.workflowDescription.tasks;
 
 /**
  * The Instruction enumeration contains a set of enumeration literals that identify particular actions that can be taken

@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.workflowDescription;
 
+import java.util.*;
+
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.experiment.*;
-import java.util.*;
+import org.eclipse.ice.modeling.workflowDescription.tasks.*;
 
 /**
  * THIS CLASS IS FOR THE EXPLORATION OF THE WORKFLOW CONCEPTS AND MAY BE CHANGED 
@@ -28,7 +30,7 @@ import java.util.*;
  * 
  * @author John Hetrick
  */
-public class WorkflowDescriptonRepo {
+public class WorkflowDescriptionRepo {
 
 	/**
 	 * The workflowDescriptionSet is the repository for all WorkflowDescriptions.
@@ -46,7 +48,17 @@ public class WorkflowDescriptonRepo {
 	/**
 	 * This is the constructor for the WorkflowDescriptionRepo class
 	 */
-	public WorkflowDescriptonRepo() {
+	public WorkflowDescriptionRepo() {
+	
+	}
+
+	/**
+	 * THIS METHOD IS FOR EXPLORING THE WORKFLOW CONCEPTS AND MAY BE CHANGED OR DEPRECATED
+	 * 
+	 * This method initializes and/or creates the workflowDescriptionSet.  This is
+	 * the set of WorkflowDescriptions.
+	 */
+	private void initWorkflowDescriptionSet() {
 		System.out.println("WorkflowDescriptionRepo() constructor");
 		
 		this.workflowDescriptionSet = new Hashtable<String, WorkflowDescription>();
@@ -60,29 +72,6 @@ public class WorkflowDescriptonRepo {
 		// FUTURE: This set should be create by reading from some persistent storage
 		// e.g. a file or a database
 		//this.initMapSet();
-		
-	}
-
-	/**
-	 * THIS METHOD IS FOR EXPLORING THE WORKFLOW CONCEPTS AND MAY BE CHANGED OR DEPRECATED
-	 * 
-	 * This method initializes and/or creates the workflowDescriptionSet.  This is 
-	 * the set of WorkflowDescriptions.
-	 * 
-	 */
-	private void initWorkflowDescriptionSet() {
-		System.out.println("WorkflowDescriptionRepo.initWorkflowDescriptionSet()");
-		
-		// Initialize this repo to have or access the set of Workflow descriptions
-		// Get / Create (dummy) workflow for processing a SeqWF (run)
-		//		CURRENTLY FOR EXPLORATION WE ARE CREATING DUMMY WORKFLOW DESCRIPTIONS
-		WorkflowDescription wfds = this.testCreateSeqWFD();
-		this.addWorkflowDescription("INST-1/EXP-1/GRP-0/DT-0", wfds);
-		
-		// Get / create (dummy) GroupWF
-		WorkflowDescription wfdg = this.testCreateGroupWFD();
-		this.addWorkflowDescription("INST-1/EXP-1/GRP-0", wfdg);
-		
 	}
 
 	/**
@@ -107,7 +96,7 @@ public class WorkflowDescriptonRepo {
 		index = taskSet.size() - 1;
 		
 		// Create and set the completion criteria for this task
-		Criteria startCrit1 = new StringCriteria("CATALOG.START");
+		Criteria startCrit1 = new StringCriteria("CATALOG.STARTED");
 		Criteria cmpltCrit1 = new StringCriteria("CATALOG.COMPLETE");
 		CompletionCriteria complete1 = new CompletionCriteria();
 		complete1.addCompletionCreiteria(startCrit1);
@@ -125,7 +114,7 @@ public class WorkflowDescriptonRepo {
 		index = taskSet.size() - 1;
 		
 		// Create and set the completion criteria for this task
-		Criteria startCrit2 = new StringCriteria("REDUCTION.START");
+		Criteria startCrit2 = new StringCriteria("REDUCTION.STARTED");
 		Criteria cmpltCrit2 = new StringCriteria("REDUCTION.COMPLETE");
 		CompletionCriteria complete2 = new CompletionCriteria();
 		complete2.addCompletionCreiteria(startCrit2);
@@ -143,7 +132,7 @@ public class WorkflowDescriptonRepo {
 		index = taskSet.size() - 1;
 		
 		// Create and set the completion criteria for this task
-		Criteria startCrit3 = new StringCriteria("REDUCTION_CATAGORY.START");
+		Criteria startCrit3 = new StringCriteria("REDUCTION_CATAGORY.STARTED");
 		Criteria cmpltCrit3 = new StringCriteria("REDUCTION_CATAGORY.COMPLETE");
 		CompletionCriteria complete3 = new CompletionCriteria();
 		complete3.addCompletionCreiteria(startCrit3);
@@ -179,7 +168,7 @@ public class WorkflowDescriptonRepo {
 		// Create the 3 MsgActions to be used in Tasks
 		// These represent the 3 messages assoicated with getting a DataSet reduced
 		// NOTE:  THIS IS ONLY FOR EXPLORATION
-		ActionInstruction actRed = new ActionInstruction(InstructionGroup.REDUCE);
+		ActionGroup actRed = new ActionGroup(InstructionGroup.REDUCE);
 		taskSet.add(new Task("GTSK-0", actRed));                // Add a new Task
 		index = taskSet.size() - 1;
 		
@@ -196,7 +185,7 @@ public class WorkflowDescriptonRepo {
 		/////////////////////////////////////////////////////////
 		System.out.println("\tCreating Group Task 2");
 		// Add a second task
-		ActionInstruction actStitch = new ActionInstruction(InstructionGroup.STITCH);
+		ActionGroup actStitch = new ActionGroup(InstructionGroup.STITCH);
 		taskSet.add(new Task("GTSK-1", actStitch));
 		index = taskSet.size() - 1;
 		
@@ -224,8 +213,7 @@ public class WorkflowDescriptonRepo {
 	 * This is a getter method to return the workflowDescSet attribute
 	 * 
 	 * NOTE: This is for testing only and should not be used.  This class is the repo
-	 * @param metaData  - the meta data that holds the key to identifying a specific 
-	 * WorkflowDescription
+	 * @param metaData - the meta data that holds the key to identifying a specific WorkflowDescription
 	 */
 	public WorkflowDescription getWorkflowDescription(MetaData metaData) {
 		System.out.println("WorkflowDescriptionRepo.getWorkflowDescription(MetaData metaData)");
@@ -242,12 +230,10 @@ public class WorkflowDescriptonRepo {
 		WorkflowDescription wd = this.workflowDescriptionSet.get(key);
 		
 		return wd;
-		
 	}
 
 	/**
 	 * This is a setter method to add a WorkflowDescription to the workflowDescriptionSet attribute
-	 * 
 	 * @param key - String used as a key to match to the WorkflowDescription
 	 * @param description - description to add to the workflowDescriptionSet attribute
 	 */
@@ -256,11 +242,10 @@ public class WorkflowDescriptonRepo {
 	}
 
 	/**
-	 * This method searches for a WorkflowDescription in the repo based on the MetaData key.  
+	 * This method searches for a WorkflowDescription in the mapSet based on the MetaData key.
 	 * This method determines the key then searches for a pair.
-	 * 
+	 * @param metaData - the MetaData from which to derive the meta data key
 	 * @return WorkflowDescription
-	 * @param metaData  - the MetaData from which to derive the meta data key
 	 */
 	public WorkflowDescription findWorkflowDescription(MetaData metaData) {
 		System.out.println("WorkflowDescriptionRepo.getWorkflowDescription(MetaData metaData)");
@@ -282,11 +267,9 @@ public class WorkflowDescriptonRepo {
 	}
 
 	/**
-	 * This method searches for a WorkflowDescription in repo  
+	 * This method searches for a WorkflowDescription in repo
 	 * This method determines the key then searches for a pair.
-	 * 
-	 * @param key  - the to find the WorkflowDescription
-	 * 
+	 * @param key - the to find the WorkflowDescription
 	 * @return WorkflowDescription
 	 */
 	public WorkflowDescription findWorkflowDescription(String key) {
@@ -301,7 +284,6 @@ public class WorkflowDescriptonRepo {
 
 	/**
 	 * This is a getter method to return the expRepo (experiment repository) attribute
-	 * 
 	 * @return ExperimentRepo
 	 */
 	public ExperimentRepo getExpRepo() {
@@ -310,9 +292,7 @@ public class WorkflowDescriptonRepo {
 
 	/**
 	 * This is a setter method to set the expRepo (experiment repository) attribute
-	 * 
-	 * @return void
-	 * @param expRepo  - the ExperimentRepo used to set the expRepo attribute
+	 * @param expRepo - the ExperimentRepo used to set the expRepo attribute
 	 */
 	public void setExpRepo(ExperimentRepo expRepo) {
 		this.expRepo = expRepo;

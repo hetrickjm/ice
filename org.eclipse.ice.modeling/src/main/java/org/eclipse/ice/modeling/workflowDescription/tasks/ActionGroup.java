@@ -8,15 +8,17 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - John Hetrick
  *******************************************************************************/
-package org.eclipse.ice.modeling.workflowDescription;
+package org.eclipse.ice.modeling.workflowDescription.tasks;
+
+import org.eclipse.ice.modeling.workflowDescription.*;
 
 /**
- * The ActionInstruction class specializes the Action class and 
+ * The ActionInstruction class specializes the Action class and
  * contains instructions that are to be followed when invoked
  * 
  * @author John Hetrick
  */
-public class ActionInstruction extends Action {
+public class ActionGroup extends Action {
 
 	/**
 	 * The instruction attribute is an enumeration indicating which 
@@ -27,7 +29,7 @@ public class ActionInstruction extends Action {
 	/**
 	 * This is the constructor for the ActionInstruction class
 	 */
-	public ActionInstruction() {
+	public ActionGroup() {
 		System.out.println("ActionInstruction() constructor");
 		this.instruction = InstructionGroup.REDUCE;
 	}
@@ -35,18 +37,16 @@ public class ActionInstruction extends Action {
 	/**
 	 * This is another constructor for the ActionInstruction class that takes
 	 * an argument of enum that identifies the instruction this is
-	 * 
-	 * @param instr - the Instruction to set the instruction attribute 
-	 * indicating what instruction this action is
+	 * @param instr - the Instruction to set the instruction attribute indicating what instruction this action is
 	 */
-	public ActionInstruction(InstructionGroup instr) {
+	public ActionGroup(InstructionGroup instr) {
 		System.out.println("ActionInstruction(InstructionGroup instr) constructor");
+		
 		this.instruction = instr;
 	}
 
 	/**
 	 * This is a getter method to return the instruction attribute
-	 * 
 	 * @return - Instruction enumeration value indicating what the action is
 	 */
 	public InstructionGroup getInstruction() {
@@ -73,6 +73,16 @@ public class ActionInstruction extends Action {
 	public Object execute() {
 		System.out.println("ActionInstruction.execute()");
 		return null;
+	}
+
+	/**
+	 * This execute method takes a parameter and returns an object.
+	 * @param obj - generic parameter used to pass in information needed to complete the
+	 * action
+	 */
+	public Object execute(Object obj) {
+		// TODO - implement ActionInstruction.execute
+		throw new UnsupportedOperationException();
 	}
 
 }

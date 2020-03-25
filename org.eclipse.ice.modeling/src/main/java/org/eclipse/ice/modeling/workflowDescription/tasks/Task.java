@@ -8,25 +8,26 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - John Hetrick
  *******************************************************************************/
-package org.eclipse.ice.modeling.workflowDescription;
+package org.eclipse.ice.modeling.workflowDescription.tasks;
 
 import java.util.*;
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.workflow.*;
+import org.eclipse.ice.modeling.workflowDescription.*;
 
 /**
  * THIS CLASS IS PART OF THE WORKFLOW CONCEPT THAT IS BEING EXPLORED.
  * 
- * This Task class is a single step in a WorkflowDescription.  While it 
- * may be a single step (or activity) in a workflow description does 
- * not mean it is atomic.  It could be a single task that has several 
+ * This Task class is a single step in a WorkflowDescription.  While it
+ * may be a single step (or activity) in a workflow description does
+ * not mean it is atomic.  It could be a single task that has several
  * actions that need to be performed to complete the task.
  * 
- * The current thinking is that a Task holds no state.  The workflow 
- * that it is associated with will hold the state.  This is so the 
- * WorkflowDescription and Tasks can be defined a-priory, then 
- * associated with a Data Set at some point in time.  This would 
- * allow for Tasks to be part of multiple different WorkflowDescriptions 
+ * The current thinking is that a Task holds no state.  The workflow
+ * that it is associated with will hold the state.  This is so the
+ * WorkflowDescription and Tasks can be defined a-priory, then
+ * associated with a Data Set at some point in time.  This would
+ * allow for Tasks to be part of multiple different WorkflowDescriptions
  * which would be dynamically associated with Data Sets when necessary.
  * 
  * @author John Hetrick
@@ -77,7 +78,6 @@ public class Task {
 
 	/**
 	 * This is another constructor for the Task class that takes and Action.
-	 * 
 	 * @param id - the id of be used to set the taskID to
 	 * @param act - the Action to add to the actionSet
 	 */
@@ -99,11 +99,35 @@ public class Task {
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
+	 * This method is a getter to return the taskId attribute for the Task
+	 */
+	public String getTaskID() {
+		return this.taskID;
+	}
+
+	/**
+	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
+	 * MAY BE CHANGED OR DEPRECATED
+	 * 
+	 * This method is a setter to set the taskId attribute for the Task
+	 * 
+	 * NOTE: This should be set on Task create so I am not sure this method is
+	 * really needed.
+	 * @param id - id to use to set the taskID attribute
+	 */
+	public void setTaskID(String id) {
+		this.taskID = id;
+	}
+
+	/**
+	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
+	 * MAY BE CHANGED OR DEPRECATED
+	 * 
 	 * This is a getter method to return the action attribute.
 	 * 
-	 * NOTE: This currently returns the action indicated by the index 
+	 * NOTE: This currently returns the action indicated by the index
 	 * value passed in
-	 * 
+	 * @param index
 	 * @return the msg
 	 */
 	public Action getAction(int index) {
@@ -133,6 +157,13 @@ public class Task {
 	}   // end Task.setAction
 
 	/**
+	 * This method returns the number of actions in the actionSet
+	 */
+	public int numberOfActions() {
+		return this.actionSet.size();
+	}
+
+	/**
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
@@ -158,17 +189,26 @@ public class Task {
 	}   
 	
 	/**
+	 * This method checks if the Task is complete.  It takes in a status 
+	 * and compares it to the completionCriteria.
+	 * @param status - status to compare against the completion criteria
+	 */
+	public boolean isTaskComplete(List <Criteria> status) {
+		System.out.println("Task.isTaskComplete(List <Criteria> status)");
+		
+		return this.completionCriteria.isComplete(status);
+	}
+
+	/**
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
-	 * This method is to have the Task execute the action(s) associated 
+	 * This method is to have the Task execute the action(s) associated
 	 * with the Task.
-	 * For the AR Workflow system this is returning the message to be 
+	 * For the AR Workflow system this is returning the message to be
 	 * sent to a Reducer system.
-	 * 
-	 * NOTE: consider renaming to "execute()"
 	 */
-	public Message execute() {
+	public Object execute() {
 		System.out.println("Task.execute()");
 		
 		// Execute the current action
@@ -185,14 +225,62 @@ public class Task {
 	}
 
 	/**
-	 * This method checks if the Task is complete.  It takes in a status 
-	 * and compares it to the completionCriteria.
-	 * @param status - status to compare against the completion criteria
+	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
+	 * MAY BE CHANGED OR DEPRECATED
+	 * 
+	 * This method is to have the Task execute the action(s) associated
+	 * with the Task.
+	 * For the AR Workflow system this is returning the message to be
+	 * sent to a Reducer system.
+	 * 
+	 * NOTE: consider renaming to "execute()"
+	 * @param obj - generic parameter to be used in executing the task
 	 */
-	public boolean isTaskComplete(Object status) {
-		System.out.println("Task.isTaskComplete(Object status)");
+	public Object execute(Object obj) {
+		System.out.println("Task.execute(Object obj)");
+		// Execute the current action
+		// Check if the returned object is a Message
+		Object result = this.actionSet.get(this.currentAction).execute(obj);
 		
-		return false;
+		if (result != null) {
+			if (result instanceof Message)
+				return (Message) result;
+			else
+				return result;
+		}
+		
+		return null;
+	}
+
+	/**
+	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
+	 * MAY BE CHANGED OR DEPRECATED
+	 * 
+	 * This method is to have the Task execute the action(s) associated
+	 * with the Task.  Since that Task persists no state, pass in the
+	 * Workflow so the Task can us it to persist state
+	 * @param workflow - the workflow that provides context and is used to capture
+	 * and maintain state
+	 * @param obj - generic parameter to be used in executing the task
+	 */
+	public Object execute(Workflow wf, Object obj) {
+		// TODO - implement Task.execute
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
+	 * MAY BE CHANGED OR DEPRECATED
+	 * 
+	 * This method is to have the Task execute the action(s) associated
+	 * with the Task.  Since that Task persists no state, pass in the
+	 * Workflow so the Task can us it to persist state
+	 * @param taskStatus - the TaskStatus to set as needed
+	 * @param obj - generic parameter to be used in executing the task
+	 */
+	public Object execute(TaskStatus taskStatus, Object obj) {
+		// TODO - implement Task.execute
+		throw new UnsupportedOperationException();
 	}
 
 }   // end class Task

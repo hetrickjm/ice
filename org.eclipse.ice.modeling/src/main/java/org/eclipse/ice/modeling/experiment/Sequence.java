@@ -177,7 +177,7 @@ public class Sequence {
 		boolean done = false;
 		
 		for (int i = 0; (i < this.workflowSet.size())  && !done; i++) {
-			if (id == this.workflowSet.get(i).getWfID()) {
+			if (id == this.workflowSet.get(i).getWorkflowID()) {
 				wf = this.workflowSet.get(i);
 				done = true;
 			}

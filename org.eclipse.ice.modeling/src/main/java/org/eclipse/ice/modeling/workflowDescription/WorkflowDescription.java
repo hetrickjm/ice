@@ -11,8 +11,10 @@
 package org.eclipse.ice.modeling.workflowDescription;
 
 import java.util.*;
+
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.workflow.*;
+import org.eclipse.ice.modeling.workflowDescription.tasks.*;
 
 /**
  * THIS CLASS IS PART OF THE WORKFLOW CONCEPT THAT IS BEING EXPLORED.
@@ -33,7 +35,7 @@ public class WorkflowDescription {
 	/**
 	 * The taskList attribute is the set of Tasks that make up the WorkflowDescription
 	 */
-	private List <Task> taskList;
+	private List<Task> taskList;
 	
 	/**
 	 * CURRENTLY THIS IS FOR EXPLORATORY PURPOSES AND MAY BE CHANGED
@@ -100,7 +102,7 @@ public class WorkflowDescription {
 	 * @param index - the index for the Task to be retrieved
 	 */
 	public Task getTask(int index) {
-		System.out.println("Procedure.nextStep()");
+		System.out.println("WorkflowDescription.getTask()");
 		
 		// If the index is greater than the number of tasks,
 		// the index is out of bounds so return null.
@@ -143,7 +145,7 @@ public class WorkflowDescription {
 	 * that is being executed
 	 */
 	public CompletionCriteria getTaskCompletionCriteria(Task currentTask) {
-		System.out.println("Procedure.getStepSuccess(Step currentStep)");
+		System.out.println("WorkflowDescription.getStepSuccess(Step currentStep)");
 		
 		return currentTask.getCompletionCriteria();   
 	}
@@ -202,4 +204,4 @@ public class WorkflowDescription {
 		return taskList.size();
 	}
 
-}   // end class Procedure
+}   // end class WorkflowDescription

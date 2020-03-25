@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.workflow;
 
-import org.eclipse.ice.modeling.workflowEngine.*;
+
+import java.util.List;
+
 import org.eclipse.ice.modeling.experiment.*;
+import org.eclipse.ice.modeling.states.WorkflowState;
 import org.eclipse.ice.modeling.workflowDescription.*;
+import org.eclipse.ice.modeling.workflowEngine.*;
+import org.eclipse.ice.modeling.workflowDescription.tasks.*;
 
 /**
  * THIS CLASS IS PART OF THE WORKFLOW CONCEPT THAT IS BEING EXPLORED.
@@ -84,7 +89,13 @@ public class SeqWF extends Workflow {
 
 	/**
 	 * This method is invoked by the workflow engine to have the workflow process an
-	 * incoming message or action
+	 * incoming message or action.
+	 * 
+	 * Currently this is not an intelligent workflow.  The SeqWF workflow processes Tasks one
+	 * at a time in order they are in the WorkflowDescription.  The tasks have been added
+	 * to the taskStatusTable in that order.  Each Task is executed to completion before the
+	 * next Task is invoked.  Curretnly the recieved message is not being paired to a
+	 * specific Task.
 	 * 
 	 * This is the method from overides the same method of the parent class, Workflow.
 	 * 
@@ -95,19 +106,72 @@ public class SeqWF extends Workflow {
 		System.out.println("RunWF.nextMsg()");
 		System.out.println("   msgIn: " + msgIn.toString());
 		
-		// createa an out message.  Keep the same attributes as in except the command
-		// Message msgOut = new Message();
-		// msgOut.setExpId( msgIn.getExpId());
-		// msgOut.setSrcInstrument(msgIn.getSrcInstrument());
-		// msgOut.setCmnd("msgOut: Message out from RunWF");
+		// Initi local vars
+		Message msgOut = null,
+				emptyMsg;
+		int i = -1;
+		boolean found = false;
+		Task task = null;
+		List <TaskStatus> taskStatusTable = super.getTaskStatusTable();  //easier to work with locally
 		
+		// What is the current status of the workflow?
+		switch (super.getWorkflowStatus()) {
+			case NOT_STARTED: 
+			case IN_PROGRESS: 
+				// Find the first Task that is not complete and process it
+				for (i = 0; ((i < taskStatusTable.size()) && !found); i++) {
+					if ( !(taskStatusTable.get(i).isComplete())) {
+						found = true;
+						task = taskStatusTable.get(i).getTask();
+					}
+				}
+				
+				// If there are not more tasks to execute then the workflow is complete
+				if (found) {
+					// Invoke the task to execute
+					msgOut = (Message) task.execute(taskStatusTable.get(i - 1), msgIn);
+					super.setWorkflowStatus(WorkflowState.IN_PROGRESS);
+					
+					emptyMsg = new Message();
+					emptyMsg.setDataSetRef(msgIn.getDataSetRef());
+					
+					if (i < taskStatusTable.size()) {
+						while (msgOut == null && taskStatusTable.get(i - 1).isComplete()) {
+							// Note i is already incremented
+							task = taskStatusTable.get(i).getTask();
+							msgOut = (Message) task.execute(taskStatusTable.get(i), emptyMsg);
+						}
+					}
+					
+					// check if there are any more Tasks to execute AND
+					// if the task just executed is complete
+					// If so then the workflow is complete
+					if (i >= taskStatusTable.size() && taskStatusTable.get(i - 1).isComplete()){
+						super.setWorkflowStatus(WorkflowState.COMPLETE);
+						
+					}
+				}
+				else {
+					// If a task is not found then the assumption is that all tasks are complete.
+					super.setWorkflowStatus(WorkflowState.COMPLETE);
+				}
+				
+				break;
+				
+			case COMPLETE: 
+				break;
+			
+			case ERROR: 
+				break;
+			
+			default:
 		
-		// Get the next step from the procedure
-		// If it is the first run we should get step 0
-		//this.setCurrentStep(this.getProcedure().nextTask(this.getCurrentStep()));
+		}
 		
-		Message msgOut = this.getCurrentStep().execute();
-		System.out.println("   msgOut: " + msgOut.toString());
+		if (msgOut == null)
+			System.out.println("    msgOut: null");
+		else
+			System.out.println("   msgOut: " + msgOut.toString());
 		
 		return msgOut;
 		

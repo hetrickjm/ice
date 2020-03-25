@@ -42,7 +42,7 @@ public class WorkflowRepo {
 	 * The workflowDescriptionRepo attribute is the repository that holds all the
 	 * WorkflowDescriptions
 	 */
-	private WorkflowDescriptonRepo workflowDescriptionRepo;
+	private WorkflowDescriptionRepo workflowDescriptionRepo;
 
 	/**
 	 * This is the constructor for the WorkflowRepo class
@@ -100,7 +100,7 @@ public class WorkflowRepo {
 	 * 
 	 * @return the workflowDescriptionRepo
 	 */
-	public WorkflowDescriptonRepo getWorkflowDescriptionRepo() {
+	public WorkflowDescriptionRepo getWorkflowDescriptionRepo() {
 		return workflowDescriptionRepo;
 	}
 
@@ -109,7 +109,7 @@ public class WorkflowRepo {
 	 * 
 	 * @param workflowDescriptionRepo the workflowDescriptionRepo to set
 	 */
-	public void setWorkflowDescriptionRepo(WorkflowDescriptonRepo repo) {
+	public void setWorkflowDescriptionRepo(WorkflowDescriptionRepo repo) {
 		this.workflowDescriptionRepo = repo;
 	}
 
@@ -137,7 +137,7 @@ public class WorkflowRepo {
 		Workflow   workflow = null;
 		
 		// Create the Experiment key (instrumentID + experimentID from the Data Set
-		String key = dataSet.getMetaData().getExperimentID() + 
+		String key = dataSet.getMetaData().getInstrumentID() + 
 				"/" + dataSet.getMetaData().getExperimentID();
 		
 		// Get the experiment from the repo
@@ -201,23 +201,36 @@ public class WorkflowRepo {
 		 *     - groupID
 		 *     - workflow number ("WFG-#)
 		 */
-		int wfCount = group.workflowCount();
-		key = meta.getInstrumentID() +
+		int wfgCount = group.workflowCount();
+		String gkey = meta.getInstrumentID() +
 				"/" + meta.getExperimentID() +
 				"/" + meta.getGroupID() +
-				"/WFG-" + wfCount;
-		GroupWF groupWF = new GroupWF(key, dataSet, wfdg);
+				"/WFG-" + wfgCount;
+		GroupWF groupWF = new GroupWF(gkey, dataSet, wfdg);
 		
 		// Since a group workflow was not found the both a sequence (run) workflow and 
 		// the group workflow must be created.
-		SeqWF seqWF = new SeqWF(key, dataSet, description);
+		/**
+		 * Determine the number of workflows currently in the group.
+		 * Then create an ID for the group Workflow based on:
+		 *     - instrumentID
+		 *     - experimentID
+		 *     - groupID
+		 *     - workflow number ("WFS-#)
+		 */
+		int wfsCount = group.findSequence(0).workflowCount();
+		String skey = meta.getInstrumentID() +
+				"/" + meta.getExperimentID() +
+				"/" + meta.getGroupID() +
+				"/WFS-" + wfsCount;
+		SeqWF seqWF = new SeqWF(skey, dataSet, description);
 		
 		// Add the Sequence (run) Workflow to the sequence
 		Sequence seq = group.findSequence(meta.getSequenceNumber());
 		seq.addWorkflow(seqWF);
 		
 		// Add the sequence workflow as a child to the group workflow
-		groupWF.addChildWF(seqWF);
+		groupWF.addChildWorkflow(seqWF);
 		
 		// Add the group Workflow to the group
 		group.addWorkflow(groupWF);
@@ -226,18 +239,9 @@ public class WorkflowRepo {
 		// NOTE: Need to decide if only group workflows or all workflow should go
 		// in the repo.  Only the group workflows should be engaged so the group
 		// can then manage the sequences which are child workflows
-		key = meta.getInstrumentID() + 
-				"/" + meta.getExperimentID() + 
-				"/" + meta.getGroupID() +
-				"/DT-" + meta.getDataType();
-		this.workflowSet.put(key, groupWF);
-		
-		key = meta.getInstrumentID() + 
-				"/" + meta.getExperimentID() + 
-				"/" + meta.getGroupID() + 
-				"/DT-" + meta.getDataType() + 
-				"/SEQ-" + meta.getSequenceNumber();
-		this.workflowSet.put(key, seqWF);
+		// use the same keys from above
+		this.workflowSet.put(gkey, groupWF);
+		this.workflowSet.put(skey, seqWF);
 		
 		return groupWF;
 	}

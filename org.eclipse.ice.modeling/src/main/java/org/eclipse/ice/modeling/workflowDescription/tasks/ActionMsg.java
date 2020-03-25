@@ -8,7 +8,7 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - John Hetrick
  *******************************************************************************/
-package org.eclipse.ice.modeling.workflowDescription;
+package org.eclipse.ice.modeling.workflowDescription.tasks;
 
 import org.eclipse.ice.modeling.workflowEngine.*;
 
@@ -67,7 +67,7 @@ public class ActionMsg extends Action {
 	 */
 	public Object execute() {
 		System.out.println("ActionMsg.execute()");
-		return this.msg;
+		return new Message(this.msg);
 	}
 
 }   // end class ActionMsg

@@ -7,10 +7,10 @@ import static org.junit.Assert.*;
 
 import org.eclipse.ice.modeling.experiment.DataSet;
 import org.eclipse.ice.modeling.experiment.ExperimentRepo;
-import org.eclipse.ice.modeling.experiment.Group;
 import org.eclipse.ice.modeling.experiment.MetaData;
-import org.eclipse.ice.modeling.workflowDescription.WorkflowDescription;
 import org.eclipse.ice.modeling.workflowDescription.WorkflowDescriptionRepo;
+import org.eclipse.ice.modeling.workflowDescription.WorkflowDescription;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,7 +21,7 @@ import org.junit.Test;
  * @author 6mq
  *
  */
-public class WorkflowRepoTest {
+public class WorkflowTest {
 
 	/**
 	 * A set of attributes that hold data for the test
@@ -29,11 +29,9 @@ public class WorkflowRepoTest {
 	private DataSet dataSet;
 	private ExperimentRepo expRepo;
 	private WorkflowDescriptionRepo wfdRepo;
-	private WorkflowDescription wdg;
-	private WorkflowDescription wds;
+	private WorkflowDescription wfd;
 	
 	/**
-	 * 
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
@@ -68,12 +66,10 @@ public class WorkflowRepoTest {
 		// Create a WorkflowDescriptionRepo
 		this.wfdRepo = new WorkflowDescriptionRepo();
 		
-		// Create the workflow descriptions for use in testing:
-		//    - one for a group
-		//    - one for a seqeunce (run)
-		
-		this.wdg = this.wfdRepo.findWorkflowDescription("INST-1/EXP-1/GRP-0");
-		this.wds = this.wfdRepo.findWorkflowDescription("INST-1/EXP-1/GRP-0/DT-0");
+		String key = meta.getInstrumentID() +
+				"/" + meta.getExperimentID() +
+				"/" + meta.getGroupID();
+		this.wfd = this.wfdRepo.findWorkflowDescription(key);
 	}
 
 	/**
@@ -84,34 +80,38 @@ public class WorkflowRepoTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.modeling.workflow.WorkflowRepo#WorkflowRepo()}.
+	 * Test method for {@link org.eclipse.ice.modeling.workflow.Workflow#Workflow(java.lang.String, org.eclipse.ice.modeling.experiment.DataSet, org.eclipse.ice.modeling.workflowDescription.WorkflowDescription)}.
 	 */
 	@Test
-	public void testWorkflowRepo() {
-		System.out.println("\n BEGIN TEST: WorkflowRepo.testWorkflowRepo");
+	public void testWorkflowStringDataSetWorkflowDescription() {
+		System.out.println("\n BEGIN TEST: WorkflowTest.testWorkflowStringDataSetWorkflowDescription");
 		
-		WorkflowRepo wfr = new WorkflowRepo();
+		MetaData meta = this.dataSet.getMetaData();
+		int wfCount = 0;
+		String key = meta.getInstrumentID() +
+				"/" + meta.getExperimentID() +
+				"/" + meta.getGroupID() +
+				"/WFG-" + wfCount;
+
+		Workflow wf = new Workflow(key, this.dataSet, this.wfd);
 		
-		//fail("Not yet implemented"); // TODO
-		System.out.println("END TEST: WorkflowRepo.testWorkflowRepo");
+		System.out.println("END TEST: WorkflowTest.testWorkflowStringDataSetWorkflowDescription");		
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.modeling.workflow.WorkflowRepo#findWorkflow(org.eclipse.ice.modeling.experiment.DataSet, org.eclipse.ice.modeling.workflowDescription.WorkflowDescription)}.
+	 * Test method for {@link org.eclipse.ice.modeling.workflow.Workflow#setWorkflowDescription(org.eclipse.ice.modeling.workflowDescription.WorkflowDescription)}.
 	 */
 	@Test
-	public void testFindWorkflow() {
-		System.out.println("\n BEGIN TEST: WorkflowRepo.testWorkflowRepo");
-		
-		
-		WorkflowRepo wfr = new WorkflowRepo();
-		wfr.setWorkflowDescriptionRepo(this.wfdRepo);
-		wfr.setExpRepo(this.expRepo);
-		
-		Workflow wf = wfr.findWorkflow(this.dataSet, this.wds);
-		
-		//fail("Not yet implemented"); // TODO
-		System.out.println("END TEST: WorkflowRepo.testWorkflowRepo");
+	public void testSetWorkflowDescription() {
+		fail("Not yet implemented"); // TODO
+	}
+
+	/**
+	 * Test method for {@link org.eclipse.ice.modeling.workflow.Workflow#handleMsg(org.eclipse.ice.modeling.workflowEngine.Message)}.
+	 */
+	@Test
+	public void testHandleMsg() {
+		fail("Not yet implemented"); // TODO
 	}
 
 }

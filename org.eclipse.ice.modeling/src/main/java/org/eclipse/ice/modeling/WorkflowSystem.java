@@ -37,7 +37,7 @@ public class WorkflowSystem implements IWorkflow {
 	 * is expected to be initialized from some source where predefined WorkflowDescriptions
 	 * are captured.
 	 */
-	private WorkflowDescriptonRepo workflowDescriptionRepo; 
+	private WorkflowDescriptionRepo workflowDescriptionRepo; 
 	
 	/**
 	 * The workflow engine is the internal system component that manages the 
@@ -120,9 +120,9 @@ public class WorkflowSystem implements IWorkflow {
 	 * 
 	 * @return the workflowDescriptionRepo
 	 */
-	public WorkflowDescriptonRepo initWorkflowDescriptionRepo() {
+	public WorkflowDescriptionRepo initWorkflowDescriptionRepo() {
 		System.out.println("WorkflowSystem.initWorkflowDescriptionRepo()");
-		this.workflowDescriptionRepo = new WorkflowDescriptonRepo();
+		this.workflowDescriptionRepo = new WorkflowDescriptionRepo();
 		
 		return workflowDescriptionRepo;
 	}
@@ -197,7 +197,7 @@ public class WorkflowSystem implements IWorkflow {
 	 * 
 	 * @param workflowDescriptionRepo - the workflowDescriptionRepo to set
 	 */
-	public void setWorkflowDescriptionRepo(WorkflowDescriptonRepo repo) {
+	public void setWorkflowDescriptionRepo(WorkflowDescriptionRepo repo) {
 		this.workflowDescriptionRepo = repo;
 	}
 

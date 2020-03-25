@@ -13,8 +13,8 @@ package org.eclipse.ice.modeling.workflowEngine;
 import org.eclipse.ice.modeling.experiment.*;
 
 /**
- * The Message class represents any message that has been received from an actor 
- * or needs to be sent to an actor.  It is not clear at this point if there needs 
+ * The Message class represents any message that has been received from an actor
+ * or needs to be sent to an actor.  It is not clear at this point if there needs
  * to be specializations of Message or not, but I suspect there will.
  * 
  * @author John Hetrick
@@ -53,6 +53,18 @@ public class Message {
 		
 		// Init the attributes
 		this.setMsgType(msg);
+	}
+
+	/**
+	 * This is another constructor for the Message class.  It takes a Message as a
+	 * parameter.  This method effectively makes a copy of the passed in message.
+	 * Note the DataSet is NOT copied
+	 * 
+	 * @param msg - the Message to be copied into a new message
+	 */
+	public Message(Message msg) {
+		System.out.println("Message(Message msg) constructor");
+		this.msgType = msg.getMsgType();
 	}
 
 	/**

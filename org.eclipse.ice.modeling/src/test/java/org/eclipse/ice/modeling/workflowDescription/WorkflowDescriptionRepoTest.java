@@ -18,9 +18,9 @@ import org.eclipse.ice.modeling.workflow.Workflow;
  * @author 6mq
  *
  */
-public class WorkflowDescriptonRepoTest {
+public class WorkflowDescriptionRepoTest {
 
-	private WorkflowDescriptonRepo wdr = new WorkflowDescriptonRepo();
+	private WorkflowDescriptionRepo wdr = new WorkflowDescriptionRepo();
 	private DataSet dataSet;
 	
 	/**
@@ -66,7 +66,7 @@ public class WorkflowDescriptonRepoTest {
 	public void testWorkflowDescriptonRepo() {
 		System.out.println("\n BEGIN TEST: WorkflowDescriptionRepo.testWorkflowDescriptonRepo");
 		
-		this.wdr = new WorkflowDescriptonRepo();
+		this.wdr = new WorkflowDescriptionRepo();
 		
 		System.out.println("END TEST: WorkflowDescriptionRepo.testWorkflowDescriptonRepo");
 	}

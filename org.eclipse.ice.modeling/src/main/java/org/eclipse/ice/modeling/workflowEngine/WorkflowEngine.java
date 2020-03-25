@@ -58,7 +58,7 @@ public class WorkflowEngine implements IWorkflow {
 	 * The workflowDescriptionRepo attribute is the repository for 
 	 * the set of WorkflowDescriptions
 	 */
-	private WorkflowDescriptonRepo workflowDescriptionRepo;
+	private WorkflowDescriptionRepo workflowDescriptionRepo;
 
 	/**
 	 * This is the constructor for the WorkflowEngine class
@@ -84,7 +84,7 @@ public class WorkflowEngine implements IWorkflow {
 	 * @param wfRepo - the Workflow repository
 	 * @param wdRepo - the WorkflowDescription repository
 	 */
-	public WorkflowEngine(ReducerStub reducer, WorkflowRepo wfRepo, WorkflowDescriptonRepo wdRepo) {
+	public WorkflowEngine(ReducerStub reducer, WorkflowRepo wfRepo, WorkflowDescriptionRepo wdRepo) {
 		System.out.println("WorkflowEngine(ReducerStub reducer, WorkflowRepo wfRepo, WorkflowDescriptonRepo wdRepo) constructor");
 		
 		this.reducer                 = reducer;
@@ -137,7 +137,7 @@ public class WorkflowEngine implements IWorkflow {
 	 * 
 	 * @return WorkflowDescriptionRepo
 	 */
-	public WorkflowDescriptonRepo getWorkflowDescriptionRepo() {
+	public WorkflowDescriptionRepo getWorkflowDescriptionRepo() {
 		return workflowDescriptionRepo;
 	}
 
@@ -148,7 +148,7 @@ public class WorkflowEngine implements IWorkflow {
 	 * workflowDescriptionRepo attribute
 	 * @return void
 	 */
-	public void setWorkflowDescriptionRepo(WorkflowDescriptonRepo repo) {
+	public void setWorkflowDescriptionRepo(WorkflowDescriptionRepo repo) {
 		this.workflowDescriptionRepo = repo;
 	}
 

@@ -269,7 +269,7 @@ public class Group {
 		boolean done = false;
 		
 		for (int i = 0; (i < this.workflowSet.size())  && !done; i++) {
-			if (id == this.workflowSet.get(i).getWfID()) {
+			if (id == this.workflowSet.get(i).getWorkflowID()) {
 				wf = this.workflowSet.get(i);
 				done = true;
 			}
@@ -279,12 +279,23 @@ public class Group {
 	}
 
 	/**
+	 * This method returns the number of sequences contained in the group
+	 * 
+	 * @return - the number of workflows in the group
+	 */
+	public int seqCount() {
+		System.out.println("Group.seqCount()");
+		
+		return this.seqSet.size();
+	}
+
+	/**
 	 * This method returns the number of workflows associated with group
 	 * 
 	 * @return - the number of workflows in the group
 	 */
 	public int workflowCount() {
-		System.out.println("Group.findWorkflow(String id)");
+		System.out.println("Group.workflowCount()");
 		
 		return this.workflowSet.size();
 	}

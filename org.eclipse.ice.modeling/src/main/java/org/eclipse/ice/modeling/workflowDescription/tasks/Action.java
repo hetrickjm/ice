@@ -8,7 +8,7 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - John Hetrick
  *******************************************************************************/
-package org.eclipse.ice.modeling.workflowDescription;
+package org.eclipse.ice.modeling.workflowDescription.tasks;
 
 import org.eclipse.ice.modeling.workflowEngine.*;
 
@@ -42,6 +42,21 @@ public class Action {
 	 */
 	public Object execute() {
 		System.out.println("Action.execute()");
+		return null;
+	}
+
+	/**
+	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
+	 * MAY BE CHANGED OR DEPRECATED
+	 * 
+	 * This method is the primary method to make the action take action (execute).
+	 * 
+	 * I think this should be virtual or abstract function so it has to be implemented by
+	 * the concrete class.
+	 * @param obj - a generic parameter to pass in required information
+	 */
+	public Object execute(Object obj) {
+		System.out.println("Action.execute(Object obj)");
 		return null;
 	}
 
