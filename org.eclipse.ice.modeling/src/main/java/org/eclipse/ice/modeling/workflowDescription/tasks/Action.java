@@ -60,4 +60,20 @@ public class Action {
 		return null;
 	}
 
+	/**
+	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
+	 * MAY BE CHANGED OR DEPRECATED
+	 * 
+	 * This method is the primary method to make the action take action (execute).
+	 * 
+	 * I think this should be virtual or abstract function so it has to be implemented by
+	 * the concrete class.
+	 * @param arg1 - a generic parameter to pass in required information
+	 * @param arg2 - this is a parameter that can be used for anything, but is expected to be an incoming message
+	 */
+	public Object execute(Object arg1, Object arg2) {
+		// TODO - implement Action.execute
+		throw new UnsupportedOperationException();
+	}
+
 }

@@ -15,6 +15,7 @@ import java.util.*;
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.experiment.*;
 import org.eclipse.ice.modeling.workflowDescription.*;
+import org.eclipse.ice.modeling.workflowDescription.tasks.Task;
 import org.eclipse.ice.modeling.states.*;
 
 /**
@@ -112,18 +113,28 @@ public class GroupWF extends Workflow {
 	}
 
 	/**
+	 * This is a setter method to add a child workflow to the childWfs attribute.
+	 * 
+	 * @param - the Workflow to add to the set of childWFs
+	 * 
+	 * @return void
+	 */
+	public void addChildWorkflow(Workflow workflow) {
+		System.out.println("GroupWF.addChildWF(Workflow workflow)");
+		this.childWorkflowSet.add(workflow);
+		
+	}   // end RunSetWF.setChildWFs(Workflow childWFs)
+
+	/**
 	 * This is a getter method to return a single childWorkflows found in
 	 * the childWorkflowSet.
-	 * 
-	 * @param key - String that is the key to find a specific child workflow.  The key consists of:
-	 * 		key = meta.getInstrumentID() +
-	 *			"/" + meta.getExperimentID() +
-	 *			"/" + meta.getGroupID() +
-	 *			"/WFS-" + meta.getSequenceNumber();
-	 *
+	 * @param key - String that is the key to find a specific child workflow.  The key consists of: key = meta.getInstrumentID() +
+	 * "/" + meta.getExperimentID() +
+	 * "/" + meta.getGroupID() +
+	 * "/WFS-" + meta.getSequenceNumber();
 	 * @return Workflow
 	 */
-	public Workflow getChildWorkflowSet(String key) {
+	public Workflow findChildWorkflow(String key) {
 		System.out.println("GroupWF.getChildWorkflowSet(String key)");
 		
 		boolean done = false;
@@ -140,19 +151,6 @@ public class GroupWF extends Workflow {
 	}
 
 	/**
-	 * This is a setter method to add a child workflow to the childWfs attribute.
-	 * 
-	 * @param - the Workflow to add to the set of childWFs
-	 * 
-	 * @return void
-	 */
-	public void addChildWorkflow(Workflow workflow) {
-		System.out.println("GroupWF.addChildWF(Workflow workflow)");
-		this.childWorkflowSet.add(workflow);
-		
-	}   // end RunSetWF.setChildWFs(Workflow childWFs)
-
-	/**
 	 * This method is invoked by the workflow engine to have the workflow process an
 	 * incoming message or action
 	 * 
@@ -167,67 +165,64 @@ public class GroupWF extends Workflow {
 		System.out.println("GroupWF.handleMsg(Message msgIn)");
 		System.out.println("   msgIn: " + msgIn.toString());
 		
-		Message msgOut = null;
+		Message msgOut = null,
+				msg    = msgIn;
 		int i = -1;
-		boolean found = false;
+		boolean found    = false,
+				stopLoop = false;
+		Task task = null;
+		List <TaskStatus> taskStatusTable = super.getTaskStatusTable();  //easier to work with locally
 		
 		// Check the current status of the Group workflow and take appropriate action
 		// Get the Sequence number the DataSet fo the message is related to.  The sequence
-		// number is the indext to the set of child workflows
+		// number is the index to the set of child workflows
 		int seqNum = msgIn.getDataSetRef().getMetaData().getSequenceNumber();
 		
 		switch (super.getWorkflowStatus()) {
 			case NOT_STARTED: 
-				// Which Task am I executing?
-				
-				// Invoke that task.  Not as that task is stateless, any information
-				// it need must be passed into it.  Perhaps we need a switch
-				// to process specific tasks
-				// Get the first task
-				List <TaskStatus> taskStatusTable = super.getTaskStatusTable();
-				
-				// To get the current task, loop through the tasks looking for the
-				// first one not complete.  Consider making this a method
-				// Task getTask()
-				for (i = 0; (i < taskStatusTable.size() -1 && !found); i++) {
-					if ( !(taskStatusTable.get(i).isComplete()))
-						found = true;
-				}
-				
-				if (found) {
-					// Invoke the task
-					msgOut = (Message) taskStatusTable.get(i).getTask().execute(this, msgIn);
-				}
-				/**
-				// If found a task to execute
-				if (found) {
-					// Determine what the Task is:
-					switch (taskStatusTable.get(i).getTask().g) {
-					case ""
-					}
-				}
-				 * 
-				 */
-				
-				
-				// do we need to check the state of the childWorkflow?
-				//this.
-				
-				
-				// Invoke the first task in the table
-				// The tasks should take any necessary action.  In this case
-				// It needs to invoke the child to handle the message
-				//msgOut = taskStatusTable.get(0).getTask().execute();
-				
-				//Workflow cwf = this.childWorkflowSet.get(seqNum);
-				//msgOut = cwf.handleMsg(msgIn);
-				
 				super.setWorkflowStatus(WorkflowState.IN_PROGRESS);
+			case IN_PROGRESS: 
+				// Loop through the Group Tasks until workflow is complete or
+				// There is a message to send out
+				while (!super.isComplete() && (msgOut == null) && !stopLoop) {
+					// Find the first Task that is not complete and invoke it
+					for (i = 0; ((i < taskStatusTable.size()) && !found); i++) {
+						if ( !(taskStatusTable.get(i).isComplete())) {
+							found = true;
+							task = taskStatusTable.get(i).getTask();
+							//msgOut = (Message) task.execute(taskStatusTable.get(i), msgIn);
+							msgOut = (Message) task.execute(this, msg);
+						}
+					}
+					
+					// If task !complete stop the loop and wait for the next
+					// incoming event (Message)
+					if (!taskStatusTable.get(i - 1).isComplete())
+						stopLoop = true;
+					else {
+						found = false;
+						
+						// Clear out the msg as there is no new msgIn.
+						// Create a new Message so the msgIn is not over written
+						if (msg == msgIn) {
+							msg = new Message("");
+							msg.setDataSetRef(msgIn.getDataSetRef());
+						}
+					}
+					
+					// if all tasks complete mark workflow as complete
+					// Note this assumes sequential execution of tasks.  All previous
+					// tasks assumed complete.  Really just checking if the last
+					// task is complete
+					// i is index of last task + 1 (from for loop above)
+					if (i >= taskStatusTable.size() && taskStatusTable.get(i - 1).isComplete()) {
+						super.setWorkflowStatus(WorkflowState.COMPLETE);
+					}
+					
+				}   // end while loop
+				
 				break;
 				
-			case IN_PROGRESS: 
-				break;
-			
 			case COMPLETE: 
 				break;
 			
@@ -237,15 +232,6 @@ public class GroupWF extends Workflow {
 			default:
 		
 		}
-		
-		
-		// Create key to find the appropriate child workflow
-		
-		// Find the child workflow
-		
-		// Invoke the child workflow to handle the message
-		//Message msgOut = this.childWorkflowSet[0].handleMsg(msgIn);
-		//System.out.println("   msgOut: " + msgOut.toString());
 		
 		return msgOut;
 	}

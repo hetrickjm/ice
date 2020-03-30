@@ -108,53 +108,57 @@ public class SeqWF extends Workflow {
 		
 		// Initi local vars
 		Message msgOut = null,
-				emptyMsg;
+				msg    = msgIn;
 		int i = -1;
-		boolean found = false;
+		boolean found    = false,
+				stopLoop = false;
 		Task task = null;
 		List <TaskStatus> taskStatusTable = super.getTaskStatusTable();  //easier to work with locally
 		
 		// What is the current status of the workflow?
 		switch (super.getWorkflowStatus()) {
 			case NOT_STARTED: 
+				super.setWorkflowStatus(WorkflowState.IN_PROGRESS);
+					
 			case IN_PROGRESS: 
-				// Find the first Task that is not complete and process it
-				for (i = 0; ((i < taskStatusTable.size()) && !found); i++) {
-					if ( !(taskStatusTable.get(i).isComplete())) {
-						found = true;
-						task = taskStatusTable.get(i).getTask();
-					}
-				}
-				
-				// If there are not more tasks to execute then the workflow is complete
-				if (found) {
-					// Invoke the task to execute
-					msgOut = (Message) task.execute(taskStatusTable.get(i - 1), msgIn);
-					super.setWorkflowStatus(WorkflowState.IN_PROGRESS);
-					
-					emptyMsg = new Message();
-					emptyMsg.setDataSetRef(msgIn.getDataSetRef());
-					
-					if (i < taskStatusTable.size()) {
-						while (msgOut == null && taskStatusTable.get(i - 1).isComplete()) {
-							// Note i is already incremented
+				// Loop through the Group Tasks until workflow is complete or
+				// There is a message to send out
+				while (!super.isComplete() && (msgOut == null) && !stopLoop) {
+					// Find the first Task that is not complete and invoke it
+					for (i = 0; ((i < taskStatusTable.size()) && !found); i++) {
+						if ( !(taskStatusTable.get(i).isComplete())) {
+							found = true;
 							task = taskStatusTable.get(i).getTask();
-							msgOut = (Message) task.execute(taskStatusTable.get(i), emptyMsg);
+							//msgOut = (Message) task.execute(taskStatusTable.get(i), msgIn);
+							msgOut = (Message) task.execute(taskStatusTable.get(i), msg);
 						}
 					}
 					
-					// check if there are any more Tasks to execute AND
-					// if the task just executed is complete
-					// If so then the workflow is complete
-					if (i >= taskStatusTable.size() && taskStatusTable.get(i - 1).isComplete()){
-						super.setWorkflowStatus(WorkflowState.COMPLETE);
+					// If task !complete stop the loop and wait for the next
+					// incoming event (Message)
+					if (!taskStatusTable.get(i - 1).isComplete())
+						stopLoop = true;
+					else {
+						found = false;
 						
+						// Clear out the msg as there is no new msgIn.
+						// Create a new Message so the msgIn is not over written
+						if (msg == msgIn) {
+							msg = new Message("");
+							msg.setDataSetRef(msgIn.getDataSetRef());
+						}
 					}
-				}
-				else {
-					// If a task is not found then the assumption is that all tasks are complete.
-					super.setWorkflowStatus(WorkflowState.COMPLETE);
-				}
+					
+					// if all tasks complete mark workflow as complete
+					// Note this assumes sequential execution of tasks.  All previous
+					// tasks assumed complete.  Really just checking if the last
+					// task is complete
+					// i is index of last task + 1 (from for loop above)
+					if (i >= taskStatusTable.size() && taskStatusTable.get(i - 1).isComplete()) {
+						super.setWorkflowStatus(WorkflowState.COMPLETE);
+					}
+					
+				}   // end while loop
 				
 				break;
 				

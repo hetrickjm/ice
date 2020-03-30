@@ -34,16 +34,13 @@ public class GroupTask extends Task {
 	}
 
 	/**
-	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
-	 * MAY BE CHANGED OR DEPRECATED
-	 * 
-	 * This method is to have the GroupTask execute the action(s) associated
-	 * with the Task.
+	 * This is another the constructor for the GroupTask class that takes an Action
+	 * @param id - the id of be used to set the taskID to
+	 * @param act - the Action to add to the actionSet
 	 */
-	public Object execute() {
-		System.out.println("GroupTask.execute()");
-		
-		return null;
+	public GroupTask(String id, Action act) {
+		super(id, act);
+		System.out.println("GroupTask(String id, Action act) constructor");
 	}
 
 	/**
@@ -52,10 +49,19 @@ public class GroupTask extends Task {
 	 * 
 	 * This method is to have the GroupTask execute the action(s) associated
 	 * with the Task.
-	 * For the AR Workflow system this is returning the message to be
-	 * sent to a Reducer system.
+	public Object execute() {
+		System.out.println("GroupTask.execute()");
+		
+		return null;
+	}
+	 */
+
+	/**
+	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
+	 * MAY BE CHANGED OR DEPRECATED
 	 * 
-	 * NOTE: consider renaming to "execute()"
+	 * This method is to have the GroupTask execute the action(s) associated
+	 * with the Task.
 	 * @param obj - generic parameter to be used in executing the task
 	 */
 	public Object execute(Object obj) {
@@ -74,25 +80,27 @@ public class GroupTask extends Task {
 	 * @param workflow - the workflow that provides context and is used to capture
 	 * and maintain state
 	 * @param obj - generic parameter to be used in executing the task
-	 */
 	public Object execute(Workflow wf, Object obj) {
-		// TODO - implement GroupTask.execute
-		throw new UnsupportedOperationException();
+		System.out.println("GroupTask.execute(Workflow wf, Object obj)");
+		
+		return null;
 	}
+	 */
 
 	/**
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
-	 * This method is to have the Task execute the action(s) associated
+	 * This method is to have the GroupTask execute the action(s) associated
 	 * with the Task.  Since that Task persists no state, pass in the
-	 * Workflow so the Task can us it to persist state
+	 * TaskStatus so the Task can us it to persist state
 	 * @param taskStatus - the TaskStatus to set as needed
 	 * @param obj - generic parameter to be used in executing the task
-	 */
 	public Object execute(TaskStatus taskStatus, Object obj) {
-		// TODO - implement GroupTask.execute
-		throw new UnsupportedOperationException();
+		System.out.println("GroupTask.execute(TaskStatus taskStatus, Object obj)");
+		
+		return null;
 	}
+	 */
 
 }

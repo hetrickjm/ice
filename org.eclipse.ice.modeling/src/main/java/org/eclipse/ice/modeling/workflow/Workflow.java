@@ -248,10 +248,9 @@ public class Workflow {
 	/**
 	 * This is a getter method to return the taskStatusTable attribute.  Note this is primarily
 	 * for the child classes to use.
-	 * 
 	 * @return List <TaskStatus>
 	 */
-	protected List <TaskStatus> getTaskStatusTable() {
+	public List <TaskStatus> getTaskStatusTable() {
 		System.out.println("Workflow.getTaskStatusTable()");
 		//this.taskStatusTable.get(index);
 		return this.taskStatusTable;

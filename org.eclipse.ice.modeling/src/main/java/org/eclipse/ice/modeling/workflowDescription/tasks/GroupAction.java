@@ -18,7 +18,7 @@ import org.eclipse.ice.modeling.workflowDescription.*;
  * 
  * @author John Hetrick
  */
-public class ActionGroup extends Action {
+public class GroupAction extends Action {
 
 	/**
 	 * The instruction attribute is an enumeration indicating which 
@@ -29,7 +29,7 @@ public class ActionGroup extends Action {
 	/**
 	 * This is the constructor for the ActionInstruction class
 	 */
-	public ActionGroup() {
+	public GroupAction() {
 		System.out.println("ActionInstruction() constructor");
 		this.instruction = InstructionGroup.REDUCE;
 	}
@@ -39,7 +39,7 @@ public class ActionGroup extends Action {
 	 * an argument of enum that identifies the instruction this is
 	 * @param instr - the Instruction to set the instruction attribute indicating what instruction this action is
 	 */
-	public ActionGroup(InstructionGroup instr) {
+	public GroupAction(InstructionGroup instr) {
 		System.out.println("ActionInstruction(InstructionGroup instr) constructor");
 		
 		this.instruction = instr;
@@ -82,6 +82,19 @@ public class ActionGroup extends Action {
 	 */
 	public Object execute(Object obj) {
 		// TODO - implement ActionInstruction.execute
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
+	 * MAY BE CHANGED OR DEPRECATED
+	 * 
+	 * This method is the primary method to make the action take action (execute).
+	 * @param arg1 - a generic parameter to pass in required information
+	 * @param arg2 - this is a parameter that can be used for anything, but is expected to be an incoming message
+	 */
+	public Object execute(Object arg1, Object arg2) {
+		// TODO - implement ActionGroup.execute
 		throw new UnsupportedOperationException();
 	}
 

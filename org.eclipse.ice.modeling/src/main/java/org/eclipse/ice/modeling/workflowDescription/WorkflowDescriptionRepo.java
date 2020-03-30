@@ -49,17 +49,8 @@ public class WorkflowDescriptionRepo {
 	 * This is the constructor for the WorkflowDescriptionRepo class
 	 */
 	public WorkflowDescriptionRepo() {
-	
-	}
-
-	/**
-	 * THIS METHOD IS FOR EXPLORING THE WORKFLOW CONCEPTS AND MAY BE CHANGED OR DEPRECATED
-	 * 
-	 * This method initializes and/or creates the workflowDescriptionSet.  This is
-	 * the set of WorkflowDescriptions.
-	 */
-	private void initWorkflowDescriptionSet() {
 		System.out.println("WorkflowDescriptionRepo() constructor");
+	
 		
 		this.workflowDescriptionSet = new Hashtable<String, WorkflowDescription>();
 		
@@ -72,6 +63,26 @@ public class WorkflowDescriptionRepo {
 		// FUTURE: This set should be create by reading from some persistent storage
 		// e.g. a file or a database
 		//this.initMapSet();
+	}
+
+	/**
+	 * THIS METHOD IS FOR EXPLORING THE WORKFLOW CONCEPTS AND MAY BE CHANGED OR DEPRECATED
+	 * 
+	 * This method initializes and/or creates the workflowDescriptionSet.  This is
+	 * the set of WorkflowDescriptions.
+	 */
+	private void initWorkflowDescriptionSet() {
+		System.out.println("WorkflowDescriptionRepo.initWorkflowDescriptionSet()");
+		
+		// Initialize this repo to have or access the set of Workflow descriptions
+		// Get / Create (dummy) workflow for processing a SeqWF (run)
+		//		CURRENTLY FOR EXPLORATION WE ARE CREATING DUMMY WORKFLOW DESCRIPTIONS
+		WorkflowDescription wfds = this.testCreateSeqWFD();
+		this.addWorkflowDescription("INST-1/EXP-1/GRP-0/DT-0", wfds);
+		
+		// Get / create (dummy) GroupWF
+		WorkflowDescription wfdg = this.testCreateGroupWFD();
+		this.addWorkflowDescription("INST-1/EXP-1/GRP-0", wfdg);
 	}
 
 	/**
@@ -92,7 +103,7 @@ public class WorkflowDescriptionRepo {
 		// NOTE:  THIS IS ONLY FOR EXPLORATION
 		Message msgCat   = new Message("CATALOG.DATA_READY");
 		ActionMsg actCat = new ActionMsg(msgCat);
-		taskSet.add(new Task("TSK-0", actCat));                // Add a new Task
+		taskSet.add(new SeqCatalogTask("TSK-0", actCat));                // Add a new Task
 		index = taskSet.size() - 1;
 		
 		// Create and set the completion criteria for this task
@@ -110,7 +121,7 @@ public class WorkflowDescriptionRepo {
 		// Add a second task
 		Message msgRed   = new Message("REDUCTION.DATA_READY");
 		ActionMsg actRed = new ActionMsg(msgRed);
-		taskSet.add(new Task("TSK-1", actRed));
+		taskSet.add(new SeqReduceTask("TSK-1", actRed));
 		index = taskSet.size() - 1;
 		
 		// Create and set the completion criteria for this task
@@ -128,7 +139,7 @@ public class WorkflowDescriptionRepo {
 		// Add a Third task
 		Message msgRedCat   = new Message("REDUCTION_CATAGORY.DATA_READY");
 		ActionMsg actRedCat = new ActionMsg(msgRedCat);
-		taskSet.add(new Task("TSK-2", actRedCat));
+		taskSet.add(new SeqRedCatTask("TSK-2", actRedCat));
 		index = taskSet.size() - 1;
 		
 		// Create and set the completion criteria for this task
@@ -168,8 +179,8 @@ public class WorkflowDescriptionRepo {
 		// Create the 3 MsgActions to be used in Tasks
 		// These represent the 3 messages assoicated with getting a DataSet reduced
 		// NOTE:  THIS IS ONLY FOR EXPLORATION
-		ActionGroup actRed = new ActionGroup(InstructionGroup.REDUCE);
-		taskSet.add(new Task("GTSK-0", actRed));                // Add a new Task
+		Action actRed = new GroupReduceAction(InstructionGroup.REDUCE);
+		taskSet.add(new GroupReduceTask("GTSK-0", actRed));                // Add a new Task
 		index = taskSet.size() - 1;
 		
 		// Create and set the completion criteria for this task
@@ -185,12 +196,12 @@ public class WorkflowDescriptionRepo {
 		/////////////////////////////////////////////////////////
 		System.out.println("\tCreating Group Task 2");
 		// Add a second task
-		ActionGroup actStitch = new ActionGroup(InstructionGroup.STITCH);
-		taskSet.add(new Task("GTSK-1", actStitch));
+		Action actStitch = new GroupStitchAction(InstructionGroup.STITCH);
+		taskSet.add(new GroupStitchTask("GTSK-1", actStitch));
 		index = taskSet.size() - 1;
 		
 		// Create and set the completion criteria for this task
-		Criteria crit2 = new StringCriteria("NONE");
+		Criteria crit2 = new StringCriteria("COMPLETE");
 		CompletionCriteria complete2 = new CompletionCriteria();
 		complete2.addCompletionCreiteria(crit2);
 		
