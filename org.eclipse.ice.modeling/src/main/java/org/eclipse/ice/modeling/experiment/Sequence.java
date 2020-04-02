@@ -12,6 +12,9 @@ package org.eclipse.ice.modeling.experiment;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.ice.modeling.workflow.*;
 
 /**
@@ -30,6 +33,11 @@ import org.eclipse.ice.modeling.workflow.*;
  */
 public class Sequence {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Sequence.class);
+	
 	/**
 	 * The seqeunceNum attribute is the sequence number of this data 
 	 * set as part of a set of data sets (sequences or runs)
@@ -50,20 +58,10 @@ public class Sequence {
 	private List <Workflow> workflowSet;
 
 	/**
-	 * DEPRECATE:
-	 * The workflowIndex is set to the array index of the latest workflow.  -1
-	 * means the array is empty and there are no workflows
-	 * 
-	 * NOTE: This will likely be DEPRECATED when implementing a dynamic
-	 * workflow list.
-	 */
-	private int workflowIndex = -1;
-
-	/**
 	 * This is the constructor for the Sequence class
 	 */
 	public Sequence() {
-		System.out.println("Sequence() constructor");
+		logger.debug("Sequence() constructor");
 		this.workflowSet = new ArrayList <Workflow>();
 		
 		this.sequenceNum = -1;   // -1 is not a valid sequence number so init to invalud value
@@ -76,7 +74,7 @@ public class Sequence {
 	 * @param set  - the DataSet to associate with the Sequence
 	 */
 	public Sequence(DataSet set) {
-		System.out.println("Sequence(DataSet set) constructor");
+		logger.debug("Sequence(DataSet set) constructor");
 		
 		this.dataSet     = set;
 		this.sequenceNum = set.getMetaData().getSequenceNumber();
@@ -92,7 +90,6 @@ public class Sequence {
 	 * @return int - the value of the sequenceNum attribute
 	 */
 	public int getSequenceNum() {
-		System.out.println("Sequence.getSequenceNum()");
 		return this.sequenceNum;
 	}
 
@@ -106,7 +103,6 @@ public class Sequence {
 	 * @param num - num is used to the the sequenceNum attribute
 	 */
 	public void setSequenceNum(int num) {
-		System.out.println("Sequence.setSequenceNum(int num)");
 		this.sequenceNum = num;
 	}
 
@@ -136,7 +132,6 @@ public class Sequence {
 	 * @return List <Workflow> - workflowSet attribute
 	 */
 	public List <Workflow> getWorkflowSet() {
-		System.out.println("Sequence.getWorkflowSet()");
 		return this.workflowSet;
 	}
 
@@ -148,7 +143,6 @@ public class Sequence {
 	 * @return void
 	 */
 	public void addWorkflow(Workflow workflow) {
-		System.out.println("Sequence.addWorkflow(Workflow workflow)");
 		this.workflowSet.add(workflow);
 	}
 
@@ -159,7 +153,6 @@ public class Sequence {
 	 * @return Workflow
 	 */
 	public Workflow findWorkflow() {
-		System.out.println("Sequence.findWorkflow()");
 		return this.workflowSet.get(this.workflowSet.size() - 1);
 	}
 
@@ -171,7 +164,7 @@ public class Sequence {
 	 * @return Workflow
 	 */
 	public Workflow findWorkflow(String id) {
-		System.out.println("Sequence.findWorkflow(String id)");
+		logger.debug("Sequence.findWorkflow(String id)");
 		
 		Workflow wf  = null;
 		boolean done = false;
@@ -192,8 +185,6 @@ public class Sequence {
 	 * @return - the number of workflows in the group
 	 */
 	public int workflowCount() {
-		System.out.println("Group.findWorkflow(String id)");
-		
 		return this.workflowSet.size();
 	}
 

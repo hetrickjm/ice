@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.experiment;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The Data Set is a reference to the data set that is to be or is being reduced (processed).  It holds a link (reference of some kind) to the raw data which is not contained here in.  One of the important things this class holds is the meta data for the data set.
  * 
@@ -21,17 +24,32 @@ package org.eclipse.ice.modeling.experiment;
 public class DataSet {
 
 	/**
-	 * This is a reference or a link to a file that contains the actual raw data that needs or is undergoing processing
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(DataSet.class);
+	
+	/**
+	 * The rawDataRef attribute is a reference or a link to a file that contains the actual 
+	 * raw data that needs or is undergoing processing.  This is expected to be a full
+	 * path and file as a direct reference to a location on a mounted drive
 	 */
 	private String rawDataRef;
+	
+	/**
+	 * The metData attribute contains the set of information about the data set.
+	 */
 	private MetaData metaData;
+
+	/**
+	 * The dataSetID attribute is an identifier for the data set
+	 */
 	private String dataSetID;
 
 	/**
 	 * This is the constructor for the DataSet class
 	 */
 	public DataSet() {
-		System.out.println("DataSet() constructor");
+		logger.debug("DataSet() constructor");
 		
 		metaData   = new MetaData();
 		rawDataRef = "Raw Data File Reference";
@@ -44,7 +62,7 @@ public class DataSet {
 	 * @param dataSetID - A string the uniquely identifies this DataSet
 	 */
 	public DataSet(MetaData metaData, String dataSetID) {
-		//super();
+		logger.debug("DataSet(MetaData metaData, String dataSetID) constructor");
 		this.metaData = metaData;
 		this.dataSetID = dataSetID;
 	}

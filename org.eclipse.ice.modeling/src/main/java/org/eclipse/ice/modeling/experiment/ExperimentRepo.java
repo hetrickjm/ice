@@ -12,6 +12,9 @@ package org.eclipse.ice.modeling.experiment;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.ice.modeling.workflow.Workflow;
 
 /**
@@ -26,6 +29,11 @@ import org.eclipse.ice.modeling.workflow.Workflow;
 public class ExperimentRepo {
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ExperimentRepo.class);
+	
+	/**
 	 * The experimentSet attribute is the test of Experiments in the repository
 	 */
 	private Map <String, Experiment> experimentSet;
@@ -34,7 +42,7 @@ public class ExperimentRepo {
 	 * This is the constructor for the ExperimentRepo class
 	 */
 	public ExperimentRepo() {
-		System.out.println("ExperimentRepo() constructor");
+		logger.debug("ExperimentRepo() constructor");
 		
 		this.experimentSet = new Hashtable <String, Experiment>();
 		
@@ -49,7 +57,7 @@ public class ExperimentRepo {
 	 * @return Experiment
 	 */
 	public Experiment findExperiment(String key) {
-		System.out.println("ExperimentRepo.findExperiment(String key)");
+		logger.debug("ExperimentRepo.findExperiment(String key)");
 		
 		Experiment exp = null;
 		
@@ -68,11 +76,10 @@ public class ExperimentRepo {
 	 * This method adds an Experiment to the repository
 	 * 
 	 * @param exp  - the Experiment to add to the repo
+	 * 
 	 * @return void
 	 */
 	public void addExperiment(Experiment exp) {
-		System.out.println("ExperimentRepo.addExperiment(Experiment exp)");
-
 		// Create the key for the table.  The key is a concat of
 		// the instrument ID and the experiment ID
 		String key = exp.getInstrumentID() + "/" + exp.getExpID();
@@ -84,10 +91,11 @@ public class ExperimentRepo {
 	 * The createExperiment method creates and Experiment based on the passed in DataSet
 	 * which includes the MetaData for the experiment.  The Experiment is added to the
 	 * repository and returned to caller.
+	 * 
 	 * @param dataSet - the DataSet that contains the information for creating the Experiment
 	 */
 	public Experiment createExperiment(DataSet dataSet) {
-		System.out.println("ExperimentRepo.createExperiment(DataSet dataSet)");
+		logger.debug("ExperimentRepo.createExperiment(DataSet dataSet)");
 		
 		MetaData meta = dataSet.getMetaData();  // Easy access to the MetaData
 		

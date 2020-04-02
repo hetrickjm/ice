@@ -12,6 +12,10 @@ package org.eclipse.ice.modeling.workflowDescription;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 /**
  * THIS CLASS IS PART OF THE WORKFLOW CONCEPT THAT IS BEING EXPLORED
  * 
@@ -24,6 +28,11 @@ import java.util.*;
  */
 public class CompletionCriteria {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(CompletionCriteria.class);
+	
 	/**
 	 * CURRENTLY THIS ATTRIBUTE IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
@@ -45,7 +54,7 @@ public class CompletionCriteria {
 	 * This is the constructor for the CompletionCriteria class
 	 */
 	public CompletionCriteria() {
-		System.out.println("CompleteCriteria() constructor");
+		logger.debug("CompleteCriteria() constructor");
 		
 		this.criteriaSet = new ArrayList();
 	}
@@ -56,7 +65,7 @@ public class CompletionCriteria {
 	 * @param crit - a Criteria to initialize the criteriaSet attribute
 	 */
 	public CompletionCriteria(Criteria crit) {
-		System.out.println("CompleteCriteria(String msg) constructor");
+		logger.debug("CompleteCriteria(String msg) constructor");
 		
 		addCompletionCreiteria(crit);
 	}
@@ -68,9 +77,6 @@ public class CompletionCriteria {
 	 * This is a getter method to return the criteriaSet attribute
 	 */
 	public List<Criteria> getCompletionCriteria() {
-		System.out.println("CompleteCriteria.getcompletionMsg()");
-		
-		
 		return this.criteriaSet;
 	}
 
@@ -83,7 +89,7 @@ public class CompletionCriteria {
 	 * @param crit - the message to set the completionMsg to
 	 */
 	public void addCompletionCreiteria(Criteria crit) {
-		System.out.println("CompleteCriteria.addCompletionMsg(Criteria crit)");
+		logger.debug("CompleteCriteria.addCompletionMsg(Criteria crit)");
 		this.criteriaSet.add(crit);
 	}
 
@@ -92,7 +98,7 @@ public class CompletionCriteria {
 	 * @param status - List of items to compare with the criteria to determine equivalency
 	 */
 	public boolean isComplete(List <Criteria> status) {
-		System.out.println("CompleteCriteria.isComplete(List status)");
+		logger.debug("CompleteCriteria.isComplete(List status)");
 		
 		// If the size of the two lists is equal then check the values, if not then
 		// there is no way status can be complete so return false

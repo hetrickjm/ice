@@ -12,6 +12,9 @@ package org.eclipse.ice.modeling.workflowDescription;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.experiment.*;
 import org.eclipse.ice.modeling.workflowDescription.tasks.*;
@@ -33,6 +36,11 @@ import org.eclipse.ice.modeling.workflowDescription.tasks.*;
 public class WorkflowDescriptionRepo {
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(WorkflowDescriptionRepo.class);
+	
+	/**
 	 * The workflowDescriptionSet is the repository for all WorkflowDescriptions.
 	 * 
 	 * NOTE: In the future this may be a facade to some persistent storage.  This is TBD based
@@ -49,7 +57,7 @@ public class WorkflowDescriptionRepo {
 	 * This is the constructor for the WorkflowDescriptionRepo class
 	 */
 	public WorkflowDescriptionRepo() {
-		System.out.println("WorkflowDescriptionRepo() constructor");
+		logger.debug("WorkflowDescriptionRepo() constructor");
 	
 		
 		this.workflowDescriptionSet = new Hashtable<String, WorkflowDescription>();
@@ -72,7 +80,7 @@ public class WorkflowDescriptionRepo {
 	 * the set of WorkflowDescriptions.
 	 */
 	private void initWorkflowDescriptionSet() {
-		System.out.println("WorkflowDescriptionRepo.initWorkflowDescriptionSet()");
+		logger.debug("WorkflowDescriptionRepo.initWorkflowDescriptionSet()");
 		
 		// Initialize this repo to have or access the set of Workflow descriptions
 		// Get / Create (dummy) workflow for processing a SeqWF (run)
@@ -91,13 +99,13 @@ public class WorkflowDescriptionRepo {
 	 * This method creates a canned WorkflowDescription for a Sequence.
 	 */
 	private WorkflowDescription testCreateSeqWFD() {
-		System.out.println("WorkflowDescriptionRepo.testCreateSeqWFD()");
+		logger.debug("WorkflowDescriptionRepo.testCreateSeqWFD()");
 		// Init some variables
 		int index;
 		List <Task> taskSet = new ArrayList <Task>();
 		WorkflowDescription wfd = new WorkflowDescription("WDT-0", WorkflowDescriptionType.SEQ);
 		
-		System.out.println("\tCreating Seq Task 1");
+		logger.debug("\tCreating Seq Task 1");
 		// Create the 3 MsgActions to be used in Tasks
 		// These represent the 3 messages assoicated with getting a DataSet reduced
 		// NOTE:  THIS IS ONLY FOR EXPLORATION
@@ -117,7 +125,7 @@ public class WorkflowDescriptionRepo {
 		wfd.addTask(taskSet.get(index));                            // Add the task to the workflowDescription
 		
 		/////////////////////////////////////////////////////////
-		System.out.println("\tCreating Seq Task 2");
+		logger.debug("\tCreating Seq Task 2");
 		// Add a second task
 		Message msgRed   = new Message("REDUCTION.DATA_READY");
 		ActionMsg actRed = new ActionMsg(msgRed);
@@ -135,7 +143,7 @@ public class WorkflowDescriptionRepo {
 		wfd.addTask(taskSet.get(index));                            // Add the task to the workflowDescription
 		
 		/////////////////////////////////////////////////////////
-		System.out.println("\tCreating Seq Task 3");
+		logger.debug("\tCreating Seq Task 3");
 		// Add a Third task
 		Message msgRedCat   = new Message("REDUCTION_CATAGORY.DATA_READY");
 		ActionMsg actRedCat = new ActionMsg(msgRedCat);
@@ -167,7 +175,7 @@ public class WorkflowDescriptionRepo {
 	 * This method creates a canned WorkflowDescription for a Group.
 	 */
 	private WorkflowDescription testCreateGroupWFD() {
-		System.out.println("WorkflowDescriptionRepo.testCreateGroupWFD()");
+		logger.debug("WorkflowDescriptionRepo.testCreateGroupWFD()");
 		// Init some variables
 		int index;
 		List <Task> taskSet = new ArrayList <Task>();
@@ -175,7 +183,7 @@ public class WorkflowDescriptionRepo {
 		// Need to add a workflowDescription CompletionCriteria
 		WorkflowDescription wfd = new WorkflowDescription("WDG-0", WorkflowDescriptionType.GROUP);
 		
-		System.out.println("\tCreating Group Task 1");
+		logger.debug("\tCreating Group Task 1");
 		// Create the 3 MsgActions to be used in Tasks
 		// These represent the 3 messages assoicated with getting a DataSet reduced
 		// NOTE:  THIS IS ONLY FOR EXPLORATION
@@ -194,7 +202,7 @@ public class WorkflowDescriptionRepo {
 		wfd.addTask(taskSet.get(index));
 	
 		/////////////////////////////////////////////////////////
-		System.out.println("\tCreating Group Task 2");
+		logger.debug("\tCreating Group Task 2");
 		// Add a second task
 		Action actStitch = new GroupStitchAction(InstructionGroup.STITCH);
 		taskSet.add(new GroupStitchTask("GTSK-1", actStitch));
@@ -227,7 +235,7 @@ public class WorkflowDescriptionRepo {
 	 * @param metaData - the meta data that holds the key to identifying a specific WorkflowDescription
 	 */
 	public WorkflowDescription getWorkflowDescription(MetaData metaData) {
-		System.out.println("WorkflowDescriptionRepo.getWorkflowDescription(MetaData metaData)");
+		logger.debug("WorkflowDescriptionRepo.getWorkflowDescription(MetaData metaData)");
 		
 		String key;   // This is to create the key to use to find the proper WorkflowDescription
 		
@@ -236,7 +244,7 @@ public class WorkflowDescriptionRepo {
 		key += "/" + metaData.getExperimentID();
 		key += "/" + metaData.getGroupID();
 		key += "/DT-" + metaData.getDataType();
-		System.out.println("\tkey: " + key);
+		logger.debug("\tkey: " + key);
 		
 		WorkflowDescription wd = this.workflowDescriptionSet.get(key);
 		
@@ -259,7 +267,7 @@ public class WorkflowDescriptionRepo {
 	 * @return WorkflowDescription
 	 */
 	public WorkflowDescription findWorkflowDescription(MetaData metaData) {
-		System.out.println("WorkflowDescriptionRepo.getWorkflowDescription(MetaData metaData)");
+		logger.debug("WorkflowDescriptionRepo.getWorkflowDescription(MetaData metaData)");
 		
 		String key;   // This is to create the key to use to find the proper WorkflowDescription
 		
@@ -270,7 +278,7 @@ public class WorkflowDescriptionRepo {
 			"/" + metaData.getExperimentID() +
 			"/" + metaData.getGroupID() +
 			"/DT-" + metaData.getDataType();
-		System.out.println("\tkey: " + key);
+		logger.debug("\tkey: " + key);
 		
 		WorkflowDescription wd = this.workflowDescriptionSet.get(key);
 		
@@ -284,9 +292,7 @@ public class WorkflowDescriptionRepo {
 	 * @return WorkflowDescription
 	 */
 	public WorkflowDescription findWorkflowDescription(String key) {
-		System.out.println("WorkflowDescriptionRepo.getWorkflowDescription(MetaData metaData)");
-		
-		System.out.println("\tkey: " + key);
+		logger.debug("WorkflowDescriptionRepo.getWorkflowDescription(MetaData metaData)\n\tkey: ", key);
 		
 		WorkflowDescription wd = this.workflowDescriptionSet.get(key);
 		

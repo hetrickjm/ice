@@ -12,6 +12,9 @@ package org.eclipse.ice.modeling.workflow;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.ice.modeling.experiment.*;
 import org.eclipse.ice.modeling.workflowDescription.*;
 import org.eclipse.ice.modeling.workflowDescription.tasks.*;
@@ -31,20 +34,9 @@ import org.eclipse.ice.modeling.states.*;
 public class Workflow {
 
 	/**
-	 * THIS ATTRIBUTE IS PART OF THE WORLFLOW  EXPLORATION AND MAY BE
-	 * CHANGED OR DEPRECATED
-	 * 
-	 * The wfState attribute holds the current state of the workflow
+	 * Logger for handling event messages and other information.
 	 */
-	private WorkflowState workflowStatus;
-	
-	/**
-	 * THIS ATTRIBUTE IS PART OF THE WORLFLOW  EXPLORATION AND MAY BE
-	 * CHANGED OR DEPRECATED
-	 * 
-	 * The status attribute holds the current state of the workflow
-	 */
-	private List <TaskStatus> taskStatusTable = null;
+	private static final Logger logger = LoggerFactory.getLogger(Workflow.class);
 	
 	/**
 	 * THIS ATTRIBUTE IS PART OF THE WORLFLOW  EXPLORATION AND MAY BE
@@ -53,15 +45,7 @@ public class Workflow {
 	 * The workflowID attribute holds the ID of the workflow
 	 */
 	private String workflowID;
-	
-	/**
-	 * THIS ATTRIBUTE IS PART OF THE WORLFLOW  EXPLORATION AND MAY BE
-	 * CHANGED OR DEPRECATED
-	 * 
-	 * The dataSet attribute holds the Data Set associated with the workflow
-	 */
-	private DataSet dataSet;
-	
+
 	/**
 	 * THIS ATTRIBUTE IS PART OF THE WORLFLOW  EXPLORATION AND MAY BE
 	 * CHANGED OR DEPRECATED
@@ -69,26 +53,48 @@ public class Workflow {
 	 * The workflowDescription attribute holds the WorkflowDescription associated with the workflow
 	 */
 	private WorkflowDescription workflowDescription;
-	
+
 	/**
 	 * THIS ATTRIBUTE IS PART OF THE WORLFLOW  EXPLORATION AND MAY BE
 	 * CHANGED OR DEPRECATED
 	 * 
-	 * The currentStep attribute holds the current step of the WorkflowDescription 
-	 * the workflow is currently on
+	 * The dataSet attribute holds the Data Set associated with the workflow
 	 */
-	private Task currentStep;
+	private DataSet dataSet;
+
+	/**
+	 * DEPRECATE!
+	 * 
+	 * THIS ATTRIBUTE IS PART OF THE WORLFLOW  EXPLORATION AND MAY BE
+	 * CHANGED OR DEPRECATED
+	 * 
+	 * The wfState attribute holds the current state of the workflow
+	 */
+	private WorkflowState workflowStatus;
+
+	/**
+	 * The workflowStatusTablet attribute holds the status(es) for the workflow and
+	 * the status of its tasks.  For a Sequence workflow there will
+	 * only be one WorkflowStatus in the set.  However, a Group will contain
+	 * multiple WorkflowStatuses - one for each sequence it contains.  Currently
+	 * the tasks for a group apply to and must be executed on each sequence.  Hence the
+	 * need for a set of WorkflowStatuses.  The status for each group Task set is tracked
+	 * in the context of each sequence.  Note this is still a group level status for each
+	 * Group Task.  The sequence has its own workflow with its own Tasks to be executed
+	 * as a childWorkflow
+	 */
+	private List<WorkflowStatus> workflowStatusTable = null;
 
 	/**
 	 * This is the constructor for the Workflow class
 	 */
 	public Workflow() {
-		System.out.println("Workflow() constructor");
+		logger.debug("Workflow() constructor");
 		
 		// initialize the attributes
 		this.workflowStatus = WorkflowState.NOT_STARTED;
 		this.workflowID = "Workflow-ID";
-		this.taskStatusTable = new ArrayList <TaskStatus>();
+		this.workflowStatusTable = new ArrayList <WorkflowStatus>();
 	}   // end Workflow() constructor
 
 	/**
@@ -99,23 +105,29 @@ public class Workflow {
 	 * @param description - the WorkflowDescription to bind with the DataSet in the Workflow
 	 */
 	public Workflow(String id, DataSet set, WorkflowDescription description) {
-		System.out.println("Workflow(DataSet set, WorkflowDescription description) constructor");
+		logger.debug("Workflow(DataSet set, WorkflowDescription description) constructor");
+		
+		List <TaskStatus> taskStatusTable = null;
 		
 		this.workflowStatus = WorkflowState.NOT_STARTED;
 		this.workflowID = id;
 		this.dataSet    = set;
 		this.workflowDescription  = description;
-		this.taskStatusTable = new ArrayList <TaskStatus>();
+		this.workflowStatusTable = new ArrayList <WorkflowStatus>();
 		
 		/**
-		 * Creat the add TaskStatus entries to the taskStatusTable for every Task in the
-		 * WorkflowDescription
+		 * Create the add an initial WorkflowStatus entry to the WorkflowStatusTable for
+		 * the set of Tasks in the WorkflowDescription
 		 */
+		WorkflowStatus workflowStatus = new WorkflowStatus();
+		taskStatusTable = workflowStatus.getTaskStatusTable();
 		for (int i = 0; i < description.getNumberOfTasks(); i++) {
 			// Create a new TaskStatus with the Task from the WorkflowDescription and
 			// add it to the taskStatusTable
-			this.taskStatusTable.add(new TaskStatus(description.getTask(i)));
+			taskStatusTable.add(new TaskStatus(description.getTask(i)));
 		}
+		
+		this.workflowStatusTable.add(workflowStatus);
 	}
 
 	/**
@@ -127,7 +139,6 @@ public class Workflow {
 	 * @return String - the workflowID attribute
 	 */
 	public String getWorkflowID() {
-		System.out.println("Workflow.getWorkflowID()");
 		return this.workflowID;
 	}
 
@@ -139,7 +150,6 @@ public class Workflow {
 	 * @param id  - id to use in setting the setWfID attribute
 	 */
 	public void setWorkflowID(String id) {
-		System.out.println("Workflow.setWorkflowID(String id)");
 		this.workflowID = id;
 	}
 
@@ -152,7 +162,6 @@ public class Workflow {
 	 * @return DataSet
 	 */
 	public DataSet getDataSet() {
-		System.out.println("Workflow.getDataSet()");
 		return dataSet;
 	}
 
@@ -178,7 +187,6 @@ public class Workflow {
 	 * @return WorkflowDescription
 	 */
 	public WorkflowDescription getWorkflowDescription() {
-		System.out.println("Workflow.getWorkflowDescription()");
 		return this.workflowDescription;
 	}
 
@@ -192,102 +200,116 @@ public class Workflow {
 	 * @return void
 	 */
 	public void setWorkflowDescription(WorkflowDescription wfd) {
-		System.out.println("Workflow.setWorkflowDescription(WorkflowDescription wfd)");
+		int i   = -1,
+			len = -1;
+		List <TaskStatus> taskStatusTable = new ArrayList <TaskStatus>();
+		
+		// Set the workflowDescription attributed
 		this.workflowDescription = wfd;
 		
 		/**
-		 * Since the WorkflowDescription is being added, need to set/reset the taskStatusTable
-		 * to match the WorkflowDescription.
+		 * Create and add TaskStatus entries to the new taskStatusTable for every Task
+		 * in the WorkflowDescription
 		 */
-		
-		// First check if the taskStatusTable needs to be created or reset
-		if (this.taskStatusTable == null) {
-			this.taskStatusTable = new ArrayList <TaskStatus>();
-		}
-		else {
-			// reset
-			this.taskStatusTable.clear();
-		}
-		
-		/**
-		 * Creat the add TaskStatus entries to the taskStatusTable for every Task in the
-		 * WorkflowDescription
-		 */
-		for (int i = 0; i < wfd.getNumberOfTasks(); i++) {
+		for ( i = 0; i < wfd.getNumberOfTasks(); i++) {
 			// Create a new TaskStatus with the Task from the WorkflowDescription and
 			// add it to the taskStatusTable
-			this.taskStatusTable.add(new TaskStatus(wfd.getTask(i)));
+			taskStatusTable.add(new TaskStatus(wfd.getTask(i)));
 		}
+		
+		// Check if the workflowStatusTable needs to be created
+		if (this.workflowStatusTable == null) {
+			this.workflowStatusTable = new ArrayList <WorkflowStatus>();
+		}
+		
+		len = this.workflowStatusTable.size();
+		
+		// If there are no entries in the workflowStatusTable create an initial entry
+		if (len <= 0) {
+			// create an initial WorkflowStatus in the WorkflowStatusTable
+			this.workflowStatusTable.add(new WorkflowStatus());
+			len = 1;
+		}
+		
+		// For each WorkflowStatus in the table replace the old taskStatusTable
+		// with the new taskStatusTable.  Note all workflows should have the same
+		// set of Tasks.
+		for (i = 0; i < len; i++) {
+			this.workflowStatusTable.get(i).setTaskStatusTable(taskStatusTable);
+			this.workflowStatusTable.get(i).setWorkflowState(WorkflowState.NOT_STARTED);
+		}
+			
 	}
 
 	/**
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
-	 * This is a getter method to returning the currentStep attribute
-	 * 
-	 * @return Task
+	 * This is a getter method to returning the workflowStatusSet attribute
 	 */
-	public Task getCurrentStep() {
-		return currentStep;
+	public List <WorkflowStatus> getWorkflowStatusTable() {
+		return this.workflowStatusTable;
 	}
 
 	/**
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
-	 * This is a setter method to set the currentStep attribute
-	 * @param step - step is used to set the currentStep attribute
+	 * This is a setter method to set the workflowStatusSet attribute
+	 * @param set
+	 */
+	public void setWorkflowStatusTable(List <WorkflowStatus> set) {
+		this.workflowStatusTable = set;
+	}
+
+	/**
+	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
+	 * MAY BE CHANGED OR DEPRECATED
 	 * 
-	 * @return void
+	 * This is a getter method to returning a workflowStatus from the
+	 * workflowStatusTable attribute
+	 * @param index - the index into the workflowStatusTable for the specific workflowStatus
+	 * to be returned
 	 */
-	public void setCurrentStep(Task step) {
-		this.currentStep = step;
+	public WorkflowStatus getWorkflowStatus(int index) {
+		return this.workflowStatusTable.get(index);
 	}
 
 	/**
-	 * This is a getter method to return the taskStatusTable attribute.  Note this is primarily
-	 * for the child classes to use.
-	 * @return List <TaskStatus>
-	 */
-	public List <TaskStatus> getTaskStatusTable() {
-		System.out.println("Workflow.getTaskStatusTable()");
-		//this.taskStatusTable.get(index);
-		return this.taskStatusTable;
-	}
-
-	/**
+	 * DEPRECATE!
+	 * 
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
 	 * This is a getter method to returning the workflowStatus attribute
 	 */
 	public WorkflowState getWorkflowStatus() {
-		System.out.println("Workflow.getWorkflowStatus()");
-		
 		return this.workflowStatus;
 	}
 
 	/**
+	 * DEPRECATE!
+	 * 
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
 	 * This is a setter method to set the workflowStatus attribute
-	 * @param workflowStatus - state (enum) to use to set the workflowStatus attribute
+	 * @param wfs
 	 */
 	public void setWorkflowStatus(WorkflowState wfs) {
-		System.out.println("Workflow.setWorkflowStatus(WorkflowState workflowStatus)");
 		this.workflowStatus = wfs;
 	}
 
 	/**
+	 * NEEDS TO BE MODIFIED FOR NEW STATUS MECHANISM
+	 * 
 	 * This method evaluates if the workflow is complete or not.  It returns true if it is complete
 	 * or false if not complete.
 	 * 
 	 * Note: Need to figure out how to handle the ERROR state.
 	 */
 	public boolean isComplete() {
-		System.out.println("Workflow.isComplete()");
+		logger.debug("Workflow.isComplete()");
 		
 		if (this.workflowStatus == WorkflowState.COMPLETE)
 			return true;
@@ -307,15 +329,14 @@ public class Workflow {
 	 * @return Message
 	 */
 	public Message handleMsg(Message msgIn) {
-		System.out.println("Workflow.handleMsg()");
-		System.out.println("   msgIn: " + msgIn.toString());
+		logger.debug("Workflow.handleMsg(Message msgIn)\n\tmsgIn: ", msgIn.toString());
 		
 		Message msgOut = new Message();
 		msgOut.setMsgType("Message out from WF");
 		
-		System.out.println("   msgOut: " + msgOut.toString());
+		logger.debug("\tmsgOut: ", msgOut.toString());
 		
 		return msgOut;
 	}
 
-}   // end Workflow class 
+}   // end Workflow class

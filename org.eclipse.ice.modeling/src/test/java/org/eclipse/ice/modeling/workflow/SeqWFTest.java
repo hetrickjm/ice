@@ -37,7 +37,7 @@ public class SeqWFTest {
 	private DataSet dataSet;
 	private ExperimentRepo expRepo;
 	private WorkflowDescriptionRepo wfdRepo;
-	private WorkflowDescription wfd;
+	private WorkflowDescription wfds;
 	private Workflow wf;
 
 	/**
@@ -69,19 +69,54 @@ public class SeqWFTest {
 		this.dataSet = new DataSet(meta, "DS-42");
 		this.dataSet.setRawDataRef("INST-1/EXP-1/GRP-0/SEQ-0/DT-0");
 		
+		// Create an Repos
+		this.initRepos();
+		
+		// Get the Sequence WorkflowDescription
+		String key = meta.getInstrumentID() +
+				"/" + meta.getExperimentID() +
+				"/" + meta.getGroupID() +
+				"/DT-" + meta.getDataType();
+		this.wfds = this.wfdRepo.findWorkflowDescription(key);
+
+	}
+
+	/**
+	 * Init a set of repos for testing
+	 */
+	private void initRepos() {
+		System.out.println("\tBEGIN: SeqWFTest.initRepos()");
+		
 		// Create an ExperimentRepo
 		this.expRepo = new ExperimentRepo();
 		
 		// Create a WorkflowDescriptionRepo
-		this.wfd = this.testCreateSeqWFD();
-		/**
-		 * 
 		this.wfdRepo = new WorkflowDescriptionRepo();
+		
+		System.out.println("\tEND: SeqWFTest.initRepos()");
+	}
+
+	/*
+	 * Create Sequence workflow(s) for testing.
+	 */
+	private void createSeqWorkflow() {
+		System.out.println("\tBEGIN: SeqWFTest.createSeqWorkflow()");
+		
+		// Create a SeqWF key
+		// Create a new SeqWF to work with
+		MetaData meta = this.dataSet.getMetaData();
+		int wfCount = 0;
 		String key = meta.getInstrumentID() +
 				"/" + meta.getExperimentID() +
-				"/" + meta.getGroupID();
-		this.wfd = this.wfdRepo.findWorkflowDescription(key);
-		 */
+				"/" + meta.getGroupID() +
+				"/WFS-" + wfCount;
+
+		this.wf = new SeqWF(key, this.dataSet, this.wfds);
+		
+		// recast the Workflow to a GroupWF to add the child workflow to the childWorkflowSet
+		//GroupWF gwf = (GroupWF) this.wf;
+		//gwf.addChildWorkflow(cwf);
+		System.out.println("\tEND: SeqWFTest.createChildWorkflow()");
 	}
 
 	/**
@@ -180,6 +215,8 @@ public class SeqWFTest {
         msgOut = null;
 		boolean cmplt = false;
 		
+		/**
+		 * 
 		// Create a new SeqWF to work with
 		MetaData meta = this.dataSet.getMetaData();
 		int wfCount = 0;
@@ -188,26 +225,32 @@ public class SeqWFTest {
 				"/" + meta.getGroupID() +
 				"/WFS-" + wfCount;
 
-		this.wf = new SeqWF(key, this.dataSet, this.wfd);
+		this.wf = new SeqWF(key, this.dataSet, this.wfds);
+		 */
+		
+		// Create a new GroupWF with its parts
+		this.createSeqWorkflow();
 		
 		msgIn = new Message("POSTPROCESS.DATA_READY");
 		msgIn.setDataSetRef(dataSet);
 		
+		// Start the processing of a sequence by sending in
+		// the POSTPROCESS.DATA_READY msg
+		msgOut = (Message) this.wf.handleMsg(msgIn);
+		
 		// Pretending the in message is to start the reduction of a Sequence
-		this.genCatalogMsgs(msgIn);
+		this.genCatalogMsgs();
 		System.out.println("\tis workflow complete: " + this.wf.isComplete());
 		
 		
 		// This has been stimulated by the last set of message to be processed, so this msgIn should
 		// not contain a msg
-		msgIn.setMsgType("");
-		this.genReduceMsgs(msgIn);
+		this.genReduceMsgs();
 		System.out.println("\tis workflow complete: " + this.wf.isComplete());
 		
 		// This has been stimulated by the last set of message to be processed, so this msgIn should
 		// not contain a msg
-		msgIn.setMsgType("");
-		this.genRedCatMsgs(msgIn);
+		this.genRedCatMsgs();
 		System.out.println("\tis workflow complete: " + this.wf.isComplete());
 		
 		System.out.println("END TEST: SeqWF.testHandleMsg");		
@@ -216,37 +259,21 @@ public class SeqWFTest {
 	/**
 	 * Generate/Send Catalog messages to the workflow
 	 */
-	private void genCatalogMsgs(Message msgIn) {
+	private void genCatalogMsgs() {
 		System.out.println("\tBEGIN: SeqWFTest.genCatalogMsgs()");
 		Message altMsg,
 		        msgOut = null;
 		boolean cmplt = false;
-		
-		// Send multiple messages simulating a set to complete a task
-		// This first message is one that is passed in
-		msgOut = (Message) this.wf.handleMsg(msgIn);
-		
-		// Check if task complete
-		//cmplt = this.taskStat.isComplete();
-		//System.out.println("\tis Task Complete: " + cmplt);
 		
 		// Creat the next msgIn in the sequence
 		altMsg = new Message ("CATALOG.STARTED");
 		altMsg.setDataSetRef(this.dataSet);
 		msgOut = (Message) this.wf.handleMsg(altMsg);
 		
-		// Check if task complete
-		// cmplt = this.taskStat.isComplete();
-		//System.out.println("\tis Task Complete: " + cmplt);
-		
 		// Creat the next msgIn in the sequence
 		altMsg = new Message ("CATALOG.COMPLETE");
 		altMsg.setDataSetRef(this.dataSet);
 		msgOut = (Message) this.wf.handleMsg(altMsg);
-		
-		// Check if task complete
-		//cmplt = this.taskStat.isComplete();
-		//System.out.println("\tis Task Complete: " + cmplt);
 		
 		//fail("Not yet implemented");
 		System.out.println("\tEND: SeqWFTest.genCatalogMsgs()");
@@ -255,37 +282,21 @@ public class SeqWFTest {
 	/**
 	 * Generate/Send Catalog messages to the workflow
 	 */
-	private void genReduceMsgs(Message msgIn) {
+	private void genReduceMsgs() {
 		System.out.println("\tBEGIN: SeqWFTest.genReduceMsgs()");
 		Message altMsg,
 		        msgOut = null;
 		boolean cmplt = false;
-		
-		// Send multiple messages simulating a set to complete a task
-		// This first message is one that is passed in
-		//msgOut = (Message) this.wf.handleMsg(msgIn);
-		
-		// Check if task complete
-		//cmplt = this.taskStat.isComplete();
-		//System.out.println("\tis Task Complete: " + cmplt);
 		
 		// Creat the next msgIn in the sequence
 		altMsg = new Message ("REDUCTION.STARTED");
 		altMsg.setDataSetRef(this.dataSet);
 		msgOut = (Message) this.wf.handleMsg(altMsg);
 		
-		// Check if task complete
-		// cmplt = this.taskStat.isComplete();
-		//System.out.println("\tis Task Complete: " + cmplt);
-		
 		// Creat the next msgIn in the sequence
 		altMsg = new Message ("REDUCTION.COMPLETE");
 		altMsg.setDataSetRef(this.dataSet);
 		msgOut = (Message) this.wf.handleMsg(altMsg);
-		
-		// Check if task complete
-		//cmplt = this.taskStat.isComplete();
-		//System.out.println("\tis Task Complete: " + cmplt);
 		
 		//fail("Not yet implemented");
 		System.out.println("\tEND: SeqWFTest.genReduceMsgs()");
@@ -294,37 +305,21 @@ public class SeqWFTest {
 	/**
 	 * Generate/Send Catalog messages to the workflow
 	 */
-	private void genRedCatMsgs(Message msgIn) {
+	private void genRedCatMsgs() {
 		System.out.println("\tBEGIN: SeqWFTest.genRedCatMsgs()");
 		Message altMsg,
 		        msgOut = null;
 		boolean cmplt = false;
-		
-		// Send multiple messages simulating a set to complete a task
-		// This first message is one that is passed in
-		// msgOut = (Message) this.wf.handleMsg(msgIn);
-		
-		// Check if task complete
-		//cmplt = this.taskStat.isComplete();
-		//System.out.println("\tis Task Complete: " + cmplt);
 		
 		// Creat the next msgIn in the sequence
 		altMsg = new Message ("REDUCTION_CATAGORY.STARTED");
 		altMsg.setDataSetRef(this.dataSet);
 		msgOut = (Message) this.wf.handleMsg(altMsg);
 		
-		// Check if task complete
-		// cmplt = this.taskStat.isComplete();
-		//System.out.println("\tis Task Complete: " + cmplt);
-		
 		// Creat the next msgIn in the sequence
 		altMsg = new Message ("REDUCTION_CATAGORY.COMPLETE");
 		altMsg.setDataSetRef(this.dataSet);
 		msgOut = (Message) this.wf.handleMsg(altMsg);
-		
-		// Check if task complete
-		//cmplt = this.taskStat.isComplete();
-		//System.out.println("\tis Task Complete: " + cmplt);
 		
 		//fail("Not yet implemented");
 		System.out.println("\tEND: SeqWFTest.genRedCatMsgs()");
@@ -344,7 +339,7 @@ public class SeqWFTest {
 				"/" + meta.getGroupID() +
 				"/WFS-" + wfCount;
 
-		SeqWF wfs = new SeqWF(key, this.dataSet, this.wfd);
+		SeqWF wfs = new SeqWF(key, this.dataSet, this.wfds);
 		
 		System.out.println("END TEST: SeqWF.testSeqWFStringDataSetWorkflowDescription");		
 	}

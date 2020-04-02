@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.workflowEngine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.ice.modeling.experiment.*;
+import org.eclipse.ice.modeling.workflow.SeqWF;
 
 /**
  * The Message class represents any message that has been received from an actor
@@ -20,6 +24,12 @@ import org.eclipse.ice.modeling.experiment.*;
  * @author John Hetrick
  */
 public class Message {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Message.class);
+	
 	/**
 	 * The msgType attribute represents a command or request that specifies what 
 	 * the message is about.  Note: This will likely change as protocols are 
@@ -37,7 +47,7 @@ public class Message {
 	 * This is the constructor for the Message class
 	 */
 	public Message() {
-		System.out.println("Message() constructor");
+		logger.debug("Message() constructor");
 		
 		// Init attributes
 		this.setMsgType("blank");
@@ -49,7 +59,7 @@ public class Message {
 	 * @param type - msg type to set the the msgType attribute
 	 */
 	public Message(String msg) {
-		System.out.println("Message(String msg) constructor");
+		logger.debug("Message(String msg) constructor");
 		
 		// Init the attributes
 		this.setMsgType(msg);
@@ -63,7 +73,7 @@ public class Message {
 	 * @param msg - the Message to be copied into a new message
 	 */
 	public Message(Message msg) {
-		System.out.println("Message(Message msg) constructor");
+		logger.debug("Message(Message msg) constructor");
 		this.msgType = msg.getMsgType();
 	}
 
@@ -108,11 +118,11 @@ public class Message {
 	public String toString() {
 		String msgString;
 		msgString = "cmnd = " + this.msgType +
-				    "\n DataSet = " + this.dataSetRef.getDataSetID() +
-				    "\n Instrument = " + this.dataSetRef.getMetaData().getInstrumentID() +
-				    "\n Experiment = " + this.dataSetRef.getMetaData().getExperimentID() +
-				    "\n Run Set = " + this.dataSetRef.getMetaData().getGroupID() +
-				    "\n Run = " + this.dataSetRef.getMetaData().getSequenceNumber();
+				    " DataSet = " + this.dataSetRef.getDataSetID() +
+				    " Instrument = " + this.dataSetRef.getMetaData().getInstrumentID() +
+				    " Experiment = " + this.dataSetRef.getMetaData().getExperimentID() +
+				    " Run Set = " + this.dataSetRef.getMetaData().getGroupID() +
+				    " Run = " + this.dataSetRef.getMetaData().getSequenceNumber();
 		
 		return msgString;
 	}

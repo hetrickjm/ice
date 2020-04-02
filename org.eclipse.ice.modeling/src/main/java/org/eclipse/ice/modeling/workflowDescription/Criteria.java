@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.workflowDescription;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * THIS CLASS IS PART OF THE WORKFLOW CONCEPT THAT IS BEING EXPLORED
  * 
@@ -25,6 +28,11 @@ package org.eclipse.ice.modeling.workflowDescription;
 public class Criteria {
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Criteria.class);
+	
+	/**
 	 * The criteria attribute contains a criteria to be use.  It is an Object 
 	 * so it can be any class.
 	 */
@@ -34,7 +42,7 @@ public class Criteria {
 	 * This is the constructor for the Criteria class
 	 */
 	public Criteria() {
-		System.out.println("Criteria.() constructor");
+		logger.debug("Criteria.() constructor");
 		this.criteria = null;
 	}
 

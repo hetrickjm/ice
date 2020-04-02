@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.workflowDescription;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * THIS CLASS IS PART OF THE WORKFLOW CONCEPT THAT IS BEING EXPLORED
  * 
@@ -23,11 +26,16 @@ package org.eclipse.ice.modeling.workflowDescription;
 public class StringCriteria extends Criteria {
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(StringCriteria.class);
+	
+	/**
 	 * This is the constructor for the StringCriteria class
 	 */
 	public StringCriteria() {
 		super();
-		System.out.println("StringCriteria.() constructor");
+		logger.debug("StringCriteria.() constructor");
 		
 	}
 
@@ -37,7 +45,7 @@ public class StringCriteria extends Criteria {
 	 */
 	public StringCriteria(String str) {
 		super();
-		System.out.println("StringCriteria.(String str) constructor");
+		logger.debug("StringCriteria.(String str) constructor");
 		
 		super.setCriteria(str);
 	}

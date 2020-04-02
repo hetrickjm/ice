@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.workflowEngine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.ice.modeling.actors.*;
 import org.eclipse.ice.modeling.*;
 import org.eclipse.ice.modeling.workflow.*;
@@ -25,6 +28,11 @@ import org.eclipse.ice.modeling.workflowDescription.*;
  */
 public class WorkflowEngine implements IWorkflow {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(SeqWF.class);
+	
 	/**
 	 * The reducer attribute holds a reference to a post processing reducer system
 	 * that will handle the reduction of the data sets
@@ -64,7 +72,7 @@ public class WorkflowEngine implements IWorkflow {
 	 * This is the constructor for the WorkflowEngine class
 	 */
 	public WorkflowEngine() {
-		System.out.println("WorkflowEngine() constructor");
+		logger.debug("WorkflowEngine() constructor");
 		
 		this.reducer = null;
 		this.workflow = null;
@@ -85,7 +93,7 @@ public class WorkflowEngine implements IWorkflow {
 	 * @param wdRepo - the WorkflowDescription repository
 	 */
 	public WorkflowEngine(ReducerStub reducer, WorkflowRepo wfRepo, WorkflowDescriptionRepo wdRepo) {
-		System.out.println("WorkflowEngine(ReducerStub reducer, WorkflowRepo wfRepo, WorkflowDescriptonRepo wdRepo) constructor");
+		logger.debug("WorkflowEngine(ReducerStub reducer, WorkflowRepo wfRepo, WorkflowDescriptonRepo wdRepo) constructor");
 		
 		this.reducer                 = reducer;
 		this.workflowRepo            = wfRepo;
@@ -172,7 +180,7 @@ public class WorkflowEngine implements IWorkflow {
 	 * the Workflow
 	 */
 	public Workflow determineWorkflow(DataSet dataSet) {
-		System.out.println("WorkflowEngine.determineWorkflow(DataSet dataSet)");
+		logger.debug("WorkflowEngine.determineWorkflow(DataSet dataSet)");
 		
 		WorkflowDescription wd = this.findWorkflowDescription(dataSet.getMetaData());
 		// Now that we have the workflow description we need to see if there is
@@ -194,11 +202,11 @@ public class WorkflowEngine implements IWorkflow {
 	 * 
 	 * @return void
 	 */
-	public void handleMsg(Message msg) {
-		System.out.println("WorkflowEngine.handleMsg()");
+	public void handleMsg(Message msgIn) {
+		logger.debug("WorkflowEngine.handleMsg()\n\tmsgIn: ", msgIn.toString());
 		
 		Message msgOut;
-		DataSet dataSet = msg.getDataSetRef();
+		DataSet dataSet = msgIn.getDataSetRef();
 		MetaData metaData = dataSet.getMetaData();
 		WorkflowDescription workflowDescription;
 		
@@ -218,7 +226,7 @@ public class WorkflowEngine implements IWorkflow {
 		
 		// Ask the workflow for the next outgoing message
 		// A return of null indicates no follow on message
-		msgOut = workflow.handleMsg(msg);
+		msgOut = workflow.handleMsg(msgIn);
 		
 		if (msgOut != null) {
 			reducer.processMessage(msgOut, this);
@@ -233,7 +241,7 @@ public class WorkflowEngine implements IWorkflow {
 	 * associated WorkflowDescription
 	 */
 	private WorkflowDescription findWorkflowDescription(MetaData metaData) {
-		System.out.println("WorkflowEngine.findWorkflowDescription(MetaData metaData)");
+		logger.debug("WorkflowEngine.findWorkflowDescription(MetaData metaData)");
 		
 		// Some local vars:
 		WorkflowDescription wd = null;
@@ -294,7 +302,7 @@ public class WorkflowEngine implements IWorkflow {
 	 * @param wd  - the WorkflowDescriptor use to help identify the workflow
 	 */
 	private Workflow findWorkflow(DataSet dataSet, WorkflowDescription wd) {
-		System.out.println("WorkflowEngine.findWorkflowDescription(MetaData metaData)");
+		logger.debug("WorkflowEngine.findWorkflowDescription(MetaData metaData)");
 		
 		Workflow wf = new Workflow();
 		return wf;

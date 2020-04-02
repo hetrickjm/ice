@@ -13,6 +13,9 @@ package org.eclipse.ice.modeling.workflow;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.ice.modeling.experiment.*;
 import org.eclipse.ice.modeling.workflowDescription.*;
 
@@ -27,6 +30,11 @@ import org.eclipse.ice.modeling.workflowDescription.*;
  */
 public class WorkflowRepo {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Workflow.class);
+	
 	/**
 	 * This attribute holds the set of workflow instances.  
 	 * (java.util.Map<String, AR-Workflow_Model.org.eclipse.ice.modeling.workflow.Workflow>)
@@ -48,7 +56,7 @@ public class WorkflowRepo {
 	 * This is the constructor for the WorkflowRepo class
 	 */
 	public WorkflowRepo() {
-		System.out.println("WorkflowRepo() constructor");
+		logger.debug("WorkflowRepo() constructor");
 		
 		// Initialize the workflow repository attribute
 		this.workflowSet = new Hashtable<String, Workflow>();
@@ -58,7 +66,7 @@ public class WorkflowRepo {
 	 * This is a getter method to return a workflow from the workflow set.
 	 */
 	public Workflow getWorkflowSet(String key) {
-		System.out.println("WorkflowRepo.getWorkflowSet(String key)");
+		logger.debug("WorkflowRepo.getWorkflowSet(String key) ");
 		
 		return this.workflowSet.get(key);
 	}
@@ -128,7 +136,7 @@ public class WorkflowRepo {
 	 * @return Workflow
 	 */
 	public Workflow findWorkflow(DataSet dataSet, WorkflowDescription wd) {
-		System.out.println("WorkflowEngine.findWorkflow(DataSet dataSet, WorkflowDescription wd)");
+		logger.debug("WorkflowRepo.findWorkflow(DataSet dataSet, WorkflowDescription wd) ");
 		
 		// Initi local vars
 		Sequence   seq      = null;
@@ -181,7 +189,7 @@ public class WorkflowRepo {
 	 * @return Workflow
 	 */
 	private Workflow createWorkflow(DataSet dataSet, WorkflowDescription description, Group group) {
-		System.out.println("WorkflowRepo.createWorkflow()");
+		logger.debug("WorkflowRepo.createWorkflow(DataSet dataSet, WorkflowDescription description, Group group) ");
 		
 		MetaData meta = dataSet.getMetaData();
 		

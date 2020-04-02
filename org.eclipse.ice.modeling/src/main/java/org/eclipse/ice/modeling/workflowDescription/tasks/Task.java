@@ -41,12 +41,6 @@ public class Task {
 	private List <Action> actionSet;
 	
 	/**
-	 * The actionSet attribute of type Action is a set of 1 or more actions 
-	 * that are necessary to complete the the Task.
-	 */
-	private int currentAction = -1;
-	
-	/**
 	 * The success attribute of type SuccessCriteria hold the criteria to 
 	 * evaluate if a Task has successfully been completed.  
 	 * NOTE: THIS IS CURRENTLY A CONCEPT BUT THE DETAILS HAVE NOT BEEN 
@@ -69,7 +63,6 @@ public class Task {
 		
 		// set an inital default action.
 		this.actionSet = new ArrayList <Action>(); 
-		this.currentAction = -1;                 // -1 means no actions in set
 		
 		//Init the completion criteria
 		this.completionCriteria = null;
@@ -86,9 +79,7 @@ public class Task {
 		
 		this.taskID = id;
 		this.actionSet = new ArrayList <Action>();
-		this.currentAction = -1;
 		this.actionSet.add(act);
-		this.currentAction = 0;    // set to the first action... just added
 		
 		// Init the completion criteria
 		this.completionCriteria = null;
@@ -135,7 +126,7 @@ public class Task {
 		
 		// Check if there are any actions and
 		// if the index passed in is "in-bounds"
-		if ((currentAction == -1) || (index > (this.actionSet.size() -1)))
+		if ((index < 0) || (index > (this.actionSet.size() - 1)))
 			return null;
 		
 		return this.actionSet.get(index);
@@ -150,9 +141,8 @@ public class Task {
 	 */
 	public void addAction(Action act) {
 		System.out.println("Task.setActionAction act()");
-		//If the action set is null then create it
+		
 		this.actionSet.add(act);
-		//this.currentAction++;
 		
 	}   // end Task.setAction
 
@@ -207,21 +197,31 @@ public class Task {
 	 * with the Task.
 	 * For the AR Workflow system this is returning the message to be
 	 * sent to a Reducer system.
+	 * 
+	 * @return Object - the result of executing the Action(s)
 	 */
 	public Object execute() {
 		System.out.println("Task.execute()");
 		
-		// Execute the current action
-		// Check if the returned object is a Message
-		Object obj = this.actionSet.get(this.currentAction).execute();
+		// THIS IS A BAD IMPLEMENTATION BECAUSE IT ASSUMES ONE ACTION
+		int i = -1;
+		Object result = null;
 		
-		if (obj != null) {
-			if (obj instanceof Message)
-				return (Message) obj;
+		for (i = 0; i < this.numberOfActions(); i++) {
+			result = this.actionSet.get(i).execute();
 		}
 		
-		return null;
+		// Check if the returned object is a Message
+		// Currently no other type of Object other than Message and null have
+		// been implemented
+		if (result != null) {
+			if (result instanceof Message)
+				return (Message) result;
+			else
+				return result;
+		}
 		
+		return result;
 	}
 
 	/**
@@ -238,10 +238,17 @@ public class Task {
 	 */
 	public Object execute(Object obj) {
 		System.out.println("Task.execute(Object obj)");
-		// Execute the current action
-		// Check if the returned object is a Message
-		Object result = this.actionSet.get(this.currentAction).execute(obj);
+		// THIS IS A BAD IMPLEMENTATION BECAUSE IT ASSUMES ONE ACTION
+		int i = -1;
+		Object result = null;
 		
+		for (i = 0; i < this.numberOfActions(); i++) {
+			result = this.actionSet.get(i).execute(obj);
+		}
+		
+		// Check if the returned object is a Message
+		// Currently no other type of Object other than Message and null have
+		// been implemented
 		if (result != null) {
 			if (result instanceof Message)
 				return (Message) result;
@@ -249,7 +256,7 @@ public class Task {
 				return result;
 		}
 		
-		return null;
+		return result;
 	}
 
 	/**

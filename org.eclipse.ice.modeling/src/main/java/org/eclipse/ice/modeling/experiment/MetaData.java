@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.experiment;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The Meta Data class contains all the pertinent information the workflow system needs to determine which workflow activity to use to reduce (process) the data set to which the meta data belongs.
  * 
@@ -17,6 +20,11 @@ package org.eclipse.ice.modeling.experiment;
  */
 public class MetaData {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(MetaData.class);
+	
 	/**
 	 * This attribute is identifies the facility that generated the data set
 	 */
@@ -54,7 +62,7 @@ public class MetaData {
 	 * This is the constructor for the MetaData class
 	 */
 	public MetaData() {
-		System.out.println("MetaData() constructor");
+		logger.debug("MetaData() constructor");
 		
 		this.setInstrumentID("instrumentID");
 		this.setExperimentID("experimentID");

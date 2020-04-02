@@ -15,110 +15,52 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.experiment.*;
+import org.eclipse.ice.modeling.states.WorkflowState;
 import org.eclipse.ice.modeling.workflowDescription.*;
 import org.eclipse.ice.modeling.workflowDescription.tasks.Task;
-import org.eclipse.ice.modeling.states.*;
+import org.eclipse.ice.modeling.workflowEngine.*;
 
 /**
  * THIS CLASS IS PART OF THE WORKFLOW CONCEPT THAT IS BEING EXPLORED.
  * 
- * The GroupWF specializes Workflow.  GroupWF is a workflow to process WorkflowDescriptions
- * designed to process groups of Data Sets (Sequences) Workflows.
+ * The GroupReduceStitchWF specializes GroupWF which specializes Workflow.  GroupReduceStitchWF
+ * is a workflow to manage the processing of WorkflowDescriptions designed for specifically
+ * for a group that is to Reduce each sequence (as it comes in) and stitch it together
+ * immediately with the other sequences that are part of the group.  The bulk of the processing is
+ * handled in the parent classes.  This class is specializing only the part to manage sets of
+ * TaskStatus tables, one for each sequence the group contains.
  * 
  * @author John Hetrick
  */
-public class GroupWF extends Workflow {
-	
+public class GroupReduceStitchWF extends GroupWF {
+
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(GroupWF.class);
+	private static final Logger logger = LoggerFactory.getLogger(GroupReduceStitchWF.class);
 	
 	/**
-	 * The childWFSet attribute holds the set of child workflows that the
-	 * GroupWF can contain.  These child workflows are anticipated to be RunWF.
-	 * 
-	 * NOTE: Currently this attribute us being initialized to 2.  In the future
-	 * this should be a dynamic list who's nodes are created on when needed.
+	 * This is the constructor for the GroupReduceStichWF
 	 */
-	private List<Workflow> childWorkflowSet;
-	
-	/**
-	 * This is the constructor for the GroupWF class.
-	 */
-	public GroupWF() {
+	public GroupReduceStitchWF() {
 		super();
-		logger.debug("GroupWF() constructor");
+		logger.debug("GroupReduceStitchWF() constructor");
 		
-		// Intialize the list of child workflows
-		this.childWorkflowSet = new ArrayList <Workflow>();
-		
-	}   // end RunSetWF() constructor
+	}
 
 	/**
-	 * This is another constructor for the GroupWF class. It takes a DataSet and WorkflowDescription
+	 * This is another constructor for the GroupReduceStitchWF class. It takes a DataSet and WorkflowDescription
 	 * parameters to bind together in the Workflow.
-	 * @param id - the ID of the workflow
-	 * @param set - the DataSe to bind with the WorkflowDescription in the Workflow
+	 * @param id - ID of the workflow
+	 * @param set - the DataSet to bind with the WorkflowDescription in the Workflow
 	 * @param description - the WorkflowDescription to bind with the DataSet in the Workflow
 	 */
-	public GroupWF(String id, DataSet set, WorkflowDescription description) {
+	public GroupReduceStitchWF(String id, DataSet set, WorkflowDescription description) {
 		super(id, set, description);
-		logger.debug("GroupWF(String id, DataSet set, WorkflowDescription description) constructor");
+		//System.out.println("GroupReduceStitchWF(String id, DataSet set, WorkflowDescription description) constructor");
+		logger.debug("GroupReduceStitchWF(String id, DataSet set, WorkflowDescription description) constructor");
 		
-		// Intialize the list of child workflows
-		this.childWorkflowSet = new ArrayList <Workflow>();
-
-	}
-	
-	/**
-	 * This is a getter method to return the childWorkflowss attribute.
-	 * @return List <Workflow>
-	 */
-	public List<Workflow> getChildWorkflowSet() {
-		logger.debug("GroupWF.getChildWorkflowSet()");
-		return this.childWorkflowSet;
-	}
-
-	/**
-	 * This is a setter method to add a child workflow to the childWfs attribute.
-	 * 
-	 * @param - the Workflow to add to the set of childWFs
-	 * 
-	 * @return void
-	 */
-	public void addChildWorkflow(Workflow workflow) {
-		logger.debug("GroupWF.gaddChildWorkflow(Workflow workflow)");
-		this.childWorkflowSet.add(workflow);
-		
-	}   // end RunSetWF.setChildWFs(Workflow childWFs)
-
-	/**
-	 * This is a getter method to return a single childWorkflows found in
-	 * the childWorkflowSet.
-	 * 
-	 * @param key - String that is the key to find a specific child workflow.  The key consists of: key = meta.getInstrumentID() +
-	 * "/" + meta.getExperimentID() +
-	 * "/" + meta.getGroupID() +
-	 * "/WFS-" + meta.getSequenceNumber();
-	 * @return Workflow
-	 */
-	public Workflow findChildWorkflow(String key) {
-		logger.debug("GroupWF.findChildWorkflow(String key)");
-		
-		boolean done = false;
-		Workflow wf = null;
-		
-		for (int i = 0;(i < this.childWorkflowSet.size() && !done); i++) {
-			if (key == this.childWorkflowSet.get(i).getWorkflowID()) {
-				wf = this.childWorkflowSet.get(i);
-				done = true;
-			}
-		}
-		
-		return wf;
 	}
 
 	/**
@@ -126,14 +68,13 @@ public class GroupWF extends Workflow {
 	 * incoming message or action
 	 * 
 	 * This is the method from overides the same method of the parent class, Workflow.
-	 * 
-	 * @param msgIn - msgIn is the incoming message to be recognized and then to take
-	 * action on
-	 * 
+	 * @param msgIn - msgIn is the incoming message to be recognized and then to take action on
 	 * @return Message - represents the action
 	 */
 	public Message handleMsg(Message msgIn) {
-		logger.debug("GroupWF.handleMsg(Message msgIn)\n\tmsgIn: ", msgIn.toString());
+		//System.out.println("GroupReduceStitchWF.handleMsg(Message msgIn)");
+		//System.out.println("   msgIn: " + msgIn.toString());
+		logger.debug("GroupReduceStitchWF.handleMsg(Message msgIn)\n\t msgIn: {}", msgIn.toString());
 		
 		Message msgOut = null,
 				msg    = msgIn;
@@ -209,6 +150,7 @@ public class GroupWF extends Workflow {
 								if (!found)
 									super.setWorkflowStatus(WorkflowState.COMPLETE);
 							}
+							
 						}   // end while loop
 						
 						break;
@@ -231,9 +173,10 @@ public class GroupWF extends Workflow {
 				break;
 			
 			default:
+		
 		}
 		
 		return msgOut;
 	}
 
-}   // end class GroupWF
+}   // end class GroupReduceStitchWF

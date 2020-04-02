@@ -12,6 +12,9 @@ package org.eclipse.ice.modeling.workflowDescription;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * THIS CLASS IS PART OF THE WORKFLOW CONCEPT THAT IS BEING EXPLORED
  * 
@@ -27,6 +30,11 @@ import java.util.*;
 public class MsgCompleteCriteria extends CompletionCriteria {
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(MsgCompleteCriteria.class);
+	
+	/**
 	 * CURRENTLY THIS ATTRIBUTE IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
@@ -38,7 +46,7 @@ public class MsgCompleteCriteria extends CompletionCriteria {
 	 * This is the constructor for the CompletionCriteria class
 	 */
 	public MsgCompleteCriteria() {
-		System.out.println("MsgsCriteria() constructor");
+		logger.debug("MsgsCriteria() constructor");
 		
 		msgSet = null;
 		
@@ -51,7 +59,7 @@ public class MsgCompleteCriteria extends CompletionCriteria {
 	 * @param msg - the message string to initialize the successMsg attribute to
 	 */
 	public MsgCompleteCriteria(String msg) {
-		System.out.println("MsgsCriteria(String msg) constructor");
+		logger.debug("MsgsCriteria(String msg) constructor");
 		
 		if (msg != null) {
 			this.msgSet = new ArrayList();
@@ -66,7 +74,6 @@ public class MsgCompleteCriteria extends CompletionCriteria {
 	 * This is a getter method to return the msgSet attribute
 	 */
 	public List<String> getMsgSet() {
-		System.out.println("MsgsCriteria.getSuiccessMsg()");
 		return this.msgSet;
 	}
 
@@ -78,8 +85,6 @@ public class MsgCompleteCriteria extends CompletionCriteria {
 	 * @param msg - the message to set the successMsg attribute
 	 */
 	public void addMsg(String msg) {
-		System.out.println("MsgsCriteria.addMsg(String msg)");
-		
 		// If there are no entries yet creat the Set
 		if (this.msgSet == null)
 			this.msgSet = new ArrayList();

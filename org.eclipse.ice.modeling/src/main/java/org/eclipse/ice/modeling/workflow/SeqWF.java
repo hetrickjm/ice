@@ -13,6 +13,9 @@ package org.eclipse.ice.modeling.workflow;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.ice.modeling.experiment.*;
 import org.eclipse.ice.modeling.states.WorkflowState;
 import org.eclipse.ice.modeling.workflowDescription.*;
@@ -29,21 +32,16 @@ import org.eclipse.ice.modeling.workflowDescription.tasks.*;
 public class SeqWF extends Workflow {
 
 	/**
-	 * The runWFID, or group workflow ID, is a unique value to identify the workflow
-	 * 
-	 * NOTE: Should probably DEPRECATE this and only use the parent class wfID attribute
+	 * Logger for handling event messages and other information.
 	 */
-	private String seqWorkflowID;
-
+	private static final Logger logger = LoggerFactory.getLogger(SeqWF.class);
+	
 	/**
 	 * This is the constructor for the RunWF class
 	 */
 	public SeqWF() {
 		super();
-		System.out.println("RunWF() constructor");
-		
-		this.setSeqWorkflowID("Run-ID");
-		this.setCurrentStep(null);
+		logger.debug("SeqWF() constructor");
 		
 	}   // end RunWF() constructor
 
@@ -53,38 +51,15 @@ public class SeqWF extends Workflow {
 	 * 
 	 * This is another constructor for the RunWF class.  It takes a DataSet and a
 	 * WorkflowDescription to bind together in the Workflow
+	 * 
 	 * @param id - the id of the workflow
 	 * @param set - the DataSet to bind with the WorkflowDescription in the Workflow
 	 * @param description - the DataSet to bind with the WorkflowDescription in the Workflow
 	 */
 	public SeqWF(String id, DataSet set, WorkflowDescription description) {
 		super(id, set, description);
-		System.out.println("RunWF(DataSet set, WorkflowDescription description) constructor");
+		logger.debug("SeqWF(DataSet set, WorkflowDescription description) constructor");
 		
-		this.setSeqWorkflowID(id);
-	}
-
-	/**
-	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
-	 * MAY BE CHANGED OR DEPRECATED
-	 * 
-	 * This is a getter method to return the seqWorkflowID attribute
-	 * @return - the seqWorkflowID attribute
-	 */
-	public String getSeqWorkflowID() {
-		return super.getWorkflowID();
-	}   // end RunWF.getRunID()
-
-	/**
-	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
-	 * MAY BE CHANGED OR DEPRECATED
-	 * 
-	 * This is a setter method to set the seqWorkflowID attribute
-	 * @param id - the ID to use in setting the seqWorkflowID attribute
-	 */
-	public void setSeqWorkflowID(String id) {
-		super.setWorkflowID(id);
-		//this.setWfID(seqWorkflowID);
 	}   // end RunWF.setRunID(String id)
 
 	/**
@@ -103,27 +78,35 @@ public class SeqWF extends Workflow {
 	 * action on
 	 */
 	public Message handleMsg(Message msgIn) {
-		System.out.println("RunWF.nextMsg()");
-		System.out.println("   msgIn: " + msgIn.toString());
+		logger.debug("SeqWF.handleMsg(Message msgIn)\n\tmsgIn: ", msgIn.toString());
 		
-		// Initi local vars
+		// Init local vars
 		Message msgOut = null,
 				msg    = msgIn;
 		int i = -1;
 		boolean found    = false,
 				stopLoop = false;
 		Task task = null;
-		List <TaskStatus> taskStatusTable = super.getTaskStatusTable();  //easier to work with locally
+		List <TaskStatus> taskStatusTable = null;  //easier to work with locally
+		WorkflowStatus workflowStatus = null;
+		
+		// Get the Sequence number for the DataSet from the message is related to.
+		// The sequence number is the index to the set of child workflows and to
+		// the correct WorkflowStatus from the workflowStatusTable
+		int seqNum = msgIn.getDataSetRef().getMetaData().getSequenceNumber();
+		workflowStatus = super.getWorkflowStatusTable().get(seqNum);
+		taskStatusTable = workflowStatus.getTaskStatusTable();
 		
 		// What is the current status of the workflow?
-		switch (super.getWorkflowStatus()) {
+		switch (workflowStatus.getWorkflowState()) {
 			case NOT_STARTED: 
+				workflowStatus.setWorkflowState(WorkflowState.IN_PROGRESS);
 				super.setWorkflowStatus(WorkflowState.IN_PROGRESS);
 					
 			case IN_PROGRESS: 
 				// Loop through the Group Tasks until workflow is complete or
 				// There is a message to send out
-				while (!super.isComplete() && (msgOut == null) && !stopLoop) {
+				while (!workflowStatus.isComplete() && (msgOut == null) && !stopLoop) {
 					// Find the first Task that is not complete and invoke it
 					for (i = 0; ((i < taskStatusTable.size()) && !found); i++) {
 						if ( !(taskStatusTable.get(i).isComplete())) {
@@ -155,6 +138,7 @@ public class SeqWF extends Workflow {
 					// task is complete
 					// i is index of last task + 1 (from for loop above)
 					if (i >= taskStatusTable.size() && taskStatusTable.get(i - 1).isComplete()) {
+						workflowStatus.setWorkflowState(WorkflowState.COMPLETE);
 						super.setWorkflowStatus(WorkflowState.COMPLETE);
 					}
 					
@@ -173,9 +157,9 @@ public class SeqWF extends Workflow {
 		}
 		
 		if (msgOut == null)
-			System.out.println("    msgOut: null");
+			logger.debug("\tmsgOut: ");
 		else
-			System.out.println("   msgOut: " + msgOut.toString());
+			logger.debug("\tmsgOut: ", msgIn.toString());
 		
 		return msgOut;
 		

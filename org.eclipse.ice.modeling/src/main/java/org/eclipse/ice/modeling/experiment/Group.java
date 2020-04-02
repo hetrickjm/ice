@@ -11,6 +11,10 @@
 package org.eclipse.ice.modeling.experiment;
 
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.ice.modeling.workflow.*;
 
 /**
@@ -27,6 +31,11 @@ import org.eclipse.ice.modeling.workflow.*;
  */
 public class Group {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Group.class);
+	
 	/**
 	 * The sequenceID attribute is the ID for the sequence set (or 
 	 * group ID or run set ID).  This is the same as the sequenceID 
@@ -87,7 +96,7 @@ public class Group {
 	 * This is the constructor for the Group class
 	 */
 	public Group() {
-		System.out.println("Group() constructor");
+		logger.debug("Group() constructor");
 		
 		// Init Attributes
 		this.sequenceID  = "";
@@ -103,7 +112,7 @@ public class Group {
 	 * @param seq - the Sequence to associate with the group
 	 */
 	public Group(DataSet set, Sequence seq) {
-		System.out.println("Group(DataSet set, Sequence seq) constructor");
+		logger.debug("Group(DataSet set, Sequence seq) constructor");
 		
 		// Init Attributes
 		this.sequenceID  = "";
@@ -130,7 +139,6 @@ public class Group {
 	 * @return String - the value of the sequenceID attribute
 	 */
 	public String getSequenceID() {
-		System.out.println("Group.getSequenceID()");
 		return this.sequenceID;
 	}
 
@@ -141,7 +149,6 @@ public class Group {
 	 * @param id - id that is used to set the sequenceID attibute
 	 */
 	public void setSequenceID(String id) {
-		System.out.println("Group.setSequenceID(STring id)");
 		this.sequenceID = id;
 	}
 
@@ -151,7 +158,6 @@ public class Group {
 	 * @return Workflow[] - workflowSet attribute
 	 */
 	public List <Workflow> getWorkflowSet() {
-		System.out.println("Group.getWorkflowSet()");
 		return this.workflowSet;
 	}
 
@@ -161,7 +167,6 @@ public class Group {
 	 * @param workflow  - the workflow to be added to the workflowSet attribute
 	 */
 	public void addWorkflow(Workflow workflow) {
-		System.out.println("Group.addWorkflow(Workflow workflow)");
 		this.workflowSet.add(workflow);
 	}
 
@@ -206,7 +211,6 @@ public class Group {
 	 * @return void
 	 */
 	public void addSeq(Sequence seq) {
-		System.out.println("Group.addWorkflow(Workflow workflow)");
 		this.seqSet.add(seq);
 	}
 
@@ -220,7 +224,7 @@ public class Group {
 	 * @return Sequence
 	 */
 	public Sequence findSequence(int seqNum) {
-		System.out.println("Group.findSequence(int seqNum)");
+		logger.debug("Group.findSequence(int seqNum)");
 
 		// Look for a sequence who's sequence number matches the passed in value
 		// NOTE: this should be equivalent to the index, but for now search the list to be safe.
@@ -245,7 +249,7 @@ public class Group {
 	 * @return Workflow
 	 */
 	public Workflow findWorkflow() {
-		System.out.println("Group.findWorkflow()");
+		logger.debug("Group.findWorkflow()");
 		
 		// Check that there are any workflows.  If not return null.
 		if (this.workflowSet.size() < 1)
@@ -263,7 +267,7 @@ public class Group {
 	 * @return Workflow
 	 */
 	public Workflow findWorkflow(String id) {
-		System.out.println("Group.findWorkflow(String id)");
+		logger.debug("Group.findWorkflow(String id)");
 		
 		Workflow wf  = null;
 		boolean done = false;
@@ -284,8 +288,6 @@ public class Group {
 	 * @return - the number of workflows in the group
 	 */
 	public int seqCount() {
-		System.out.println("Group.seqCount()");
-		
 		return this.seqSet.size();
 	}
 
@@ -295,8 +297,6 @@ public class Group {
 	 * @return - the number of workflows in the group
 	 */
 	public int workflowCount() {
-		System.out.println("Group.workflowCount()");
-		
 		return this.workflowSet.size();
 	}
 

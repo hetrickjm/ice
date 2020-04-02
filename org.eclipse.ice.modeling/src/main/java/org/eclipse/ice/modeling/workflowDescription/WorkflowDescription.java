@@ -12,6 +12,9 @@ package org.eclipse.ice.modeling.workflowDescription;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.workflow.*;
 import org.eclipse.ice.modeling.workflowDescription.tasks.*;
@@ -32,6 +35,11 @@ import org.eclipse.ice.modeling.workflowDescription.tasks.*;
  */
 public class WorkflowDescription {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(WorkflowDescription.class);
+	
 	/**
 	 * The taskList attribute is the set of Tasks that make up the WorkflowDescription
 	 */
@@ -62,7 +70,7 @@ public class WorkflowDescription {
 	 * This is the constructor for the WorkflowDescription class.
 	 */
 	public WorkflowDescription() {
-		System.out.println("WorkflowDescription() constructor");
+		logger.debug("WorkflowDescription() constructor");
 		
 		// Init the workflow description type and ID
 		this.workflowDescriptionID = "--";
@@ -82,7 +90,7 @@ public class WorkflowDescription {
 	 * @param type - type of workflow description to initialize the workflowDescriptionType attribute
 	 */
 	public WorkflowDescription(String id, WorkflowDescriptionType type) {
-		System.out.println("WorkflowDescription(String id, WorkflowDescriptionType type) constructor");
+		logger.debug("WorkflowDescription(String id, WorkflowDescriptionType type) constructor");
 		
 		// Init the workflow description type and ID
 		this.workflowDescriptionID = id;
@@ -102,7 +110,7 @@ public class WorkflowDescription {
 	 * @param index - the index for the Task to be retrieved
 	 */
 	public Task getTask(int index) {
-		System.out.println("WorkflowDescription.getTask()");
+		logger.debug("WorkflowDescription.getTask(int index)");
 		
 		// If the index is greater than the number of tasks,
 		// the index is out of bounds so return null.
@@ -120,7 +128,7 @@ public class WorkflowDescription {
 	 * @param task - the task to be added to the taskList attribute
 	 */
 	public void addTask(Task task) {
-		System.out.println("WorkflowDescription.addStep(Task task)");
+		logger.debug("WorkflowDescription.addStep(Task task)");
 		
 		// As long as the in coming task is valid add it to the taskList
 		if (task != null) {
@@ -145,8 +153,6 @@ public class WorkflowDescription {
 	 * that is being executed
 	 */
 	public CompletionCriteria getTaskCompletionCriteria(Task currentTask) {
-		System.out.println("WorkflowDescription.getStepSuccess(Step currentStep)");
-		
 		return currentTask.getCompletionCriteria();   
 	}
 

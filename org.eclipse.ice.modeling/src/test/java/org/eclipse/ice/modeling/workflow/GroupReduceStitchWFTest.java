@@ -10,21 +10,19 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import org.eclipse.ice.modeling.experiment.DataSet;
-import org.eclipse.ice.modeling.experiment.MetaData;
-import org.eclipse.ice.modeling.experiment.Sequence;
 import org.eclipse.ice.modeling.experiment.ExperimentRepo;
+import org.eclipse.ice.modeling.experiment.MetaData;
 import org.eclipse.ice.modeling.workflowDescription.WorkflowDescription;
 import org.eclipse.ice.modeling.workflowDescription.WorkflowDescriptionRepo;
 import org.eclipse.ice.modeling.workflowEngine.Message;
 
 /**
- * @author 6mq
+ * @author John Hetrick
  *
  */
-public class GroupWFTest {
-	
+public class GroupReduceStitchWFTest {
+
 	/**
 	 * A set of attributes that hold data for the test
 	 */
@@ -34,7 +32,7 @@ public class GroupWFTest {
 	private WorkflowDescription wfdg;
 	private WorkflowDescription wfds;
 	private Workflow wf;
-
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -54,7 +52,7 @@ public class GroupWFTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		System.out.println("\tBEGIN: GroupWFTest.setUp()");
+		System.out.println("\tBEGIN: GroupReduceStitchWFTest.setUp()");
 		// Create a DataSet with MetaData
 		// Create the Meta Data for the Data Set that is to be part of the msg
 		MetaData meta = new MetaData("INST-1", "EXP-1", "GRP-0", 0);
@@ -81,14 +79,14 @@ public class GroupWFTest {
 				"/DT-" + meta.getDataType();
 		this.wfds = this.wfdRepo.findWorkflowDescription(key);
 
-		System.out.println("\tEND: GroupWFTest.setUp()");
+		System.out.println("\tEND: GroupReduceStitchWFTest.setUp()");
 	}
-	
+
 	/**
 	 * Init a set of repos for testing
 	 */
 	private void initRepos() {
-		System.out.println("\tBEGIN: GroupWFTest.initRepos()");
+		System.out.println("\tBEGIN: GroupReduceStitchWFTest.initRepos()");
 		
 		// Create an ExperimentRepo
 		this.expRepo = new ExperimentRepo();
@@ -96,16 +94,16 @@ public class GroupWFTest {
 		// Create a WorkflowDescriptionRepo
 		this.wfdRepo = new WorkflowDescriptionRepo();
 		
-		System.out.println("\tEND: GroupWFTest.initRepos()");
+		System.out.println("\tEND: GroupReduceStitchWFTest.initRepos()");
 	}
 
 	/**
-	 * Create GroupWF and its childWF for testing
+	 * Create GroupReduceStitchWF and its childWF for testing
 	 */
 	private void createGroupWorkflow() {
-		System.out.println("\tBEGIN: GroupWFTest.createGroupWorkflow()");
-		// Create a new GroupWF to work with a key
-		// Note that the GroupWF is being cast into a parent Workflow class
+		System.out.println("\tBEGIN: GroupReduceStitchWFTest.createGroupWorkflow()");
+		// Create a new GroupReduceStitchWF to work with a key
+		// Note that the GroupReduceStitchWF is being cast into a parent Workflow class
 		MetaData meta = this.dataSet.getMetaData();
 		int wfCount = 0;
 		String key = meta.getInstrumentID() +
@@ -113,19 +111,19 @@ public class GroupWFTest {
 				"/" + meta.getGroupID() +
 				"/WFG-" + wfCount;
 
-		this.wf = new GroupWF(key, this.dataSet, this.wfdg);
+		this.wf = new GroupReduceStitchWF(key, this.dataSet, this.wfdg);
 		
 		// Create a childWorkflow
 		createChildWorkflow();
 		
-		System.out.println("\tEND: GroupWFTest.createGroupWorkflow()");
+		System.out.println("\tEND: GroupReduceStitchWFTest.createGroupWorkflow()");
 	}
 	
 	/*
 	 * Create child workflow(s) for testing.  Note child workflows are SeqWorkflows
 	 */
 	private void createChildWorkflow() {
-		System.out.println("\tBEGIN: GroupWFTest.createChildWorkflow()");
+		System.out.println("\tBEGIN: GroupReduceStitchWFTest.createChildWorkflow()");
 		
 		// Create a SeqWF key
 		// Create a new SeqWF to work with
@@ -138,10 +136,10 @@ public class GroupWFTest {
 
 		SeqWF cwf = new SeqWF(key, this.dataSet, this.wfds);
 		
-		// recast the Workflow to a GroupWF to add the child workflow to the childWorkflowSet
-		GroupWF gwf = (GroupWF) this.wf;
+		// recast the Workflow to a GroupReduceStitchWF to add the child workflow to the childWorkflowSet
+		GroupReduceStitchWF gwf = (GroupReduceStitchWF) this.wf;
 		gwf.addChildWorkflow(cwf);
-		System.out.println("\tEND: GroupWFTest.createChildWorkflow()");
+		System.out.println("\tEND: GroupReduceStitchWFTest.createChildWorkflow()");
 	}
 
 	/**
@@ -152,18 +150,18 @@ public class GroupWFTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.modeling.workflow.GroupWF#handleMsg(org.eclipse.ice.modeling.workflowEngine.Message)}.
+	 * Test method for {@link org.eclipse.ice.modeling.workflow.GroupReduceStitchWF#handleMsg(org.eclipse.ice.modeling.workflowEngine.Message)}.
 	 */
 	@Test
 	public void testHandleMsg() {
-		System.out.println("\n BEGIN TEST: GroupWF.testHandleMsg");
+		System.out.println("\n BEGIN TEST: GroupReduceStitchWFTest.testHandleMsg");
 		
 		// Set up some local variables
 		Message msgIn = null,
         msgOut = null;
 		boolean cmplt = false;
 		
-		// Create a new GroupWF with its parts
+		// Create a new GroupReduceStitchWF with its parts
 		this.createGroupWorkflow();
 		
 		msgIn = new Message("POSTPROCESS.DATA_READY");
@@ -186,14 +184,14 @@ public class GroupWFTest {
 		System.out.println("\tis workflow complete: " + this.wf.isComplete());
 		
 		//fail("Not yet implemented"); // TODO
-		System.out.println("END TEST: GroupWF.testHandleMsg\n");		
+		System.out.println("END TEST: GroupReduceStitchWFTest.testHandleMsg\n");		
 	}
-	
+
 	/**
 	 * Generate/Send Catalog messages to the workflow
 	 */
 	private void genCatalogMsgs() {
-		System.out.println("\tBEGIN: GroupWF.genCatalogMsgs()");
+		System.out.println("\tBEGIN: GroupReduceStitchWFTest.genCatalogMsgs()");
 		Message altMsg,
 		        msgOut = null;
 		boolean cmplt = false;
@@ -209,14 +207,14 @@ public class GroupWFTest {
 		msgOut = (Message) this.wf.handleMsg(altMsg);
 		
 		//fail("Not yet implemented");
-		System.out.println("\tEND: GroupWF.genCatalogMsgs()");
+		System.out.println("\tEND: SeqWFTest.genCatalogMsgs()");
 	}
 
 	/**
 	 * Generate/Send Catalog messages to the workflow
 	 */
 	private void genReduceMsgs() {
-		System.out.println("\tBEGIN: GroupWF.genReduceMsgs()");
+		System.out.println("\tBEGIN: GroupReduceStitchWFTest.genReduceMsgs()");
 		Message altMsg,
 		        msgOut = null;
 		boolean cmplt = false;
@@ -231,14 +229,14 @@ public class GroupWFTest {
 		altMsg.setDataSetRef(this.dataSet);
 		msgOut = (Message) this.wf.handleMsg(altMsg);
 		//fail("Not yet implemented");
-		System.out.println("\tEND: GroupWF.genReduceMsgs()");
+		System.out.println("\tEND: GroupReduceStitchWFTest.genReduceMsgs()");
 	}
 
 	/**
 	 * Generate/Send Catalog messages to the workflow
 	 */
 	private void genRedCatMsgs() {
-		System.out.println("\tBEGIN: GroupWF.genRedCatMsgs()");
+		System.out.println("\tBEGIN: GroupReduceStitchWFTest.genRedCatMsgs()");
 		Message altMsg,
 		        msgOut = null;
 		boolean cmplt = false;
@@ -254,42 +252,7 @@ public class GroupWFTest {
 		msgOut = (Message) this.wf.handleMsg(altMsg);
 		
 		//fail("Not yet implemented");
-		System.out.println("\tEND: GroupWF.genRedCatMsgs()");
-	}
-
-	/**
-	 * Test method for {@link org.eclipse.ice.modeling.workflow.GroupWF#GroupWF(java.lang.String, org.eclipse.ice.modeling.experiment.DataSet, org.eclipse.ice.modeling.workflowDescription.WorkflowDescription)}.
-	 */
-	@Test
-	public void testGroupWFStringDataSetWorkflowDescription() {
-		System.out.println("\n BEGIN TEST: GroupWF.testGroupWFStringDataSetWorkflowDescription");
-		
-		MetaData meta = this.dataSet.getMetaData();
-		int wfCount = 0;
-		String key = meta.getInstrumentID() +
-				"/" + meta.getExperimentID() +
-				"/" + meta.getGroupID() +
-				"/WFG-" + wfCount;
-
-		GroupWF wf = new GroupWF(key, this.dataSet, this.wfdg);
-		
-		System.out.println("END TEST: GroupWF.testGroupWFStringDataSetWorkflowDescription\n");		
-	}
-
-	/**
-	 * Test method for {@link org.eclipse.ice.modeling.workflow.GroupWF#getChildWorkflowSet(java.lang.String)}.
-	 */
-	@Test
-	public void testGetChildWorkflowSetString() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	/**
-	 * Test method for {@link org.eclipse.ice.modeling.workflow.GroupWF#addChildWorkflow(org.eclipse.ice.modeling.workflow.Workflow)}.
-	 */
-	@Test
-	public void testAddChildWorkflow() {
-		fail("Not yet implemented"); // TODO
+		System.out.println("\tEND: GroupReduceStitchWFTest.genRedCatMsgs()");
 	}
 
 }

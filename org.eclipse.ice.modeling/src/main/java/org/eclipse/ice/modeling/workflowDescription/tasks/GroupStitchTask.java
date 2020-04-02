@@ -43,6 +43,8 @@ public class GroupStitchTask extends GroupTask {
 	}
 
 	/**
+	 * DEPRECATE! If not implemented let the parent class handle this method
+	 * 
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
@@ -55,6 +57,8 @@ public class GroupStitchTask extends GroupTask {
 	}
 
 	/**
+	 * DEPRECATE! If not implemented let the parent class handle this method
+	 * 
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
@@ -88,13 +92,15 @@ public class GroupStitchTask extends GroupTask {
 				msgOut = null;
 		Criteria criterion = null;
 		GroupWF wfg = (GroupWF) wf;
-		List <TaskStatus> taskStatusTable = wf.getTaskStatusTable();
-		List <Workflow> childWorkflowSet = wfg.getChildWorkflowSet();
+		List <TaskStatus> taskStatusTable = null;
+		List <Workflow> childWorkflowSet = null;
 		TaskStatus taskStatus = null;
 		
 		// Get the Sequence number from the MetaData.  The sequence
 		// number is the index for the childWorkflow (SeqWF) from the set of childWorkflows
 		seqNum = msgIn.getDataSetRef().getMetaData().getSequenceNumber();
+		taskStatusTable = wfg.getWorkflowStatusTable().get(seqNum).getTaskStatusTable();
+		childWorkflowSet = wfg.getChildWorkflowSet();
 		String taskID = this.getTaskID();
 		
 		// Get the TaskStatus for the current Task from the Workflow TaskStatusTable
@@ -143,6 +149,8 @@ public class GroupStitchTask extends GroupTask {
 	}
 
 	/**
+	 * DEPRECATE! If not implemented let the parent class handle this method
+	 * 
 	 * CURRENTLY THIS METHOD IS FOR EXPLORATORY PURPOSES AND
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 

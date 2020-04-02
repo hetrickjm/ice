@@ -12,6 +12,9 @@ package org.eclipse.ice.modeling.experiment;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.ice.modeling.workflow.*;
 import org.eclipse.ice.modeling.workflowEngine.*;
 
@@ -22,6 +25,11 @@ import org.eclipse.ice.modeling.workflowEngine.*;
  */
 public class Experiment {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Experiment.class);
+	
 	/**
 	 * The expID attribute is the ID of the experiment
 	 */
@@ -42,7 +50,7 @@ public class Experiment {
 	 * This is the constructor for the Experiment class
 	 */
 	public Experiment() {
-		System.out.println("Experiment() constructor");
+		logger.debug("Experiment() constructor");
 		
 		this.groupSet = new ArrayList <Group>();
 		
@@ -60,7 +68,7 @@ public class Experiment {
 	 * @param group  - a the initial group of the experiment
 	 */
 	public Experiment(String id, String inst, Group group) {
-		System.out.println("Experiment() constructor");
+		logger.debug("Experiment() constructor");
 		
 		// Init the attribute to hold a set of groups
 		this.groupSet = new ArrayList <Group>();
@@ -75,7 +83,6 @@ public class Experiment {
 	 * @return - expID attribute
 	 */
 	public String getExpID() {
-		System.out.println("Experiment.getExpID()");
 		return this.expID;
 	}
 
@@ -85,7 +92,6 @@ public class Experiment {
 	 * @param id  - id to use in setting the expID attribute
 	 */
 	public void setExpID(String id) {
-		System.out.println("Experiment.setExpID()");
 		this.expID = id;
 	}
 
@@ -93,8 +99,6 @@ public class Experiment {
 	 * This is a getter method to return the groupSet attribute
 	 */
 	public List <Group> getGroups() {
-		System.out.println("Experiment.getGroups()");
-		
 		return this.groupSet;
 	}
 
@@ -103,7 +107,6 @@ public class Experiment {
 	 * @param group  - group to add to the groupSet attribute
 	 */
 	public void addGroup(Group group) {
-		System.out.println("Experiment.addGroup()");
 		this.groupSet.add(group);
 	}
 
@@ -111,8 +114,6 @@ public class Experiment {
 	 * This is a getter method to return the groupSet attribute
 	 */
 	public Group getGroup(int index) {
-		System.out.println("Experiment.getGroup(int index)");
-		
 		if (index <= this.groupSet.size())
 			return this.groupSet.get(index);
 		else
@@ -127,7 +128,7 @@ public class Experiment {
 	 * @param id  - the id of the group to be found and returned
 	 */
 	public Group findGroup(String id) {
-		System.out.println("Experiment.findGroup(String id)");
+		logger.debug("Experiment.findGroup(String id)");
 		
 		// Loop through the set of groups looking for matching ID
 		for (int i = 0; i < this.groupSet.size(); i++) {
