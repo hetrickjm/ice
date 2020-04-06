@@ -31,7 +31,7 @@ public class WorkflowEngine implements IWorkflow {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(SeqWF.class);
+	private static final Logger logger = LoggerFactory.getLogger(WorkflowEngine.class);
 	
 	/**
 	 * The reducer attribute holds a reference to a post processing reducer system
@@ -47,15 +47,6 @@ public class WorkflowEngine implements IWorkflow {
 	 * that the workflow needs to work with must be figured out and retrieved for it.
 	 */
 	private Workflow workflow;
-	
-	/**
-	 * THIS ATTRIBUTE IS PRIMARILY FOR CONCEPT EXPLORATION.
-	 * 
-	 * This attribute is a set of mappings that pair Meta Data with WorkflowDescriptions.
-	 * For now this is used to determine which Workflow Description is to be used on a
-	 * particular Data Set
-	 */
-	private Mapper[] workflowMap;
 	
 	/**
 	 * The workflowRepo attribute is the repository for all workflows
@@ -76,9 +67,6 @@ public class WorkflowEngine implements IWorkflow {
 		
 		this.reducer = null;
 		this.workflow = null;
-		this.workflowMap = new Mapper[3];
-		
-		int len = workflowMap.length;
 		
 	}   // end WorkflowEngine() constructor
 
@@ -161,39 +149,8 @@ public class WorkflowEngine implements IWorkflow {
 	}
 
 	/**
-	 * THIS IS A TEST METHOD TO EXPLORE CONCEPTS
+	 * DEPRECATE!  NOT USED
 	 * 
-	 * The determineWorkflow method looks up which WorkflowDescription is to be
-	 * use when processing the data set associated with the Meta Data that was
-	 * passed in as a parameter.
-	 * 
-	 * Basic algorithm: Check in hierarchical order the following:
-	 * - instrumentID, experimentID, groutID, dataType
-	 * - instrumentID, experimentID, groutID
-	 * - instrumentID, experimentID
-	 * - instrumentID  (default)
-	 * 
-	 * @param metaData - the meta data from a data set that is used to determine 
-	 * the workflowDescription that should used on the data set
-	 * 
-	 * @param dataSet  - the Data Set that holds the meta data used to determine 
-	 * the Workflow
-	 */
-	public Workflow determineWorkflow(DataSet dataSet) {
-		logger.debug("WorkflowEngine.determineWorkflow(DataSet dataSet)");
-		
-		WorkflowDescription wd = this.findWorkflowDescription(dataSet.getMetaData());
-		// Now that we have the workflow description we need to see if there is
-		// a workflow for the data set that has this description
-		if ( wd != null ) {
-			System.out.println("not sure what to do now");
-			// Workflow findWorkflow( DataSet, WorkflowDescription)
-		}
-		
-		return this.workflow;
-	}
-
-	/**
 	 * This it the overridden method from the interface.  It is this method
 	 * that is invoked by an external entity that wants the Workflow System to
 	 * do something.
@@ -232,80 +189,6 @@ public class WorkflowEngine implements IWorkflow {
 			reducer.processMessage(msgOut, this);
 		}
 		
-	}
-
-	/**
-	 * This method finds a workflow that matches the key derived from the MetaData
-	 * 
-	 * @param metaData  - the meta data to determine the key for finding an 
-	 * associated WorkflowDescription
-	 */
-	private WorkflowDescription findWorkflowDescription(MetaData metaData) {
-		logger.debug("WorkflowEngine.findWorkflowDescription(MetaData metaData)");
-		
-		// Some local vars:
-		WorkflowDescription wd = null;
-		String key = "";
-		boolean found = false;
-		int i = 0, n = 0;
-		int maxKeyPermutations = 4;   // need to make this a static value for the class
-		
-		// Loop through the set of meta data / WorkflowDescription pairs
-		// to match the meta data ID
-		// Workflow Description findWorkflowDescription( metaData)
-		for (n = 1; n <= maxKeyPermutations;) {
-			switch (n) {
-				case 1:   // primary key
-					key = metaData.getInstrumentID() +
-						  "/" + metaData.getExperimentID() +
-						  "/" + metaData.getGroupID() +
-						  "/" + Integer.toString( metaData.getDataType() );
-					break;
-					
-				case 2:   // secondary key
-					key = metaData.getInstrumentID() +
-						  "/" + metaData.getExperimentID() +
-						  "/" + metaData.getGroupID();
-					break;
-					
-				case 3:   // tertiary key
-					key = metaData.getInstrumentID() +
-						  "/" + metaData.getExperimentID();
-					break;
-					
-				case 4:   // default key
-					key = metaData.getInstrumentID();
-					break;
-			}   // end switch
-			
-			for (i = 0; (i < (workflowMap.length - 1)) && !found; i++) {
-				if ( key == workflowMap[i].getMetaDataKey()) {
-					wd = workflowMap[i].getWorkflowDescription();
-					found = true;
-				}
-			}   // end for loop(i)
-		}   // end for loop(n)
-		
-		return wd;
-	}
-
-	/**
-	 * The findWorkflow method finds a Workflow that governs the processing of 
-	 * a Data Set.  If the Workflow does not exist, one has to be created
-	 * 
-	 * NOTE: This may be better handled by a class that represents a repository 
-	 * of workflows but that has not yet come into existence.
-	 * 
-	 * @param dataSet  - the Data Set that holds the meta data used to help 
-	 * identify a workflow
-	 * 
-	 * @param wd  - the WorkflowDescriptor use to help identify the workflow
-	 */
-	private Workflow findWorkflow(DataSet dataSet, WorkflowDescription wd) {
-		logger.debug("WorkflowEngine.findWorkflowDescription(MetaData metaData)");
-		
-		Workflow wf = new Workflow();
-		return wf;
 	}
 
 }   // end WorkflowEngine class 

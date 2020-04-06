@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.actors.*;
+import org.eclipse.ice.modeling.experiment.DataSet;
 import org.eclipse.ice.modeling.workflow.*;
 import org.eclipse.ice.modeling.workflowDescription.*;
 
@@ -24,6 +28,11 @@ import org.eclipse.ice.modeling.workflowDescription.*;
  * @author John Hetrick
  */
 public class WorkflowSystem implements IWorkflow {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(WorkflowSystem.class);
 	
 	/**
 	 * The workflowRepo is the repository of workflows.  This is expected to be
@@ -64,8 +73,7 @@ public class WorkflowSystem implements IWorkflow {
 	 *  attributes are set with default values and should be set manually
 	 */
 	public WorkflowSystem() {
-		
-		System.out.println("WorkflowSystem.main()");
+		logger.debug("WorkflowSystem.main()");
 		
 		// Initialize the system
 		initSystem();
@@ -81,7 +89,7 @@ public class WorkflowSystem implements IWorkflow {
 	 */
 	public WorkflowSystem(TransSrvcStub trans, ReducerStub reducers) {
 		
-		System.out.println("WorkflowSystem(TransSrvcStub trans, ReducerStub reducers) constructor");
+		logger.debug("WorkflowSystem(TransSrvcStub trans, ReducerStub reducers) constructor");
 		
 		// Set the Transition service and the reducer.
 		// FUTURE: There will be a set of reducers
@@ -100,8 +108,7 @@ public class WorkflowSystem implements IWorkflow {
 	 * @return void
 	 */
 	public void initSystem () {
-		
-		System.out.println("WorkflowSystem.initSystem()");
+		logger.debug("WorkflowSystem.initSystem()");
 
 		// Instantiate the WorkflowDescriptionRepo.  Is is anticipated that this will
 		// be created from a file or some other external mechanism.
@@ -121,7 +128,8 @@ public class WorkflowSystem implements IWorkflow {
 	 * @return the workflowDescriptionRepo
 	 */
 	public WorkflowDescriptionRepo initWorkflowDescriptionRepo() {
-		System.out.println("WorkflowSystem.initWorkflowDescriptionRepo()");
+		logger.debug("WorkflowSystem.initWorkflowDescriptionRepo()");
+		
 		this.workflowDescriptionRepo = new WorkflowDescriptionRepo();
 		
 		return workflowDescriptionRepo;
@@ -133,7 +141,7 @@ public class WorkflowSystem implements IWorkflow {
 	 * @return the workflowRepo
 	 */
 	public WorkflowRepo initWorkflowRepo() {
-		System.out.println("WorkflowSystem.initWorkflowRepo()");
+		logger.debug("WorkflowSystem.initWorkflowRepo()");
 		
 		this.workflowRepo = new WorkflowRepo();
 		this.workflowRepo.setWorkflowDescriptionRepo(this.workflowDescriptionRepo);
@@ -187,8 +195,6 @@ public class WorkflowSystem implements IWorkflow {
 	 * @return void
 	 */
 	public IWorkflow getWorkflowEngine() {
-		System.out.println("WorkflowSystem.getWfEng()");
-		
 		return workflowEngine;
 	}   // end WorkflowSystem.getWfEng()
 
@@ -217,10 +223,10 @@ public class WorkflowSystem implements IWorkflow {
 	 * @param msg Incoming message that needs to be processed.
 	 * @return void
 	 */
-	public void handleMsg(Message msg) {
-		System.out.println("WorkflowSystem.handleMsg(Message msg)");
+	public void handleMsg(Message msgIn) {
+		logger.debug("WorkflowSystem.handleMsg(Message msgIn)");
 		
-		workflowEngine.handleMsg(msg);
+		workflowEngine.handleMsg(msgIn);
 		
 	}   // end WorkflowSystem.handleMsg(Message msg)
 	

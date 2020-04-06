@@ -232,6 +232,7 @@ public class WorkflowDescriptionRepo {
 	 * This is a getter method to return the workflowDescSet attribute
 	 * 
 	 * NOTE: This is for testing only and should not be used.  This class is the repo
+	 * 
 	 * @param metaData - the meta data that holds the key to identifying a specific WorkflowDescription
 	 */
 	public WorkflowDescription getWorkflowDescription(MetaData metaData) {
@@ -253,6 +254,7 @@ public class WorkflowDescriptionRepo {
 
 	/**
 	 * This is a setter method to add a WorkflowDescription to the workflowDescriptionSet attribute
+	 * 
 	 * @param key - String used as a key to match to the WorkflowDescription
 	 * @param description - description to add to the workflowDescriptionSet attribute
 	 */
@@ -263,7 +265,19 @@ public class WorkflowDescriptionRepo {
 	/**
 	 * This method searches for a WorkflowDescription in the mapSet based on the MetaData key.
 	 * This method determines the key then searches for a pair.
+	 * 
+	 * FUTUER: method looks up which WorkflowDescription is to be
+	 * use when processing the data set associated with the Meta Data that was
+	 * passed in as a parameter.
+	 * 
+	 * Basic algorithm: Check in hierarchical order the following:
+	 * - instrumentID, experimentID, groutID, dataType
+	 * - instrumentID, experimentID, groutID
+	 * - instrumentID, experimentID
+	 * - instrumentID  (default)
+	 * 
 	 * @param metaData - the MetaData from which to derive the meta data key
+	 * 
 	 * @return WorkflowDescription
 	 */
 	public WorkflowDescription findWorkflowDescription(MetaData metaData) {
@@ -288,7 +302,9 @@ public class WorkflowDescriptionRepo {
 	/**
 	 * This method searches for a WorkflowDescription in repo
 	 * This method determines the key then searches for a pair.
+	 * 
 	 * @param key - the to find the WorkflowDescription
+	 * 
 	 * @return WorkflowDescription
 	 */
 	public WorkflowDescription findWorkflowDescription(String key) {
@@ -301,6 +317,7 @@ public class WorkflowDescriptionRepo {
 
 	/**
 	 * This is a getter method to return the expRepo (experiment repository) attribute
+	 * 
 	 * @return ExperimentRepo
 	 */
 	public ExperimentRepo getExpRepo() {
@@ -309,6 +326,7 @@ public class WorkflowDescriptionRepo {
 
 	/**
 	 * This is a setter method to set the expRepo (experiment repository) attribute
+	 * 
 	 * @param expRepo - the ExperimentRepo used to set the expRepo attribute
 	 */
 	public void setExpRepo(ExperimentRepo expRepo) {

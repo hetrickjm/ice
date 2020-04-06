@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ice.modeling.actors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.eclipse.ice.modeling.IWorkflow;
 import org.eclipse.ice.modeling.workflowEngine.*;
 
 /**
@@ -19,6 +23,11 @@ import org.eclipse.ice.modeling.workflowEngine.*;
  */
 public class ReducerStub {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ReducerStub.class);
+	
 	public ReducerStub() {
 		System.out.println("ReducerStub() constructor");
 		
@@ -29,7 +38,7 @@ public class ReducerStub {
 	 * @param msg
 	 * @param msgSrc
 	 */
-	public void processMessage(Message msg, WorkflowEngine msgSrc) {
+	public void processMessage(Message msg, IWorkflow msgSrc) {
 		System.out.println("ReducerStub.processMessage()");
 		
 		// Process the incoming message - Reduction Action
