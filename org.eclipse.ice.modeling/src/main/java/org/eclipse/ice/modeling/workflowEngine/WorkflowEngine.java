@@ -26,7 +26,7 @@ import org.eclipse.ice.modeling.workflowDescription.*;
  * 
  * @author John Hetrick
  */
-public class WorkflowEngine implements IWorkflow {
+public class WorkflowEngine implements IWorkflowSystem {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -186,7 +186,7 @@ public class WorkflowEngine implements IWorkflow {
 		msgOut = workflow.handleMsg(msgIn);
 		
 		if (msgOut != null) {
-			reducer.processMessage(msgOut, this);
+			reducer.processMessage(msgOut, (IWorkflowSystem) this);
 		}
 		
 	}

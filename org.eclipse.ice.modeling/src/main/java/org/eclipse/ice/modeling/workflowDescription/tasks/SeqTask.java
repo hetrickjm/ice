@@ -11,6 +11,7 @@
 package org.eclipse.ice.modeling.workflowDescription.tasks;
 
 import org.eclipse.ice.modeling.workflow.*;
+import org.eclipse.ice.modeling.workflowDescription.action.Action;
 
 public class SeqTask extends Task {
 

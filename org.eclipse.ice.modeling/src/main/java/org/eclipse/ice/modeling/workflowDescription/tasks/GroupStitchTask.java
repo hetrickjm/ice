@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.ice.modeling.states.WorkflowState;
 import org.eclipse.ice.modeling.workflow.*;
 import org.eclipse.ice.modeling.workflowDescription.Criteria;
+import org.eclipse.ice.modeling.workflowDescription.action.Action;
 import org.eclipse.ice.modeling.workflowEngine.Message;
 
 /**

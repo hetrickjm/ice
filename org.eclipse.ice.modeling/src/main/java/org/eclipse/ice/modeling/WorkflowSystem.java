@@ -27,7 +27,7 @@ import org.eclipse.ice.modeling.workflowDescription.*;
  * 
  * @author John Hetrick
  */
-public class WorkflowSystem implements IWorkflow {
+public class WorkflowSystem implements IWorkflowSystem {
 	
 	/**
 	 * Logger for handling event messages and other information.
@@ -192,10 +192,9 @@ public class WorkflowSystem implements IWorkflow {
 	 * with the IWorkflow interface that the Translation Service uses
 	 * 
 	 * @return WorkflowEngine
-	 * @return void
 	 */
 	public IWorkflow getWorkflowEngine() {
-		return workflowEngine;
+		return (IWorkflow) workflowEngine;
 	}   // end WorkflowSystem.getWfEng()
 
 	/**

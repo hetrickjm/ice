@@ -14,6 +14,7 @@ import java.util.*;
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.workflow.*;
 import org.eclipse.ice.modeling.workflowDescription.*;
+import org.eclipse.ice.modeling.workflowDescription.action.*;
 
 /**
  * THIS CLASS IS PART OF THE WORKFLOW CONCEPT THAT IS BEING EXPLORED.

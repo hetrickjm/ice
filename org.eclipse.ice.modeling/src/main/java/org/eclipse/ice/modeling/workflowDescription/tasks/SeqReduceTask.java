@@ -14,6 +14,7 @@ import org.eclipse.ice.modeling.states.WorkflowState;
 import org.eclipse.ice.modeling.workflow.*;
 import org.eclipse.ice.modeling.workflowEngine.Message;
 import org.eclipse.ice.modeling.workflowDescription.Criteria;
+import org.eclipse.ice.modeling.workflowDescription.action.Action;
 
 /**
  * THIS CLASS IS PART OF THE WORKFLOW CONCEPT THAT IS BEING EXPLORED.

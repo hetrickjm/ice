@@ -13,8 +13,8 @@ package org.eclipse.ice.modeling.actors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.eclipse.ice.modeling.IWorkflow;
-import org.eclipse.ice.modeling.workflowEngine.*;
+import org.eclipse.ice.modeling.IWorkflowSystem;
+import org.eclipse.ice.modeling.workflowEngine.Message;
 
 /**
  * The ReducerStub is a class that acts like a Reducer system.  It is a stub for testing.
@@ -38,7 +38,7 @@ public class ReducerStub {
 	 * @param msg
 	 * @param msgSrc
 	 */
-	public void processMessage(Message msg, IWorkflow msgSrc) {
+	public void processMessage(Message msg, IWorkflowSystem msgSrc) {
 		System.out.println("ReducerStub.processMessage()");
 		
 		// Process the incoming message - Reduction Action

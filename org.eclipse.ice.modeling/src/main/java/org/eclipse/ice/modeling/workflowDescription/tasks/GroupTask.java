@@ -11,6 +11,7 @@
 package org.eclipse.ice.modeling.workflowDescription.tasks;
 
 import org.eclipse.ice.modeling.workflow.*;
+import org.eclipse.ice.modeling.workflowDescription.action.Action;
 
 /**
  * THIS CLASS IS PART OF THE WORKFLOW CONCEPT THAT IS BEING EXPLORED.

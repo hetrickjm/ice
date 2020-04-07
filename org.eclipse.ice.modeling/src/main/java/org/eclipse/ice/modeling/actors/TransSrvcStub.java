@@ -11,7 +11,7 @@
 package org.eclipse.ice.modeling.actors;
 
 
-import org.eclipse.ice.modeling.IWorkflow;
+import org.eclipse.ice.modeling.IWorkflowSystem;
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.experiment.*;
 
@@ -22,7 +22,7 @@ import org.eclipse.ice.modeling.experiment.*;
  */
 public class TransSrvcStub {
 
-	private IWorkflow workflow;   // end TransSrvcStub() constructor
+	private IWorkflowSystem workflow;   // end TransSrvcStub() constructor
 	
 
 	public TransSrvcStub() {
@@ -30,7 +30,7 @@ public class TransSrvcStub {
 		
 	}   // endTransSrvcStub() constructor
 
-	public IWorkflow getWorkflow() {
+	public IWorkflowSystem getWorkflow() {
 		System.out.println("TransSrvcStub.getWorkflow()");
 		return this.workflow;
 		
@@ -40,7 +40,7 @@ public class TransSrvcStub {
 	 * 
 	 * @param wf
 	 */
-	public void setWorkflow( IWorkflow wf ) {
+	public void setWorkflow( IWorkflowSystem wf ) {
 		System.out.println("TransSrvcStub.setWorkflow( IWorkflow workflow )");
 		this.workflow = wf;
 		

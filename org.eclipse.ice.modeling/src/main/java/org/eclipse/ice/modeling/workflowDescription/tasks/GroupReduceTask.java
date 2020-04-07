@@ -21,6 +21,7 @@ import org.eclipse.ice.modeling.experiment.*;
 import org.eclipse.ice.modeling.states.WorkflowState;
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.workflowDescription.tasks.*;
+import org.eclipse.ice.modeling.workflowDescription.action.*;
 
 /**
  * The GroupReduceTask class si the task responsible for processing (reducing) a single sequence.

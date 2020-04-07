@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.eclipse.ice.modeling.workflowEngine.*;
 import org.eclipse.ice.modeling.experiment.*;
 import org.eclipse.ice.modeling.workflowDescription.tasks.*;
+import org.eclipse.ice.modeling.workflowDescription.action.*;
 
 /**
  * THIS CLASS IS FOR THE EXPLORATION OF THE WORKFLOW CONCEPTS AND MAY BE CHANGED 

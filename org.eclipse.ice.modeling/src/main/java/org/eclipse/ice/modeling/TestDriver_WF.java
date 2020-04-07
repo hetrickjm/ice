@@ -39,7 +39,7 @@ public class TestDriver_WF {
 		// which is the part that needs to be called byt the Translation Service
 		WorkflowSystem wf = new WorkflowSystem( transSrvc, reducer1 );
 		
-		transSrvc.setWorkflow(wf.getWorkflowEngine());
+		transSrvc.setWorkflow((IWorkflowSystem) wf.getWorkflowEngine());
 		transSrvc.generateCmnd("Transition Service Command");
 		
 		
