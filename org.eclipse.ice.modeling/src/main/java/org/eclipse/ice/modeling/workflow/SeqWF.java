@@ -51,12 +51,11 @@ public class SeqWF extends Workflow {
 	 * 
 	 * This is another constructor for the RunWF class.  It takes a DataSet and a
 	 * WorkflowDescription to bind together in the Workflow
-	 * 
 	 * @param id - the id of the workflow
 	 * @param set - the DataSet to bind with the WorkflowDescription in the Workflow
-	 * @param description - the DataSet to bind with the WorkflowDescription in the Workflow
+	 * @param description - the WorkflowDescription to bind with the DataSet in the Workflow
 	 */
-	public SeqWF(String id, DataSet set, WorkflowDescription description) {
+	public SeqWF(String id, DataSet set, IWorkflowDescription description) {
 		super(id, set, description);
 		logger.debug("SeqWF(DataSet set, WorkflowDescription description) constructor");
 		

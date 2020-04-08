@@ -20,7 +20,7 @@ import org.eclipse.ice.modeling.workflow.Workflow;
  */
 public class WorkflowDescriptionRepoTest {
 
-	private WorkflowDescriptionRepo wdr = new WorkflowDescriptionRepo();
+	private IWorkflowDescriptionRepo wdr = new WorkflowDescriptionRepo();
 	private DataSet dataSet;
 	
 	/**
@@ -72,18 +72,6 @@ public class WorkflowDescriptionRepoTest {
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.modeling.workflowDescription.WorkflowDescriptonRepo#getWorkflowDescription(org.eclipse.ice.modeling.experiment.MetaData)}.
-	 */
-	@Test
-	public void testGetWorkflowDescription() {
-		System.out.println("\n BEGIN TEST: WorkflowDescriptionRepo.testGetWorkflowDescription");
-		
-		WorkflowDescription wd = wdr.getWorkflowDescription(this.dataSet.getMetaData());
-		
-		System.out.println("END TEST: WorkflowDescriptionRepo.testGetWorkflowDescription");
-	}
-
-	/**
 	 * Test method for {@link org.eclipse.ice.modeling.workflowDescription.WorkflowDescriptonRepo#addWorkflowDescription(org.eclipse.ice.modeling.workflowDescription.WorkflowDescription)}.
 	 */
 	@Test
@@ -102,7 +90,7 @@ public class WorkflowDescriptionRepoTest {
 	public void testFindWorkflowDescription() {
 		System.out.println("\n BEGIN TEST: WorkflowDescriptionRepo.testFindWorkflowDescription");
 		
-		WorkflowDescription wd = wdr.findWorkflowDescription(this.dataSet.getMetaData());
+		IWorkflowDescription wd = wdr.findWorkflowDescription(this.dataSet.getMetaData());
 		
 		System.out.println("END TEST: WorkflowDescriptionRepo.testFindWorkflowDescription");
 	}
@@ -118,7 +106,7 @@ public class WorkflowDescriptionRepoTest {
 		String key = meta.getInstrumentID() +
 				"/" + meta.getExperimentID() +
 				"/" + meta.getGroupID();
-		WorkflowDescription wd = wdr.findWorkflowDescription(key);
+		IWorkflowDescription wd = wdr.findWorkflowDescription(key);
 		
 		System.out.println("END TEST: WorkflowDescriptionRepo.testFindWorkflowString");
 	}

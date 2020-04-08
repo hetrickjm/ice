@@ -15,8 +15,8 @@ public interface IWorkflowRepo {
 	/**
 	 * 
 	 * @param dataSet
-	 * @param wd
+	 * @param iwd
 	 */
-	Workflow findWorkflow(DataSet dataSet, WorkflowDescription wd);
+	IWorkflow findWorkflow(DataSet dataSet, IWorkflowDescription iwd);
 
 }

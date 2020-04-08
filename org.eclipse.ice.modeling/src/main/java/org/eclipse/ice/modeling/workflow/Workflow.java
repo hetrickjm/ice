@@ -31,7 +31,7 @@ import org.eclipse.ice.modeling.states.*;
  * 
  * @author John Hetrick
  */
-public class Workflow {
+public class Workflow implements IWorkflow {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -52,7 +52,7 @@ public class Workflow {
 	 * 
 	 * The workflowDescription attribute holds the WorkflowDescription associated with the workflow
 	 */
-	private WorkflowDescription workflowDescription;
+	private IWorkflowDescription workflowDescription;
 
 	/**
 	 * THIS ATTRIBUTE IS PART OF THE WORLFLOW  EXPLORATION AND MAY BE
@@ -104,7 +104,7 @@ public class Workflow {
 	 * @param set - the DataSet to bind with the WorkflowDescription in the Workflow
 	 * @param description - the WorkflowDescription to bind with the DataSet in the Workflow
 	 */
-	public Workflow(String id, DataSet set, WorkflowDescription description) {
+	public Workflow(String id, DataSet set, IWorkflowDescription description) {
 		logger.debug("Workflow(DataSet set, WorkflowDescription description) constructor");
 		
 		List <TaskStatus> taskStatusTable = null;
@@ -183,10 +183,9 @@ public class Workflow {
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
 	 * This is a getter method to returning the workflowDescription attribute
-	 * 
 	 * @return WorkflowDescription
 	 */
-	public WorkflowDescription getWorkflowDescription() {
+	public IWorkflowDescription getWorkflowDescription() {
 		return this.workflowDescription;
 	}
 
@@ -195,11 +194,9 @@ public class Workflow {
 	 * MAY BE CHANGED OR DEPRECATED
 	 * 
 	 * This is a setter method to set the workflowDescription attribute
-	 * @param wfd - wfd is the used to set the procedure attribute
-	 * 
-	 * @return void
+	 * @param wfd - wfd is the used to set the workflowDescription attribute
 	 */
-	public void setWorkflowDescription(WorkflowDescription wfd) {
+	public void setWorkflowDescription(IWorkflowDescription wfd) {
 		int i   = -1,
 			len = -1;
 		List <TaskStatus> taskStatusTable = new ArrayList <TaskStatus>();

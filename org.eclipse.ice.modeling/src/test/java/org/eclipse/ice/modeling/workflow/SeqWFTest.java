@@ -14,10 +14,9 @@ import org.eclipse.ice.modeling.experiment.MetaData;
 import org.eclipse.ice.modeling.workflowDescription.CompletionCriteria;
 import org.eclipse.ice.modeling.workflowDescription.Criteria;
 import org.eclipse.ice.modeling.workflowDescription.StringCriteria;
-import org.eclipse.ice.modeling.workflowDescription.WorkflowDescription;
-import org.eclipse.ice.modeling.workflowDescription.WorkflowDescriptionRepo;
-import org.eclipse.ice.modeling.workflowDescription.WorkflowDescriptionType;
+import org.eclipse.ice.modeling.workflowDescription.*;
 import org.eclipse.ice.modeling.workflowDescription.tasks.*;
+import org.eclipse.ice.modeling.workflowDescription.action.*;
 import org.eclipse.ice.modeling.workflowEngine.Message;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -36,8 +35,8 @@ public class SeqWFTest {
 	 */
 	private DataSet dataSet;
 	private ExperimentRepo expRepo;
-	private WorkflowDescriptionRepo wfdRepo;
-	private WorkflowDescription wfds;
+	private IWorkflowDescriptionRepo wfdRepo;
+	private IWorkflowDescription wfds;
 	private Workflow wf;
 
 	/**

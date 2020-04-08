@@ -33,7 +33,7 @@ import org.eclipse.ice.modeling.workflowDescription.tasks.*;
  * 
  * @author John Hetrick
  */
-public class WorkflowDescription {
+public class WorkflowDescription implements IWorkflowDescription {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -108,6 +108,8 @@ public class WorkflowDescription {
 	 * to the next Task.  Currently this simply returns the next Task
 	 * regardless of the state of the current Task.
 	 * @param index - the index for the Task to be retrieved
+	 * 
+	 * @return Task - the Task at the index
 	 */
 	public Task getTask(int index) {
 		logger.debug("WorkflowDescription.getTask(int index)");
@@ -157,6 +159,8 @@ public class WorkflowDescription {
 	}
 
 	/**
+	 * DEPRECATE!
+	 * 
 	 * This is a getter method that returns the WorkflowDescription's completionCriteria
 	 */
 	public CompletionCriteria getCompleteCriteria() {
@@ -205,6 +209,8 @@ public class WorkflowDescription {
 
 	/**
 	 * This is a getter method to return the number of tasks in the taskList attribute
+	 * 
+	 * @return int - the number of tasks in the Workflow
 	 */
 	public int getNumberOfTasks() {
 		return taskList.size();

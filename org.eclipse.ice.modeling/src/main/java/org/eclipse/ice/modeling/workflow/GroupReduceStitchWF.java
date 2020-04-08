@@ -56,7 +56,7 @@ public class GroupReduceStitchWF extends GroupWF {
 	 * @param set - the DataSet to bind with the WorkflowDescription in the Workflow
 	 * @param description - the WorkflowDescription to bind with the DataSet in the Workflow
 	 */
-	public GroupReduceStitchWF(String id, DataSet set, WorkflowDescription description) {
+	public GroupReduceStitchWF(String id, DataSet set, IWorkflowDescription description) {
 		super(id, set, description);
 		//System.out.println("GroupReduceStitchWF(String id, DataSet set, WorkflowDescription description) constructor");
 		logger.debug("GroupReduceStitchWF(String id, DataSet set, WorkflowDescription description) constructor");

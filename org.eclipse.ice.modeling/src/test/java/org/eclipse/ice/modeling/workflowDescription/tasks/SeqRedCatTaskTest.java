@@ -5,6 +5,12 @@ package org.eclipse.ice.modeling.workflowDescription.tasks;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import org.eclipse.ice.modeling.experiment.DataSet;
 import org.eclipse.ice.modeling.experiment.MetaData;
 import org.eclipse.ice.modeling.workflow.TaskStatus;
@@ -12,11 +18,7 @@ import org.eclipse.ice.modeling.workflowDescription.CompletionCriteria;
 import org.eclipse.ice.modeling.workflowDescription.Criteria;
 import org.eclipse.ice.modeling.workflowDescription.StringCriteria;
 import org.eclipse.ice.modeling.workflowEngine.Message;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.eclipse.ice.modeling.workflowDescription.action.ActionMsg;
 
 /**
  * @author 6mq

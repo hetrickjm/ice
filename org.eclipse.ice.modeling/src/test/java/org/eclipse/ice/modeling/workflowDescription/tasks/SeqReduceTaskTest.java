@@ -16,7 +16,7 @@ import org.eclipse.ice.modeling.workflow.TaskStatus;
 import org.eclipse.ice.modeling.workflowDescription.CompletionCriteria;
 import org.eclipse.ice.modeling.workflowDescription.Criteria;
 import org.eclipse.ice.modeling.workflowDescription.StringCriteria;
-import org.eclipse.ice.modeling.workflowDescription.tasks.*;
+import org.eclipse.ice.modeling.workflowDescription.action.ActionMsg;
 import org.eclipse.ice.modeling.workflowEngine.Message;
 
 /**

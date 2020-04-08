@@ -8,8 +8,7 @@ import static org.junit.Assert.*;
 import org.eclipse.ice.modeling.experiment.DataSet;
 import org.eclipse.ice.modeling.experiment.ExperimentRepo;
 import org.eclipse.ice.modeling.experiment.MetaData;
-import org.eclipse.ice.modeling.workflowDescription.WorkflowDescriptionRepo;
-import org.eclipse.ice.modeling.workflowDescription.WorkflowDescription;
+import org.eclipse.ice.modeling.workflowDescription.*;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,8 +27,8 @@ public class WorkflowTest {
 	 */
 	private DataSet dataSet;
 	private ExperimentRepo expRepo;
-	private WorkflowDescriptionRepo wfdRepo;
-	private WorkflowDescription wfd;
+	private IWorkflowDescriptionRepo wfdRepo;
+	private IWorkflowDescription wfd;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -64,7 +63,7 @@ public class WorkflowTest {
 		this.expRepo = new ExperimentRepo();
 		
 		// Create a WorkflowDescriptionRepo
-		this.wfdRepo = new WorkflowDescriptionRepo();
+		this.wfdRepo = (IWorkflowDescriptionRepo) new WorkflowDescriptionRepo();
 		
 		String key = meta.getInstrumentID() +
 				"/" + meta.getExperimentID() +

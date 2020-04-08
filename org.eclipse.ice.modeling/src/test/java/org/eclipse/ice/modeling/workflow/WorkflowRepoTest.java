@@ -5,17 +5,16 @@ package org.eclipse.ice.modeling.workflow;
 
 import static org.junit.Assert.*;
 
-import org.eclipse.ice.modeling.experiment.DataSet;
-import org.eclipse.ice.modeling.experiment.ExperimentRepo;
-import org.eclipse.ice.modeling.experiment.Group;
-import org.eclipse.ice.modeling.experiment.MetaData;
-import org.eclipse.ice.modeling.workflowDescription.WorkflowDescription;
-import org.eclipse.ice.modeling.workflowDescription.WorkflowDescriptionRepo;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.eclipse.ice.modeling.experiment.DataSet;
+import org.eclipse.ice.modeling.experiment.ExperimentRepo;
+import org.eclipse.ice.modeling.experiment.Group;
+import org.eclipse.ice.modeling.experiment.MetaData;
+import org.eclipse.ice.modeling.workflowDescription.*;
 
 /**
  * @author 6mq
@@ -28,9 +27,9 @@ public class WorkflowRepoTest {
 	 */
 	private DataSet dataSet;
 	private ExperimentRepo expRepo;
-	private WorkflowDescriptionRepo wfdRepo;
-	private WorkflowDescription wdg;
-	private WorkflowDescription wds;
+	private IWorkflowDescriptionRepo wfdRepo;
+	private IWorkflowDescription wdg;
+	private IWorkflowDescription wds;
 	
 	/**
 	 * 
@@ -108,7 +107,7 @@ public class WorkflowRepoTest {
 		wfr.setWorkflowDescriptionRepo(this.wfdRepo);
 		wfr.setExpRepo(this.expRepo);
 		
-		Workflow wf = wfr.findWorkflow(this.dataSet, this.wds);
+		Workflow wf = (Workflow) wfr.findWorkflow(this.dataSet, this.wds);
 		
 		//fail("Not yet implemented"); // TODO
 		System.out.println("END TEST: WorkflowRepo.testWorkflowRepo");

@@ -39,7 +39,7 @@ public class WorkflowSystem implements IWorkflowSystem {
 	 * empty on system startup and get populated as Data Sets for reducing come
 	 * into the system.
 	 */
-	private WorkflowRepo workflowRepo;
+	private IWorkflowRepo workflowRepo;
 	
 	/**
 	 * The workflowDescriptionRepo is the repository of WorkflowDescriptions. This
@@ -140,11 +140,13 @@ public class WorkflowSystem implements IWorkflowSystem {
 	 * 
 	 * @return the workflowRepo
 	 */
-	public WorkflowRepo initWorkflowRepo() {
+	public IWorkflowRepo initWorkflowRepo() {
 		logger.debug("WorkflowSystem.initWorkflowRepo()");
 		
-		this.workflowRepo = new WorkflowRepo();
-		this.workflowRepo.setWorkflowDescriptionRepo(this.workflowDescriptionRepo);
+		WorkflowRepo wfr = new WorkflowRepo();
+		wfr.setWorkflowDescriptionRepo(this.workflowDescriptionRepo);
+		
+		this.workflowRepo = (IWorkflowRepo) wfr;
 		
 		return this.workflowRepo;
 	}
@@ -212,7 +214,7 @@ public class WorkflowSystem implements IWorkflowSystem {
 	 * @param workflowRepo the workflowRepo to set
 	 */
 	public void setWorkflowRepo(WorkflowRepo repo) {
-		this.workflowRepo = repo;
+		this.workflowRepo = (IWorkflowRepo) repo;
 	}
 
 	/**

@@ -46,12 +46,12 @@ public class WorkflowEngine implements IWorkflowSystem {
 	 * working on.  There are expected to be many workflows and the one 
 	 * that the workflow needs to work with must be figured out and retrieved for it.
 	 */
-	private Workflow workflow;
+	private IWorkflow workflow;
 	
 	/**
 	 * The workflowRepo attribute is the repository for all workflows
 	 */
-	private WorkflowRepo workflowRepo;
+	private IWorkflowRepo workflowRepo;
 	
 	/**
 	 * The workflowDescriptionRepo attribute is the repository for 
@@ -80,7 +80,7 @@ public class WorkflowEngine implements IWorkflowSystem {
 	 * @param wfRepo - the Workflow repository
 	 * @param wdRepo - the WorkflowDescription repository
 	 */
-	public WorkflowEngine(ReducerStub reducer, WorkflowRepo wfRepo, WorkflowDescriptionRepo wdRepo) {
+	public WorkflowEngine(ReducerStub reducer, IWorkflowRepo wfRepo, WorkflowDescriptionRepo wdRepo) {
 		logger.debug("WorkflowEngine(ReducerStub reducer, WorkflowRepo wfRepo, WorkflowDescriptonRepo wdRepo) constructor");
 		
 		this.reducer                 = reducer;
@@ -113,19 +113,19 @@ public class WorkflowEngine implements IWorkflowSystem {
 	 * 
 	 * @return WorkflowRepo
 	 */
-	public WorkflowRepo getWorkflowRepo() {
+	public IWorkflowRepo getWorkflowRepo() {
 		return workflowRepo;
 	}
 
 	/**
 	 * This is a setter method to set the workflowRepo attribute
 	 * 
-	 * @param workflowRepo  - the WorkflowRepo used to set the workflowRepo attribute
+	 * @param repo - the WorkflowRepo used to set the workflowRepo attribute
 	 * 
 	 * @return void
 	 */
-	public void setWorkflowRepo(WorkflowRepo workflowRepo) {
-		this.workflowRepo = workflowRepo;
+	public void setWorkflowRepo(IWorkflowRepo repo) {
+		this.workflowRepo = repo;
 	}
 
 	/**
@@ -165,7 +165,7 @@ public class WorkflowEngine implements IWorkflowSystem {
 		Message msgOut;
 		DataSet dataSet = msgIn.getDataSetRef();
 		MetaData metaData = dataSet.getMetaData();
-		WorkflowDescription workflowDescription;
+		IWorkflowDescription workflowDescription;
 		
 		/**
 		 * Determine which WorkflowDescription the incoming msg is associated wtih.  
@@ -179,11 +179,11 @@ public class WorkflowEngine implements IWorkflowSystem {
 		 * Data Set from the message with the WorkflowDescription 
 		 */
 		
-		workflow = workflowRepo.findWorkflow(dataSet, workflowDescription);
+		this.workflow = workflowRepo.findWorkflow(dataSet, workflowDescription);
 		
 		// Ask the workflow for the next outgoing message
 		// A return of null indicates no follow on message
-		msgOut = workflow.handleMsg(msgIn);
+		msgOut = this.workflow.handleMsg(msgIn);
 		
 		if (msgOut != null) {
 			reducer.processMessage(msgOut, (IWorkflowSystem) this);

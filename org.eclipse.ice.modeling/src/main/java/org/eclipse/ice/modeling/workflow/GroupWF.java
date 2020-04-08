@@ -64,7 +64,7 @@ public class GroupWF extends Workflow {
 	 * @param set - the DataSe to bind with the WorkflowDescription in the Workflow
 	 * @param description - the WorkflowDescription to bind with the DataSet in the Workflow
 	 */
-	public GroupWF(String id, DataSet set, WorkflowDescription description) {
+	public GroupWF(String id, DataSet set, IWorkflowDescription description) {
 		super(id, set, description);
 		logger.debug("GroupWF(String id, DataSet set, WorkflowDescription description) constructor");
 		

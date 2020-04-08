@@ -21,20 +21,20 @@ import org.eclipse.ice.modeling.workflowDescription.tasks.*;
 import org.eclipse.ice.modeling.workflowDescription.action.*;
 
 /**
- * THIS CLASS IS FOR THE EXPLORATION OF THE WORKFLOW CONCEPTS AND MAY BE CHANGED 
+ * THIS CLASS IS FOR THE EXPLORATION OF THE WORKFLOW CONCEPTS AND MAY BE CHANGED
  * OR DEPRECATED IN THE FUTURE
  * 
- * The WorkflowDescriptionRepo class is the repository for all the WorkflowDescriptions 
- * the AR Workflow system is aware of.  This class holds the set of WorkflowDescriptions 
- * that are avaialble for use with a Workflow.  It also contains the mapping of what 
+ * The WorkflowDescriptionRepo class is the repository for all the WorkflowDescriptions
+ * the AR Workflow system is aware of.  This class holds the set of WorkflowDescriptions
+ * that are avaialble for use with a Workflow.  It also contains the mapping of what
  * WorkflowDescriptions are associated with a specific DataSet.
  * 
- * NOTE: In the future this may be a facade to persistent storage for the contained 
+ * NOTE: In the future this may be a facade to persistent storage for the contained
  * WorkflowDescriptions
  * 
  * @author John Hetrick
  */
-public class WorkflowDescriptionRepo {
+public class WorkflowDescriptionRepo implements IWorkflowDescriptionRepo {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -228,32 +228,6 @@ public class WorkflowDescriptionRepo {
 	}
 
 	/**
-	 * THIS METHOD IS FOR EXPLORING THE WORKFLOW CONCEPTS AND MAY BE CHANGED OR DEPRECATED
-	 * 
-	 * This is a getter method to return the workflowDescSet attribute
-	 * 
-	 * NOTE: This is for testing only and should not be used.  This class is the repo
-	 * 
-	 * @param metaData - the meta data that holds the key to identifying a specific WorkflowDescription
-	 */
-	public WorkflowDescription getWorkflowDescription(MetaData metaData) {
-		logger.debug("WorkflowDescriptionRepo.getWorkflowDescription(MetaData metaData)");
-		
-		String key;   // This is to create the key to use to find the proper WorkflowDescription
-		
-		// Create the key from the MetaData
-		key = metaData.getInstrumentID();
-		key += "/" + metaData.getExperimentID();
-		key += "/" + metaData.getGroupID();
-		key += "/DT-" + metaData.getDataType();
-		logger.debug("\tkey: " + key);
-		
-		WorkflowDescription wd = this.workflowDescriptionSet.get(key);
-		
-		return wd;
-	}
-
-	/**
 	 * This is a setter method to add a WorkflowDescription to the workflowDescriptionSet attribute
 	 * 
 	 * @param key - String used as a key to match to the WorkflowDescription
@@ -264,6 +238,8 @@ public class WorkflowDescriptionRepo {
 	}
 
 	/**
+	 * THIS METHOD IS FOR EXPLORING THE WORKFLOW CONCEPTS AND MAY BE CHANGED OR DEPRECATED
+	 * 
 	 * This method searches for a WorkflowDescription in the mapSet based on the MetaData key.
 	 * This method determines the key then searches for a pair.
 	 * 
@@ -276,12 +252,10 @@ public class WorkflowDescriptionRepo {
 	 * - instrumentID, experimentID, groutID
 	 * - instrumentID, experimentID
 	 * - instrumentID  (default)
-	 * 
 	 * @param metaData - the MetaData from which to derive the meta data key
-	 * 
 	 * @return WorkflowDescription
 	 */
-	public WorkflowDescription findWorkflowDescription(MetaData metaData) {
+	public IWorkflowDescription findWorkflowDescription(MetaData metaData) {
 		logger.debug("WorkflowDescriptionRepo.getWorkflowDescription(MetaData metaData)");
 		
 		String key;   // This is to create the key to use to find the proper WorkflowDescription
@@ -297,23 +271,21 @@ public class WorkflowDescriptionRepo {
 		
 		WorkflowDescription wd = this.workflowDescriptionSet.get(key);
 		
-		return wd;
+		return (IWorkflowDescription) wd;
 	}
 
 	/**
 	 * This method searches for a WorkflowDescription in repo
 	 * This method determines the key then searches for a pair.
-	 * 
 	 * @param key - the to find the WorkflowDescription
-	 * 
 	 * @return WorkflowDescription
 	 */
-	public WorkflowDescription findWorkflowDescription(String key) {
+	public IWorkflowDescription findWorkflowDescription(String key) {
 		logger.debug("WorkflowDescriptionRepo.getWorkflowDescription(MetaData metaData)\n\tkey: ", key);
 		
 		WorkflowDescription wd = this.workflowDescriptionSet.get(key);
 		
-		return wd;
+		return (IWorkflowDescription) wd;
 	}
 
 	/**

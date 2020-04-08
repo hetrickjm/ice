@@ -15,8 +15,7 @@ import org.eclipse.ice.modeling.experiment.DataSet;
 import org.eclipse.ice.modeling.experiment.MetaData;
 import org.eclipse.ice.modeling.experiment.Sequence;
 import org.eclipse.ice.modeling.experiment.ExperimentRepo;
-import org.eclipse.ice.modeling.workflowDescription.WorkflowDescription;
-import org.eclipse.ice.modeling.workflowDescription.WorkflowDescriptionRepo;
+import org.eclipse.ice.modeling.workflowDescription.*;
 import org.eclipse.ice.modeling.workflowEngine.Message;
 
 /**
@@ -30,9 +29,9 @@ public class GroupWFTest {
 	 */
 	private DataSet dataSet;
 	private ExperimentRepo expRepo;
-	private WorkflowDescriptionRepo wfdRepo;
-	private WorkflowDescription wfdg;
-	private WorkflowDescription wfds;
+	private IWorkflowDescriptionRepo wfdRepo;
+	private IWorkflowDescription wfdg;
+	private IWorkflowDescription wfds;
 	private Workflow wf;
 
 	/**
@@ -94,7 +93,7 @@ public class GroupWFTest {
 		this.expRepo = new ExperimentRepo();
 		
 		// Create a WorkflowDescriptionRepo
-		this.wfdRepo = new WorkflowDescriptionRepo();
+		this.wfdRepo = (IWorkflowDescriptionRepo) new WorkflowDescriptionRepo();
 		
 		System.out.println("\tEND: GroupWFTest.initRepos()");
 	}

@@ -28,7 +28,7 @@ import org.eclipse.ice.modeling.workflowDescription.*;
  * 
  * @author John Hetrick
  */
-public class WorkflowRepo {
+public class WorkflowRepo implements IWorkflowRepo {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -50,7 +50,7 @@ public class WorkflowRepo {
 	 * The workflowDescriptionRepo attribute is the repository that holds all the
 	 * WorkflowDescriptions
 	 */
-	private WorkflowDescriptionRepo workflowDescriptionRepo;
+	private IWorkflowDescriptionRepo workflowDescriptionRepo;
 
 	/**
 	 * This is the constructor for the WorkflowRepo class
@@ -105,19 +105,17 @@ public class WorkflowRepo {
 
 	/**
 	 * This is a getter method to return the workflowDescription attribute
-	 * 
 	 * @return the workflowDescriptionRepo
 	 */
-	public WorkflowDescriptionRepo getWorkflowDescriptionRepo() {
+	public org.eclipse.ice.modeling.workflowDescription.IWorkflowDescriptionRepo getWorkflowDescriptionRepo() {
 		return workflowDescriptionRepo;
 	}
 
 	/**
 	 * This is a setter method to set the workflowDescription attribute.
-	 * 
-	 * @param workflowDescriptionRepo the workflowDescriptionRepo to set
+	 * @param repo - WorkflowRepo to use to set the workflowRepo attribute
 	 */
-	public void setWorkflowDescriptionRepo(WorkflowDescriptionRepo repo) {
+	public void setWorkflowDescriptionRepo(org.eclipse.ice.modeling.workflowDescription.IWorkflowDescriptionRepo repo) {
 		this.workflowDescriptionRepo = repo;
 	}
 
@@ -129,20 +127,19 @@ public class WorkflowRepo {
 	 * Then get the workflow from the Group of the workflow and invoke it.  If an Experiment
 	 * does not exist one gets created.  If no workflow exists it gets created and associated
 	 * with the Experiment Group and Sequences if necessary
-	 * 
 	 * @param dataSet - the Data Set that holds the meta data used to help identify a workflow
-	 * @param wd - the WorkflowDescriptor use to help identify the workflow
-	 * 
+	 * @param iwd - the WorkflowDescriptor use to help identify the workflow
 	 * @return Workflow
 	 */
-	public Workflow findWorkflow(DataSet dataSet, WorkflowDescription wd) {
+	public IWorkflow findWorkflow(DataSet dataSet, IWorkflowDescription wd) {
 		logger.debug("WorkflowRepo.findWorkflow(DataSet dataSet, WorkflowDescription wd) ");
 		
 		// Initi local vars
-		Sequence   seq      = null;
-		Group      group    = null;
-		Experiment exp      = null;
-		Workflow   workflow = null;
+		Sequence   seq         = null;
+		Group      group       = null;
+		Experiment exp         = null;
+		Workflow   workflow    = null;
+		//WorkflowDescription wd = (WorkflowDescription) iwd;
 		
 		// Create the Experiment key (instrumentID + experimentID from the Data Set
 		String key = dataSet.getMetaData().getInstrumentID() + 
@@ -170,7 +167,7 @@ public class WorkflowRepo {
 		// not then create one
 		
 		// Return the Group workflow
-		return workflow;
+		return (IWorkflow) workflow;
 	}
 
 	/**
@@ -183,12 +180,14 @@ public class WorkflowRepo {
 	 * 
 	 * NOTE: There should be a factory to create Workflows
 	 * @param dataSet - the DataSet used to help create workflows
-	 * @param description - the WorkflowDescription to help create workflows
+	 * @param description - the WorkflowDescription to help create workflows. This is
+	 *     the WorkflowDescription for the sequence not the group.  Need to find the group
+	 *     WorkflowDescription
 	 * @param group - group to create a workflow for
 	 * 
 	 * @return Workflow
 	 */
-	private Workflow createWorkflow(DataSet dataSet, WorkflowDescription description, Group group) {
+	private Workflow createWorkflow(DataSet dataSet, IWorkflowDescription description, Group group) {
 		logger.debug("WorkflowRepo.createWorkflow(DataSet dataSet, WorkflowDescription description, Group group) ");
 		
 		MetaData meta = dataSet.getMetaData();
@@ -198,7 +197,7 @@ public class WorkflowRepo {
 		String key = meta.getInstrumentID() +
 				"/" + meta.getExperimentID() +
 				"/" + meta.getGroupID();
-		WorkflowDescription wfdg = this.workflowDescriptionRepo.findWorkflowDescription(key);
+		IWorkflowDescription wfdg = this.workflowDescriptionRepo.findWorkflowDescription(key);
 		// Need to handle the case if a WorkflowDescription for the group is not found
 		
 		/**
